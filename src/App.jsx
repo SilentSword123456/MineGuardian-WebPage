@@ -1,8 +1,9 @@
+import ServersBar from "./components/ServersBar.jsx";
 
 function App() {
 
   return (
-      <div>Hello</div>
+      <ServersBar/>
   )
 }
 
