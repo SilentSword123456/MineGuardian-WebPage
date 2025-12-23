@@ -1,5 +1,4 @@
 .sidebar {
-    position: fixed;
     left: 0;
     top: 0;
     width: 250px;
@@ -56,5 +55,12 @@
 
 .server-item:active {
     background-color: #1e2124;
+}
+
+.server-page {
+    flex: 1;
+    margin-left: 0;
+    height: 100vh;
+    overflow-y: auto;
 }
 
