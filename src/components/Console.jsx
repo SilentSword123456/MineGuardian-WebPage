@@ -1,66 +1,86 @@
 import {useEffect, useState} from "react";
-import socket from "../utils/webSocket.js";
+import createSocket from "../utils/webSocket.js";
 
-function Console(){
+function Console({server}){
+    const [socket, setSocket] = useState(null);
     const [messages, setMessages] = useState([]);
     const [inputValue, setInputValue] = useState('');
     const [isConnected, setIsConnected] = useState(false);
 
     useEffect(() => {
-        socket.on('connect', () => {
+        if(!server || !server.id)
+            return;
+
+        console.log(`Creating socket for server: ${server.id}`);
+
+        const newSocket = createSocket(server.id)
+        setSocket(newSocket);
+
+        newSocket.on('connect', () => {
             console.log('Connected to server');
             setIsConnected(true);
         });
 
-        socket.on('disconnect', () => {
+        newSocket.on('disconnect', () => {
             console.log('Disconnected from server');
             setIsConnected(false);
         });
 
-        socket.on('message', (data) => {
+        newSocket.on('message', (data) => {
             console.log('Received message:', data);
             setMessages(prev => [...prev, { type: 'server', text: data.data }]);
         });
 
-        socket.on('response', (data) => {
-            console.log('Received response:', data);
-            setMessages(prev => [...prev, { type: 'server', text: data.data }]);
-        });
-
         return () => {
-            socket.off('connect');
-            socket.off('disconnect');
-            socket.off('message');
-            socket.off('response');
+            newSocket.off('connect');
+            newSocket.off('disconnect');
+            newSocket.off('message');
+            newSocket.off('response');
+            newSocket.disconnect();
+            setMessages([]);
         };
-    }, []);
+    }, [server.id]);
 
     const sendMessage = () => {
         if (inputValue.trim()) {
             setMessages(prev => [...prev, { type: 'user', text: inputValue }]);
 
-            // Send to server
-            socket.emit('custom_event', { message: inputValue });
+            socket.emit('message', { message: inputValue });
 
-            // Clear input
             setInputValue('');
         }
     };
 
-    function getTypeBar(){
+    function getTypeBarAndDisplay(){
         if(!isConnected)
             return "Not connected";
 
         return(
             <div>
-
+                <textarea
+                    className={"terminalConnection"}
+                    value={messages.map(m => `${m.type}: ${m.text}`).join('\n')}
+                    readOnly
+                />
+                <input
+                    className={"terminalInput"}
+                    type="text"
+                    value={inputValue}
+                    placeholder="Type something..."
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            sendMessage();
+                        }
+                    }}
+                />
             </div>
         )
     }
 
     return (
         <div>
-            Console Component
+            {getTypeBarAndDisplay()}
         </div>
     )
 }
