@@ -12,12 +12,12 @@ const queryClient = new QueryClient();
 function App() {
 
     /** @type {Server} */
-    const server = [{id: null, name: null}];
-  const [loadedServer, setLoadedServer] = useState(server);
+    const server = {id: null, name: null};
+    const [loadedServer, setLoadedServer] = useState(server);
 
   return (
         <QueryClientProvider client={queryClient}>
-          <div style={{ display: 'flex' }}>
+          <div className="app-container">
             <ServersBar loadServer={setLoadedServer}/>
             <ServerPage loadedServer={loadedServer}/>
           </div>
