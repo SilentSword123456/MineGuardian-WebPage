@@ -1,32 +1,44 @@
-import {useState} from "react";
+import {useQuery} from "@tanstack/react-query";
+
 /**
- * @typedef {Array} Server
- * @property {number} id
- * @property {string} name
+ * @typedef {import('../types/server.js').Server} Server
  */
-function ServersBar(){
+function ServersBar({loadServer}) {
 
-    async function refreshServerList(){
-        const data = await fetch('http://localhost:5000/servers').then(res => res.json());
+    /**
+     * @returns {Promise<Server[]>}
+     */
+    async function fetchServers() {
+        const result = await fetch('http://localhost:5000/servers')
+            .then(res => res.json());
 
-        /** @type {Server[]} */
-        const servers = data['servers'];
-        setServers(servers);
+        console.log("Fetched servers:", result.servers);
+
+        return result.servers;
     }
 
-    /** @type {Server[]} */
-    const [servers, setServers]= useState([]);
+    const {data: servers=[], isLoading, refetch} = useQuery({ /** @type {Server[]} servers */
+        queryFn: fetchServers,
+        queryKey: ['servers'],
+        refetchInterval: 10 *1000 // Refetch every 10 seconds
+    });
+
+    function getServerList(){
+        if(isLoading)
+            return <div>Loading...</div>;
+
+        return servers?.map((server) => (
+            <button className="server-item" key={server.id} onClick={() => loadServer(server)}>
+                {server.name}
+            </button>
+        ));
+    }
 
     return (
         <div className="sidebar">
             <h3>Servers</h3>
-            <button className={"refreshButton"} onClick={() => refreshServerList()}>Refresh</button>
-            {console.log(servers)}
-            {servers.map((server) => (
-                <div className="server-item" key={server.id}>
-                    {server.name}
-                </div>
-            ))}
+            <button className={"refreshButton"} onClick={() => refetch()}>Refresh</button>
+            {getServerList()}
         </div>
     );
 }
