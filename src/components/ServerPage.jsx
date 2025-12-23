@@ -9,11 +9,16 @@ import Console from "./Console.jsx";
  */
 function ServerPage({loadedServer}) {
 
-
     return (
-        <div>
-            Current loaded server: {loadedServer.name} with id {loadedServer.id}
-            <Console/>
+        <div className="server-page">
+            {loadedServer.id === null ? (
+                <h1>Please load a server</h1>
+            ) : (
+                <>
+                    <h1>{loadedServer.name}</h1>
+                    <Console server={loadedServer}/>
+                </>
+            )}
         </div>
     )
 }
