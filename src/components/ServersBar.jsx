@@ -1,7 +1,7 @@
 import {useQuery} from "@tanstack/react-query";
-
+import Server from "../types/server.jsx";
 /**
- * @typedef {import('../types/server.js').Server} Server
+ * @typedef {import('../types/server.jsx').Server} Server
  */
 function ServersBar({loadServer}) {
 
@@ -28,7 +28,11 @@ function ServersBar({loadServer}) {
             return <div>Loading...</div>;
 
         return servers?.map((server) => (
-            <button className="server-item" key={server.id} onClick={() => loadServer(server)}>
+            <button
+                className="server-item"
+                key={server.id}
+                onClick={() => loadServer(new Server(server.id, server.name, server.isRunning))}>
+                <span className={`status-indicator ${server.isRunning ? 'online' : 'offline'}`} />
                 {server.name}
             </button>
         ));
