@@ -1,7 +1,8 @@
 import Console from "./Console.jsx";
+import QuickCommands from "./QuickCommands.jsx";
 
 /**
- * @typedef {import('../types/server.js').Server} Server
+ * @typedef {import('../types/server.jsx').Server} Server
  */
 /**
  * @param {Object} props
@@ -17,6 +18,7 @@ function ServerPage({loadedServer}) {
                 <>
                     <h1>{loadedServer.name}</h1>
                     <Console server={loadedServer}/>
+                    <QuickCommands server={loadedServer} />
                 </>
             )}
         </div>
