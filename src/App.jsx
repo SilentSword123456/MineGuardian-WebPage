@@ -2,17 +2,15 @@ import ServersBar from "./components/ServersBar.jsx";
 import ServerPage from "./components/ServerPage.jsx";
 import {useState} from "react";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+import Server from "./types/server.jsx";
 
 
 const queryClient = new QueryClient();
 
-/**
- * @typedef {import('../types/server.js').Server} Server
- */
 function App() {
 
     /** @type {Server} */
-    const server = {id: null, name: null};
+    const server = new Server(null, null, false);
     const [loadedServer, setLoadedServer] = useState(server);
 
   return (
