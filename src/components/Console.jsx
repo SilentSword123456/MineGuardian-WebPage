@@ -8,12 +8,12 @@ function Console({server}){
     const [isConnected, setIsConnected] = useState(false);
 
     useEffect(() => {
-        if(!server || !server.id)
+        if(!server || !server.name)
             return;
 
-        console.log(`Creating socket for server: ${server.id}`);
+        console.log(`Creating socket for server: ${server.name}`);
 
-        const newSocket = createSocket(server.id)
+        const newSocket = createSocket(server.name)
         setSocket(newSocket);
 
         newSocket.on('connect', () => {
@@ -31,6 +31,11 @@ function Console({server}){
             setMessages(prev => [...prev, { type: 'server', text: data.data }]);
         });
 
+        newSocket.on('console', (data) => {
+            console.log('Received message from console:', data);
+            setMessages(prev => [...prev, { type: 'server', text: data.data }]);
+        });
+
         return () => {
             newSocket.off('connect');
             newSocket.off('disconnect');
@@ -39,13 +44,13 @@ function Console({server}){
             newSocket.disconnect();
             setMessages([]);
         };
-    }, [server.id]);
+    }, [server.name]);
 
-    const sendMessage = () => {
+    const sendCommand = () => {
         if (inputValue.trim()) {
             setMessages(prev => [...prev, { type: 'user', text: inputValue }]);
 
-            socket.emit('message', { message: inputValue });
+            socket.emit('console', { message: inputValue });
 
             setInputValue('');
         }
@@ -70,7 +75,7 @@ function Console({server}){
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyDown={(e) => {
                         if (e.key === 'Enter') {
-                            sendMessage();
+                            sendCommand();
                         }
                     }}
                 />
