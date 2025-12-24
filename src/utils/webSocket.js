@@ -1,8 +1,8 @@
 import { io } from 'socket.io-client';
 
-const createSocket = (serverId) => {
+const createSocket = (serverName) => {
     const socket = io('http://localhost:5000', {
-        query: { serverId: serverId }
+        query: { serverName: serverName }
     });
 
     socket.on('connect', () => {
