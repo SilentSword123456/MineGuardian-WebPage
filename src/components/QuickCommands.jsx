@@ -19,7 +19,6 @@ function QuickCommands({server}) {
                 disabled={!server.isRunning}>
                 stop
             </button>
-            <button>/restart</button>
         </div>
     )
 }

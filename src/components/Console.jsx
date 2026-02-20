@@ -28,12 +28,12 @@ function Console({server}){
 
         newSocket.on('message', (data) => {
             console.log('Received message:', data);
-            setMessages(prev => [...prev, { type: 'server', text: data.data }]);
+            setMessages(prev => [...prev, {type:"", text: data.data }]);
         });
 
         newSocket.on('console', (data) => {
             console.log('Received message from console:', data);
-            setMessages(prev => [...prev, { type: 'server', text: data.data }]);
+            setMessages(prev => [...prev, {type:"", text: data.data }]);
         });
 
         return () => {
@@ -48,7 +48,7 @@ function Console({server}){
 
     const sendCommand = () => {
         if (inputValue.trim()) {
-            setMessages(prev => [...prev, { type: 'user', text: inputValue }]);
+            setMessages(prev => [...prev, {type:'SilentSword', text: inputValue }]); ///PLACEHOLDER, CHANGE TO USER
 
             socket.emit('console', { message: inputValue });
 
@@ -64,7 +64,7 @@ function Console({server}){
             <div>
                 <textarea
                     className={"terminalConnection"}
-                    value={messages.map(m => `${m.type}: ${m.text}`).join('\n')}
+                    value={messages.map(m => m.type ? `${m.type}: ${m.text}` : m.text).join('\n')}
                     readOnly
                 />
                 <input
