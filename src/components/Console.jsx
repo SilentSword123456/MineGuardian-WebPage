@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import createSocket from "../utils/webSocket.js";
 
 function Console({server}){
@@ -6,6 +6,14 @@ function Console({server}){
     const [messages, setMessages] = useState([]);
     const [inputValue, setInputValue] = useState('');
     const [isConnected, setIsConnected] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(false);
+    const textareaRef = useRef(null);
+
+    useEffect(() => {
+        if (textareaRef.current) {
+            textareaRef.current.scrollTop = textareaRef.current.scrollHeight;
+        }
+    }, [messages, isExpanded]);
 
     useEffect(() => {
         if(!server || !server.name)
@@ -58,34 +66,46 @@ function Console({server}){
 
     function getTypeBarAndDisplay(){
         if(!isConnected)
-            return "Not connected";
+            return <div className="console-not-connected">Not connected</div>;
 
         return(
-            <div>
+            <div className="console-content">
                 <textarea
+                    ref={textareaRef}
                     className={"terminalConnection"}
                     value={messages.map(m => m.type ? `${m.type}: ${m.text}` : m.text).join('\n')}
                     readOnly
                 />
-                <input
-                    className={"terminalInput"}
-                    type="text"
-                    value={inputValue}
-                    placeholder="Type something..."
-                    onChange={(e) => setInputValue(e.target.value)}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                            sendCommand();
-                        }
-                    }}
-                />
+                <div className="console-input-group">
+                    <input
+                        className={"terminalInput"}
+                        type="text"
+                        value={inputValue}
+                        placeholder="Type something..."
+                        onChange={(e) => setInputValue(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                sendCommand();
+                            }
+                        }}
+                    />
+                </div>
             </div>
         )
     }
 
     return (
-        <div>
-            {getTypeBarAndDisplay()}
+        <div className={`console-container ${isExpanded ? 'expanded' : 'collapsed'}`}>
+            <div className="console-header" onClick={() => setIsExpanded(!isExpanded)}>
+                <div className="console-title">
+                    <span className={`status-dot ${isConnected ? 'online' : 'offline'}`}></span>
+                    Server Console
+                </div>
+                <button className="console-toggle-btn">
+                    {isExpanded ? '−' : '+'}
+                </button>
+            </div>
+            {isExpanded && getTypeBarAndDisplay()}
         </div>
     )
 }
