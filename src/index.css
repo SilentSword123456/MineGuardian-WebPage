@@ -1,3 +1,10 @@
+:root {
+    --sidebar-width: 150px;
+    --sidebar-padding: 20px;
+    --sidebar-total-width: calc(var(--sidebar-width) + 2 * var(--sidebar-padding));
+    --console-right-margin: 320px;
+}
+
 body {
     margin: 0;
     padding: 0;
@@ -15,10 +22,10 @@ body {
     position: fixed;
     left: 0;
     top: 0;
-    width: 250px;
+    width: var(--sidebar-width);
     height: 100vh;
     background-color: #2c2f33;
-    padding: 20px;
+    padding: var(--sidebar-padding);
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
     overflow-x: hidden;
@@ -109,7 +116,7 @@ body {
 
 .server-page {
     flex: 1;
-    margin-left: 290px;
+    margin-left: var(--sidebar-total-width);
     height: 100vh;
     overflow-y: auto;
     overflow-x: hidden;
@@ -120,8 +127,8 @@ body {
 .console-container {
     position: fixed;
     bottom: 0;
-    left: 290px;
-    right: 320px; /* Leave space for QuickCommands and padding */
+    left: var(--sidebar-total-width);
+    right: var(--console-right-margin); /* Leave space for QuickCommands and padding */
     background-color: #2c2f33;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
