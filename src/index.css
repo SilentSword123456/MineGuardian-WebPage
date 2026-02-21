@@ -54,6 +54,12 @@ body {
     background: #7289da;
 }
 
+.sidebar header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .server-page::-webkit-scrollbar {
     width: 10px;
 }
@@ -350,3 +356,14 @@ body {
 }
 
 
+
+
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
