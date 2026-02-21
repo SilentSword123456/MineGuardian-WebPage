@@ -20,7 +20,7 @@ function ServersBar({loadServer}) {
     const {data: servers=[], isLoading, refetch} = useQuery({ /** @type {Server[]} servers */
         queryFn: fetchServers,
         queryKey: ['servers'],
-        refetchInterval: 10 *1000 // Refetch every 10 seconds
+        refetchInterval: 10 * 1000 // Refetch every 10 seconds
     });
 
     function getServerList(){
