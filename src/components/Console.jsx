@@ -1,5 +1,7 @@
 import {useEffect, useRef, useState} from "react";
 import createSocket from "../utils/webSocket.js";
+import { Terminal, ChevronUp, ChevronDown, Trash2, Send } from "lucide-react";
+import Button from "./ui/Button.jsx";
 
 function Console({server}){
     const [socket, setSocket] = useState(null);
@@ -64,6 +66,10 @@ function Console({server}){
         }
     };
 
+    const clearConsole = () => {
+        setMessages([]);
+    };
+
     function getTypeBarAndDisplay(){
         if(!isConnected)
             return <div className="console-not-connected">Not connected</div>;
@@ -81,13 +87,30 @@ function Console({server}){
                         className={"terminalInput"}
                         type="text"
                         value={inputValue}
-                        placeholder="Type something..."
+                        placeholder="Type a command..."
                         onChange={(e) => setInputValue(e.target.value)}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
                                 sendCommand();
                             }
                         }}
+                    />
+                    
+                    {/* Using our custom Button component! */}
+                    <Button 
+                        variant="secondary" 
+                        size="sm" 
+                        onClick={clearConsole} 
+                        title="Clear Console"
+                        icon={Trash2}
+                    />
+
+                    <Button 
+                        variant="primary" 
+                        size="sm" 
+                        onClick={sendCommand} 
+                        disabled={!inputValue.trim()}
+                        icon={Send}
                     />
                 </div>
             </div>
@@ -98,11 +121,12 @@ function Console({server}){
         <div className={`console-container ${isExpanded ? 'expanded' : 'collapsed'}`}>
             <div className="console-header" onClick={() => setIsExpanded(!isExpanded)}>
                 <div className="console-title">
-                    <span className={`status-dot ${isConnected ? 'online' : 'offline'}`}></span>
+                    <div className={`status-dot ${isConnected ? 'online' : 'offline'}`} />
+                    <Terminal size={18} style={{ marginRight: '8px' }} />
                     Server Console
                 </div>
                 <button className="console-toggle-btn">
-                    {isExpanded ? '−' : '+'}
+                    {isExpanded ? <ChevronDown size={20} /> : <ChevronUp size={20} />}
                 </button>
             </div>
             {isExpanded && getTypeBarAndDisplay()}
