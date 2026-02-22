@@ -40,6 +40,14 @@ function Console({server, onStats}){
         const newSocket = createSocket(server.name)
         setSocket(newSocket);
 
+        newSocket.on('connect', () => {
+            setIsConnected(true);
+        });
+
+        newSocket.on('disconnect', () => {
+            setIsConnected(false);
+        });
+
         newSocket.on('message', (data) => {
             setMessages(prev => [...prev, {type:"", text: data.data }]);
         });
