@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import Console from "./Console.jsx";
 import QuickCommands from "./QuickCommands.jsx";
 import PlayerAvatar from "./PlayerAvatar.jsx";
+import ServerStats from "./ServerStats.jsx";
 
 /**
  * @typedef {import('../types/server.jsx').Server} Server
@@ -34,7 +35,13 @@ function ServerPage({loadedServer}) {
             ) : (
                 <>
                     <h1>{loadedServer.name}</h1>
-                    <PlayerAvatar isList serverData={data} />
+                    <div className="stats-row">
+                        <PlayerAvatar isList serverData={data} />
+                        <ServerStats
+                            cpuUsagePercent={data?.cpu_usage_percent}
+                            memoryUsageMb={data?.memory_usage_mb}
+                        />
+                    </div>
                     <Console server={loadedServer}/>
                     <QuickCommands server={loadedServer} />
                 </>
