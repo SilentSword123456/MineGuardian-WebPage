@@ -12,21 +12,7 @@ import ServerStats from "./ServerStats.jsx";
  * @param {Server} props.loadedServer
  */
 function ServerPage({loadedServer}) {
-    async function fetchServerInfo() {
-        var result = await fetch(`http://localhost:5000/servers/${loadedServer.name}`)
-            .then(res => res.json());
-
-        console.log("Fetched server info");
-
-        return result;
-    }
-
-    const {data} = useQuery({
-        queryFn: fetchServerInfo,
-        queryKey: ['serverStatus', loadedServer.name],
-        refetchInterval: 5 * 1000, // Refetch every 5 seconds
-        enabled: !!loadedServer.name
-    });
+    var data = null;
 
     return (
         <div className="server-page">
