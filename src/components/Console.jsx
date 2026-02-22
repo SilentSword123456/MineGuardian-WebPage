@@ -1,13 +1,9 @@
 import {useEffect, useRef, useState} from "react";
-import createSocket from "../utils/webSocket.js";
 import { Terminal, ChevronUp, ChevronDown, Trash2, Send } from "lucide-react";
 import Button from "./ui/Button.jsx";
 
-function Console({server, onStats}){
-    const [socket, setSocket] = useState(null);
-    const [messages, setMessages] = useState([]);
+function Console({server, socket, isConnected, messages, setMessages}){
     const [inputValue, setInputValue] = useState('');
-    const [isConnected, setIsConnected] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
     const [autoScroll, setAutoScroll] = useState(true);
     const textareaRef = useRef(null);
@@ -31,49 +27,9 @@ function Console({server, onStats}){
         setAutoScroll(atBottom);
     };
 
-    useEffect(() => {
-        if(!server || !server.name)
-            return;
-
-        console.log(`Creating socket for server: ${server.name}`);
-
-        const newSocket = createSocket(server.name)
-        setSocket(newSocket);
-
-        newSocket.on('connect', () => {
-            setIsConnected(true);
-        });
-
-        newSocket.on('disconnect', () => {
-            setIsConnected(false);
-        });
-
-        newSocket.on('message', (data) => {
-            setMessages(prev => [...prev, {type:"", text: data.data }]);
-        });
-
-        newSocket.on('console', (data) => {
-            setMessages(prev => [...prev, {type:"", text: data.data }]);
-        });
-
-        newSocket.on('stats', (data) => {
-            console.log('Received stats from console:', data);
-            onStats?.(data);
-        });
-
-        return () => {
-            newSocket.off('connect');
-            newSocket.off('disconnect');
-            newSocket.off('message');
-            newSocket.off('response');
-            newSocket.disconnect();
-            setMessages([]);
-        };
-    }, [server.name]);
-
     const sendCommand = () => {
-        if (inputValue.trim()) {
-            setMessages(prev => [...prev, {type:'SilentSword', text: inputValue }]); ///PLACEHOLDER, CHANGE TO USER
+        if (inputValue.trim() && socket) {
+            setMessages(prev => [...prev, {type:'SilentSword', text: inputValue }]); ///TODO: PLACEHOLDER, CHANGE TO USER
 
             socket.emit('console', { message: inputValue });
 
