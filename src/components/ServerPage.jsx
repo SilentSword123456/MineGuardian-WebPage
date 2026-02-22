@@ -40,7 +40,7 @@ function ServerPage({loadedServer}) {
             ) : (
                 <>
                     <h1>{loadedServer.name}</h1>
-                    <div>
+                    <div className={"player-avatar-row"}>
                         {getPlayersImageList(data?.online_players.players || [])}
                     </div>
                     <Console server={loadedServer}/>
