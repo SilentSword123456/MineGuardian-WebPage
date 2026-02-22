@@ -369,18 +369,63 @@ body {
 }
 
 
+.player-avatar-wrapper {
+    position: relative;
+    display: inline-block;
+    margin-right: 10px;
+}
+
 .player-avatar {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    margin-right: 10px;
     border: 2px solid #202225;
+    transition: all 0.2s ease;
+    display: block;
 }
 
 .player-avatar:hover {
     border-color: #7289da;
     width: 45px;
     height: 45px;
-    transition: all 0.2s ease;
-    //TODO add a blob name
+}
+
+.player-avatar-tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #18191c;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s ease, visibility 0.15s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.player-avatar-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #18191c;
+}
+
+.player-avatar-wrapper:hover .player-avatar-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+.player-avatar-row {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
 }
