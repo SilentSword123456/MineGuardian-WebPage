@@ -43,27 +43,7 @@ class Server {
         }
     }
 
-    getStatus() {
-        return this.isRunning ? 'Online' : 'Offline';
-    }
 
-    async getOnlinePlayers() {
-        try {
-            const response = await fetch(`${this.baseUrl}/servers/${this.name}`, {
-                method: 'GET'
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const result = await response.json();
-            return result["online_players"]["online"];
-        } catch (error) {
-            console.error(`Error stopping server ${this.name}:`, error);
-            throw error;
-        }
-    }
 
 }
 
