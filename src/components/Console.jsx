@@ -2,6 +2,7 @@ import {useEffect, useRef, useState} from "react";
 import createSocket from "../utils/webSocket.js";
 import { Terminal, ChevronUp, ChevronDown, Trash2, Send } from "lucide-react";
 import Button from "./ui/Button.jsx";
+import ServerPage from "./ServerPage.jsx";
 
 function Console({server}){
     const [socket, setSocket] = useState(null);
@@ -40,24 +41,17 @@ function Console({server}){
         const newSocket = createSocket(server.name)
         setSocket(newSocket);
 
-        newSocket.on('connect', () => {
-            console.log('Connected to server');
-            setIsConnected(true);
-        });
-
-        newSocket.on('disconnect', () => {
-            console.log('Disconnected from server');
-            setIsConnected(false);
-        });
-
         newSocket.on('message', (data) => {
-            console.log('Received message:', data);
             setMessages(prev => [...prev, {type:"", text: data.data }]);
         });
 
         newSocket.on('console', (data) => {
-            console.log('Received message from console:', data);
             setMessages(prev => [...prev, {type:"", text: data.data }]);
+        });
+
+        newSocket.on('stats', (data) => {
+            console.log('Received stats from console:', data);
+            ServerPage.data = data;
         });
 
         return () => {
