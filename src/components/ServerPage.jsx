@@ -28,6 +28,9 @@ function ServerPage({loadedServer}) {
     });
 
     function getPlayersImageList(playersNameList){
+        if (playersNameList.length === 0) {
+            return <span className="player-avatar-empty">No one's online, yet.</span>;
+        }
         return playersNameList.map(playerName => (
             <PlayerAvatar key={playerName} playerName={playerName} />
         ));
@@ -40,8 +43,11 @@ function ServerPage({loadedServer}) {
             ) : (
                 <>
                     <h1>{loadedServer.name}</h1>
-                    <div className={"player-avatar-row"}>
-                        {getPlayersImageList(data?.online_players.players || [])}
+                    <div className="player-avatar-section">
+                        <h3 className="player-avatar-section-title">Online Players</h3>
+                        <div className="player-avatar-row">
+                            {getPlayersImageList(data?.online_players.players || [])}
+                        </div>
                     </div>
                     <Console server={loadedServer}/>
                     <QuickCommands server={loadedServer} />
