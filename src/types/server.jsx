@@ -8,12 +8,8 @@ class Server {
 
     async start() {
         try {
-            const response = await fetch(`${this.baseUrl}/start_server`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ serverName: this.name })
+            const response = await fetch(`${this.baseUrl}/servers/${this.name}/start`, {
+                method: 'POST'
             });
 
             if (!response.ok) {
@@ -31,12 +27,8 @@ class Server {
 
     async stop() {
         try {
-            const response = await fetch(`${this.baseUrl}/stop_server`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ serverName: this.name })
+            const response = await fetch(`${this.baseUrl}/servers/${this.name}/stop`, {
+                method: 'POST'
             });
 
             if (!response.ok) {
