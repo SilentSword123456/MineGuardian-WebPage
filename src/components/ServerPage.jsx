@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 import Console from "./Console.jsx";
 import QuickCommands from "./QuickCommands.jsx";
 import PlayerAvatar from "./PlayerAvatar.jsx";
@@ -12,7 +12,11 @@ import ServerStats from "./ServerStats.jsx";
  * @param {Server} props.loadedServer
  */
 function ServerPage({loadedServer}) {
-    var data = null;
+    const [data, setData] = useState(null);
+
+    useEffect(() => {
+        setData(null);
+    }, [loadedServer.name]);
 
     return (
         <div className="server-page">
@@ -28,7 +32,7 @@ function ServerPage({loadedServer}) {
                             memoryUsageMb={data?.memory_usage_mb}
                         />
                     </div>
-                    <Console server={loadedServer}/>
+                    <Console server={loadedServer} onStats={setData} />
                     <QuickCommands server={loadedServer} />
                 </>
             )}
