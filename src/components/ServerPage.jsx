@@ -1,7 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
 import Console from "./Console.jsx";
 import QuickCommands from "./QuickCommands.jsx";
-import {useQuery} from "@tanstack/react-query";
-import {JSX} from "react";
 import PlayerAvatar from "./PlayerAvatar.jsx";
 
 /**
@@ -21,20 +20,12 @@ function ServerPage({loadedServer}) {
         return result;
     }
 
-    const {data, refetch} = useQuery({
+    const {data} = useQuery({
         queryFn: fetchServerInfo,
         queryKey: ['serverStatus', loadedServer.name],
-        refetchInterval: 5 * 1000 // Refetch every 10 seconds
+        refetchInterval: 5 * 1000, // Refetch every 5 seconds
+        enabled: !!loadedServer.name
     });
-
-    function getPlayersImageList(playersNameList){
-        if (playersNameList.length === 0) {
-            return <span className="player-avatar-empty">No one's online, yet.</span>;
-        }
-        return playersNameList.map(playerName => (
-            <PlayerAvatar key={playerName} playerName={playerName} />
-        ));
-    }
 
     return (
         <div className="server-page">
@@ -43,12 +34,7 @@ function ServerPage({loadedServer}) {
             ) : (
                 <>
                     <h1>{loadedServer.name}</h1>
-                    <div className="player-avatar-section">
-                        <h3 className="player-avatar-section-title">Online Players</h3>
-                        <div className="player-avatar-row">
-                            {getPlayersImageList(data?.online_players.players || [])}
-                        </div>
-                    </div>
+                    <PlayerAvatar isList serverData={data} />
                     <Console server={loadedServer}/>
                     <QuickCommands server={loadedServer} />
                 </>
