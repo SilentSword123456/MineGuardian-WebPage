@@ -2,16 +2,18 @@
 
 function PlayerAvatar({playerName}) {
     return (
-        <img
-            className={"player-avatar"}
-            key={playerName}
-            src={`https://minotar.net/avatar/${playerName}/64`}
-            alt={playerName}
-            style={{
-                borderRadius: 6,
-                imageRendering: "pixelated",
-            }}
-        />
+        <div className="player-avatar-wrapper">
+            <img
+                className={"player-avatar"}
+                src={`https://minotar.net/avatar/${playerName}/64`}
+                alt={playerName}
+                style={{
+                    borderRadius: 6,
+                    imageRendering: "pixelated",
+                }}
+            />
+            <span className="player-avatar-tooltip">{playerName}</span>
+        </div>
     )
 }
 
