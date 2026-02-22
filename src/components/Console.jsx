@@ -2,9 +2,8 @@ import {useEffect, useRef, useState} from "react";
 import createSocket from "../utils/webSocket.js";
 import { Terminal, ChevronUp, ChevronDown, Trash2, Send } from "lucide-react";
 import Button from "./ui/Button.jsx";
-import ServerPage from "./ServerPage.jsx";
 
-function Console({server}){
+function Console({server, onStats}){
     const [socket, setSocket] = useState(null);
     const [messages, setMessages] = useState([]);
     const [inputValue, setInputValue] = useState('');
@@ -51,7 +50,7 @@ function Console({server}){
 
         newSocket.on('stats', (data) => {
             console.log('Received stats from console:', data);
-            ServerPage.data = data;
+            onStats?.(data);
         });
 
         return () => {
