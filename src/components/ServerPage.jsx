@@ -1,6 +1,8 @@
 import Console from "./Console.jsx";
 import QuickCommands from "./QuickCommands.jsx";
 import {useQuery} from "@tanstack/react-query";
+import {JSX} from "react";
+import PlayerAvatar from "./PlayerAvatar.jsx";
 
 /**
  * @typedef {import('../types/server.jsx').Server} Server
@@ -10,21 +12,26 @@ import {useQuery} from "@tanstack/react-query";
  * @param {Server} props.loadedServer
  */
 function ServerPage({loadedServer}) {
-    async function fetchOnlinePlayers() {
+    async function fetchServerInfo() {
         var result = await fetch(`http://localhost:5000/servers/${loadedServer.name}`)
             .then(res => res.json());
 
-        result = result["online_players"]["online"];
-        console.log("Fetched online players:", result);
+        console.log("Fetched server info");
 
         return result;
     }
 
     const {data, refetch} = useQuery({
-        queryFn: fetchOnlinePlayers,
+        queryFn: fetchServerInfo,
         queryKey: ['serverStatus', loadedServer.name],
         refetchInterval: 5 * 1000 // Refetch every 10 seconds
     });
+
+    function getPlayersImageList(playersNameList){
+        return playersNameList.map(playerName => (
+            <PlayerAvatar key={playerName} playerName={playerName} />
+        ));
+    }
 
     return (
         <div className="server-page">
@@ -34,7 +41,7 @@ function ServerPage({loadedServer}) {
                 <>
                     <h1>{loadedServer.name}</h1>
                     <div>
-                        {data !== undefined ? 'Online Players: ' + data : "Loading..."}
+                        {getPlayersImageList(data?.online_players.players || [])}
                     </div>
                     <Console server={loadedServer}/>
                     <QuickCommands server={loadedServer} />
