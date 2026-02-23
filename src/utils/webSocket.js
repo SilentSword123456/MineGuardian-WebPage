@@ -2,7 +2,8 @@ import { io } from 'socket.io-client';
 
 const createSocket = (serverName) => {
     const socket = io('http://localhost:5000', {
-        query: { serverName: serverName }
+        query: { serverName: serverName },
+        transports: ['websocket']
     });
 
     socket.on('connect', () => {
