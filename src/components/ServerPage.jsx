@@ -4,6 +4,7 @@ import QuickCommands from "./QuickCommands.jsx";
 import PlayerAvatar from "./PlayerAvatar.jsx";
 import ServerStats from "./ServerStats.jsx";
 import createSocket from "../utils/webSocket.js";
+import {useQuery} from "@tanstack/react-query";
 
 /**
  * @typedef {import('../types/server.jsx').Server} Server
@@ -17,6 +18,7 @@ function ServerPage({loadedServer}) {
     const [socket, setSocket] = useState(null);
     const [isConnected, setIsConnected] = useState(false);
     const [messages, setMessages] = useState([]);
+    const [isRunning, setIsRunning] = useState(loadedServer.isRunning);
 
     useEffect(() => {
         setData(null);
@@ -46,9 +48,13 @@ function ServerPage({loadedServer}) {
             setMessages(prev => [...prev, {type:"", text: data.data }]);
         });
 
-        newSocket.on('stats', (data) => {
-            console.log('Received stats from socket:', data);
+        newSocket.on('resources', (data) => {
             setData(data);
+        });
+
+        newSocket.on('status', (data) => {
+            loadedServer.isConnected = data.running;
+            setIsRunning(data.running);
         });
 
         return () => {
@@ -56,7 +62,8 @@ function ServerPage({loadedServer}) {
             newSocket.off('disconnect');
             newSocket.off('message');
             newSocket.off('console');
-            newSocket.off('stats');
+            newSocket.off('resources');
+            newSocket.off('status');
             newSocket.disconnect();
             setSocket(null);
             setIsConnected(false);
@@ -84,7 +91,11 @@ function ServerPage({loadedServer}) {
                         messages={messages}
                         setMessages={setMessages}
                     />
-                    <QuickCommands server={loadedServer} />
+                    <QuickCommands
+                        server={loadedServer}
+                        isRunning={isRunning}
+                        isConnected={isConnected}
+                    />
                 </>
             )}
         </div>
