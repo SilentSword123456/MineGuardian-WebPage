@@ -5,8 +5,10 @@ import {Play, Square} from "lucide-react";
 /**
  * @param {Object} props
  * @param {Server} props.server - The server instance
+ * @param {boolean} props.isRunning
+ * @param {boolean} props.isConnected
  */
-function QuickCommands({server}) {
+function QuickCommands({server, isRunning, isConnected}) {
 
     return (
         <div className="quick-commands">
@@ -14,7 +16,7 @@ function QuickCommands({server}) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <Button
                     onClick={() => server.start()}
-                    disabled={server.isRunning}
+                    disabled={isRunning || !isConnected}
                     icon={Play}
                     variant="primary"
                 >
@@ -22,7 +24,7 @@ function QuickCommands({server}) {
                 </Button>
                 <Button
                     onClick={() => server.stop()}
-                    disabled={!server.isRunning}
+                    disabled={!isRunning || !isConnected}
                     icon={Square}
                     variant="danger"
                 >
