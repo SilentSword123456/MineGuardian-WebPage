@@ -17,7 +17,7 @@ function App() {
         <QueryClientProvider client={queryClient}>
           <div className="app-container">
             <ServersBar loadServer={setLoadedServer}/>
-            <ServerPage loadedServer={loadedServer}/>
+            <ServerPage key={loadedServer.id} loadedServer={loadedServer}/>
           </div>
       </QueryClientProvider>
 
