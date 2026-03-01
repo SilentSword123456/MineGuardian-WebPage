@@ -1,7 +1,7 @@
 import {useQuery} from "@tanstack/react-query";
 import Server from "../types/server.jsx";
 import { RefreshCcw, Server as ServerIcon, LayoutGrid } from "lucide-react";
-import Button from "./ui/Button.jsx";
+import CustomButton from "./ui/CustomButton.jsx";
 import InstallServerDialog from "../utils/installServerDialog.jsx";
 /**
  * @typedef {import('../types/server.jsx').Server} Server
@@ -50,7 +50,7 @@ function ServersBar({loadServer}) {
                     <LayoutGrid size={20} />
                     Servers
                 </h3>
-                <Button
+                <CustomButton
                     className={"refreshButton"}
                     onClick={() => refetch()}
                     //style={{ marginBottom: '15px' }}
@@ -58,7 +58,7 @@ function ServersBar({loadServer}) {
                     loading={isLoading}
                     circle={true}
                     size={'sm'}
-                ></Button>
+                ></CustomButton>
             </header>
             {getServerList()}
             <InstallServerDialog />
