@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     Dialog,
     DialogTrigger,
@@ -17,35 +17,18 @@ import { Input } from '@/components/ui/input';
 import { CloudDownload, MessageCircleWarning } from "lucide-react";
 import manager from "@/utils/manager.js";
 
-const MC_VERSIONS = [
-    "latest",
-    "1.21.4", "1.21.3", "1.21.2", "1.21.1", "1.21",
-    "1.20.6", "1.20.5", "1.20.4", "1.20.3", "1.20.2", "1.20.1", "1.20",
-    "1.19.4", "1.19.3", "1.19.2", "1.19.1", "1.19",
-    "1.18.2", "1.18.1", "1.18",
-    "1.17.1", "1.17",
-    "1.16.5", "1.16.4", "1.16.3", "1.16.2", "1.16.1", "1.16",
-    "1.15.2", "1.15.1", "1.15",
-    "1.14.4", "1.14.3", "1.14.2", "1.14.1", "1.14",
-    "1.13.2", "1.13.1", "1.13",
-    "1.12.2", "1.12.1", "1.12",
-    "1.11.2", "1.11.1", "1.11",
-    "1.10.2", "1.10.1", "1.10",
-    "1.9.4", "1.9.3", "1.9.2", "1.9.1", "1.9",
-    "1.8.9", "1.8.8", "1.8.7", "1.8.6", "1.8.5", "1.8.4", "1.8.3", "1.8.2", "1.8.1", "1.8",
-    "1.7.10", "1.7.9", "1.7.8", "1.7.7", "1.7.6", "1.7.5", "1.7.4", "1.7.2",
-];
-
-const MC_SOFTWARE = ["Vanilla", "Paper"];
+const MC_SOFTWARE = ["Vanilla", "Spigot"];
 
 function AutocompleteInput({ id, name, value, onChange, options, placeholder }) {
     const [open, setOpen] = useState(false);
 
-    const filtered = value.trim() === ""
-        ? options
-        : options.filter(o => o.toLowerCase().includes(value.trim().toLowerCase()));
+    const safeOptions = Array.isArray(options) ? options : [];
 
-    const isValid = options.includes(value);
+    const filtered = value.trim() === ""
+        ? safeOptions
+        : safeOptions.filter(o => o.toLowerCase().includes(value.trim().toLowerCase()));
+
+    const isValid = safeOptions.includes(value);
 
     return (
         <div style={{ position: "relative" }}>
@@ -104,10 +87,24 @@ function AutocompleteInput({ id, name, value, onChange, options, placeholder }) 
 export default function InstallServerDialog({ from, showCloseButton }) {
     const [name, setName] = useState("My Server");
     const [software, setSoftware] = useState("Vanilla");
-    const [version, setVersion] = useState("1.21.4");
+    const [version, setVersion] = useState("");
     const [eulaAccepted, setEulaAccepted] = useState(false);
+    const [availableVersions, setAvailableVersions] = useState([]);
+    const [loadingVersions, setLoadingVersions] = useState(false);
 
-    function handleInstall() {
+    // Re-fetch versions whenever software changes
+    useEffect(() => {
+        setVersion("");
+        setAvailableVersions([]);
+        setLoadingVersions(true);
+        manager.getAvailableVersions(software)
+            .then(versions => setAvailableVersions(versions.versions))
+            .catch(() => setAvailableVersions([]))
+            .finally(() => setLoadingVersions(false));
+    }, [software]);
+
+    function handleInstall(e) {
+        e.preventDefault();
         if (!eulaAccepted) {
             alert("You must accept the EULA to install a server.");
             return;
@@ -127,7 +124,7 @@ export default function InstallServerDialog({ from, showCloseButton }) {
                 showCloseButton={showCloseButton}
                 className="install-dialog-content sm:max-w-[425px]"
             >
-                <form onSubmit={e => { e.preventDefault(); handleInstall(); }}>
+                <form onSubmit={handleInstall}>
                     <DialogHeader>
                         <DialogTitle className="install-dialog-title">Install Server</DialogTitle>
                         <DialogDescription className="install-dialog-description">
@@ -157,14 +154,16 @@ export default function InstallServerDialog({ from, showCloseButton }) {
                             />
                         </div>
                         <div className="grid gap-3">
-                            <Label htmlFor="server-version" className="install-dialog-label">Version</Label>
+                            <Label htmlFor="server-version" className="install-dialog-label">
+                                Version {loadingVersions && <span style={{ color: "#b9bbbe", fontSize: 12 }}>(loading...)</span>}
+                            </Label>
                             <AutocompleteInput
                                 id="server-version"
                                 name="version"
                                 value={version}
                                 onChange={setVersion}
-                                options={MC_VERSIONS}
-                                placeholder="e.g. 1.21.4"
+                                options={availableVersions}
+                                placeholder={loadingVersions ? "Loading versions..." : "e.g. 1.21.4"}
                             />
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
