@@ -92,7 +92,6 @@ export default function InstallServerDialog({ from, showCloseButton }) {
     const [availableVersions, setAvailableVersions] = useState([]);
     const [loadingVersions, setLoadingVersions] = useState(false);
 
-    // Re-fetch versions whenever software changes
     useEffect(() => {
         setVersion("");
         setAvailableVersions([]);
