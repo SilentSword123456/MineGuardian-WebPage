@@ -192,8 +192,8 @@ body {
 }
 
 .server-item:hover {
-    background-color: #2c2f33;
     transform: translateX(5px);
+    outline: 2px solid #9da7b5;
 }
 
 .server-item:active {
