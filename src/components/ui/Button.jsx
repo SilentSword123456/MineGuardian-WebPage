@@ -21,8 +21,8 @@ const Button = ({
     loading = false,     
     icon: Icon,          
     rounded = false,     
-    circle = false,      
-    ...props 
+    circle = false,
+    ...props
 }) => {
     const baseStyle = {
         display: 'inline-flex',
