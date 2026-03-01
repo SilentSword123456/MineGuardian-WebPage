@@ -86,7 +86,7 @@ function AutocompleteInput({ id, name, value, onChange, options, placeholder }) 
 
 export default function InstallServerDialog({ from, showCloseButton }) {
     const [name, setName] = useState("My Server");
-    const [software, setSoftware] = useState("Vanilla");
+    const [software, setSoftware] = useState("");
     const [version, setVersion] = useState("");
     const [eulaAccepted, setEulaAccepted] = useState(false);
     const [availableVersions, setAvailableVersions] = useState([]);
@@ -94,7 +94,7 @@ export default function InstallServerDialog({ from, showCloseButton }) {
 
     function resetForm() {
         setName("My Server");
-        setSoftware("Vanilla");
+        setSoftware("");
         setVersion("");
         setEulaAccepted(false);
         setAvailableVersions([]);
@@ -116,7 +116,7 @@ export default function InstallServerDialog({ from, showCloseButton }) {
             alert("You must accept the EULA to install a server.");
             return;
         }
-        manager.installServer(name, software, version, eulaAccepted);
+        const response = manager.installServer(name, software, version, eulaAccepted);
     }
 
     return (
