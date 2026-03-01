@@ -6,7 +6,7 @@ import ServerStats from "./ServerStats.jsx";
 import createSocket from "../utils/webSocket.js";
 import {Trash} from "lucide-react";
 import Button from "./ui/Button.jsx";
-import { confirmPopup, ConfirmPopup } from 'primereact/confirmpopup';
+import DeleteConfirmation from "@/utils/deleteConfirmation.jsx";
 
 /**
  * @typedef {import('../types/server.jsx').Server} Server
@@ -72,19 +72,8 @@ function ServerPage({loadedServer}) {
         };
     }, [loadedServer.name]);
 
-    const confirm = (event) => {
-        confirmPopup({
-            target: event.currentTarget,
-            message: 'Are you sure you want to proceed?',
-            icon: 'pi pi-exclamation-triangle',
-            accept: () => loadedServer.uninstall(),
-            reject: () => {}
-        });
-    }
-
     return (
         <div className="server-page">
-            <ConfirmPopup />
             {loadedServer.id === null ? (
                 <h1>Please load a server</h1>
             ) : (
@@ -109,13 +98,7 @@ function ServerPage({loadedServer}) {
                         isRunning={isRunning}
                         isConnected={isConnected}
                     />
-                    <Button
-                        onClick={confirm}
-                        disabled={isRunning || !isConnected}
-                        className="uninstall-button"
-                        icon={Trash}
-                        variant="danger"
-                    >Uninstall Server</Button>
+                    <DeleteConfirmation onConfirm={() => loadedServer.uninstall()} />
 
                 </>
             )}
