@@ -21,7 +21,7 @@ export default function DeleteConfirmation({ onConfirm }) {
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel className="delete-confirmation-cancel">Cancel</AlertDialogCancel>
-                    <AlertDialogAction className="delete-confirmation-action" onClick={onConfirm}>Delete</AlertDialogAction>
+                    <AlertDialogAction className="delete-confirmation-action" onClick={onConfirm}>Uninstall</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
