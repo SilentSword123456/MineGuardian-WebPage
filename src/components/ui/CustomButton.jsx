@@ -1,7 +1,7 @@
 import React from 'react';
 
 /**
- * A reusable Button component - This is the core idea of a component library!
+ * A reusable CustomButton component - This is the core idea of a component library!
  * @param {string} [props.variant='primary'] - primary, secondary, danger, ghost
  * @param {string} [props.size='md'] - sm, md, lg
  * @param {boolean} [props.rounded=false] - If true, the button will be pill-shaped
@@ -11,7 +11,7 @@ import React from 'react';
  * @param {boolean} [props.loading=false] - If true, the button will show a loading spinner
  * @param {React.ElementType} [props.icon] - Optional Lucide icon to display
  */
-const Button = ({ 
+const CustomButton = ({
     children, 
     onClick, 
     variant = 'primary', 
@@ -94,4 +94,4 @@ const Button = ({
     );
 };
 
-export default Button;
+export default CustomButton;
