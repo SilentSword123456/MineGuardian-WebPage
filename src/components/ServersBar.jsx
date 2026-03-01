@@ -1,8 +1,10 @@
 import {useQuery} from "@tanstack/react-query";
 import Server from "../types/server.jsx";
-import { RefreshCcw, Server as ServerIcon, LayoutGrid } from "lucide-react";
+import { RefreshCcw, LayoutGrid } from "lucide-react";
 import CustomButton from "./ui/CustomButton.jsx";
 import InstallServerDialog from "../utils/installServerDialog.jsx";
+import { Router } from '@/components/animate-ui/icons/router';
+import { AnimateIcon } from '@/components/animate-ui/icons/icon';
 /**
  * @typedef {import('../types/server.jsx').Server} Server
  */
@@ -31,15 +33,16 @@ function ServersBar({loadServer}) {
             return <div className="loading-state">Loading...</div>;
 
         return servers?.map((server) => (
-            <button
-                className="server-item"
-                key={server.id}
-                onClick={() => loadServer(new Server(server.id, server.name, server.isRunning))}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <ServerIcon size={18} color={server.isRunning ? '#22c55e' : '#ef4444'} />
-                    {server.name}
-                </div>
-            </button>
+            <AnimateIcon key={server.id} animateOnHover asChild>
+                <button
+                    className="server-item"
+                    onClick={() => loadServer(new Server(server.id, server.name, server.isRunning))}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <Router color={server.isRunning ? 'green' : 'red'}/>
+                        {server.name}
+                    </div>
+                </button>
+            </AnimateIcon>
         ));
     }
 
@@ -53,7 +56,6 @@ function ServersBar({loadServer}) {
                 <CustomButton
                     className={"refreshButton"}
                     onClick={() => refetch()}
-                    //style={{ marginBottom: '15px' }}
                     icon={RefreshCcw}
                     loading={isLoading}
                     circle={true}
