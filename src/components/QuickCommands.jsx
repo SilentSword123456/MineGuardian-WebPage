@@ -1,5 +1,5 @@
 import Server from "../types/server.jsx";
-import Button from "./ui/Button.jsx";
+import CustomButton from "./ui/CustomButton.jsx";
 import {Play, Square} from "lucide-react";
 
 /**
@@ -14,22 +14,22 @@ function QuickCommands({server, isRunning, isConnected}) {
         <div className="quick-commands">
             <h3>Quick Commands</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <Button
+                <CustomButton
                     onClick={() => server.start()}
                     disabled={isRunning || !isConnected}
                     icon={Play}
                     variant="primary"
                 >
                     Start Server
-                </Button>
-                <Button
+                </CustomButton>
+                <CustomButton
                     onClick={() => server.stop()}
                     disabled={!isRunning || !isConnected}
                     icon={Square}
                     variant="danger"
                 >
                     Stop Server
-                </Button>
+                </CustomButton>
             </div>
         </div>
     )
