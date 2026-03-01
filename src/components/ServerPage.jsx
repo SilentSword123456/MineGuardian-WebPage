@@ -5,7 +5,7 @@ import PlayerAvatar from "./PlayerAvatar.jsx";
 import ServerStats from "./ServerStats.jsx";
 import createSocket from "../utils/webSocket.js";
 import {Trash} from "lucide-react";
-import Button from "./ui/Button.jsx";
+import CustomButton from "./ui/CustomButton.jsx";
 import DeleteConfirmation from "@/utils/deleteConfirmation.jsx";
 
 /**
