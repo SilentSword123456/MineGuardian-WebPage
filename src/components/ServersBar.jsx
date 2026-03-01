@@ -1,8 +1,8 @@
 import {useQuery} from "@tanstack/react-query";
 import Server from "../types/server.jsx";
-import { Plus, RefreshCcw, Server as ServerIcon, LayoutGrid } from "lucide-react";
+import { RefreshCcw, Server as ServerIcon, LayoutGrid } from "lucide-react";
 import Button from "./ui/Button.jsx";
-import manager from "../utils/manager.js";
+import InstallServerDialog from "../utils/installServerDialog.jsx";
 /**
  * @typedef {import('../types/server.jsx').Server} Server
  */
@@ -61,13 +61,7 @@ function ServersBar({loadServer}) {
                 ></Button>
             </header>
             {getServerList()}
-            <Button
-                className={"install-server-button"}
-                onClick={() => manager.installServer("Test","Vanilla", "latest", true)}
-                icon={Plus}
-                circle={true}
-                size={'md'}
-            ></Button>
+            <InstallServerDialog />
         </div>
     );
 }
