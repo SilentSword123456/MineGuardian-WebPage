@@ -1,6 +1,6 @@
 import {useEffect, useRef, useState} from "react";
 import { Terminal, ChevronUp, ChevronDown, Trash2, Send } from "lucide-react";
-import Button from "./ui/Button.jsx";
+import CustomButton from "./ui/CustomButton.jsx";
 
 function Console({server, socket, isConnected, messages, setMessages}){
     const [inputValue, setInputValue] = useState('');
@@ -69,7 +69,7 @@ function Console({server, socket, isConnected, messages, setMessages}){
                         }}
                     />
 
-                    <Button 
+                    <CustomButton
                         variant="secondary" 
                         size="sm" 
                         onClick={clearConsole} 
@@ -77,7 +77,7 @@ function Console({server, socket, isConnected, messages, setMessages}){
                         icon={Trash2}
                     />
 
-                    <Button 
+                    <CustomButton
                         variant="primary" 
                         size="sm" 
                         onClick={sendCommand} 
