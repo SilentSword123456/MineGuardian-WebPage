@@ -43,7 +43,23 @@ class Server {
         }
     }
 
+    async uninstall() {
+        try {
+            const response = await fetch(`${this.baseUrl}/servers/${this.name}/uninstall`, {
+                method: 'DELETE'
+            });
 
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            return result;
+        } catch (error) {
+            console.error(`Error deleting server ${this.name}:`, error);
+            throw error;
+        }
+    }
 
 }
 
