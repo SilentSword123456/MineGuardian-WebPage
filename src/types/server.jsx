@@ -56,7 +56,7 @@ class Server {
             const result = await response.json();
             return result;
         } catch (error) {
-            console.error(`Error deleting server ${this.name}:`, error);
+            console.error(`Error uninstalling server ${this.name}:`, error);
             throw error;
         }
     }
