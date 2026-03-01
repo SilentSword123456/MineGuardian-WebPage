@@ -92,6 +92,14 @@ export default function InstallServerDialog({ from, showCloseButton }) {
     const [availableVersions, setAvailableVersions] = useState([]);
     const [loadingVersions, setLoadingVersions] = useState(false);
 
+    function resetForm() {
+        setName("My Server");
+        setSoftware("Vanilla");
+        setVersion("");
+        setEulaAccepted(false);
+        setAvailableVersions([]);
+    }
+
     useEffect(() => {
         setVersion("");
         setAvailableVersions([]);
@@ -112,7 +120,7 @@ export default function InstallServerDialog({ from, showCloseButton }) {
     }
 
     return (
-        <Dialog>
+        <Dialog onOpenChange={open => { if (!open) resetForm(); }}>
             <DialogTrigger asChild>
                 <button className="install-server-button">
                     <CloudDownload size={22} />
