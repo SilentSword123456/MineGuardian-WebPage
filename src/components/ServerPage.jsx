@@ -4,8 +4,7 @@ import QuickCommands from "./QuickCommands.jsx";
 import PlayerAvatar from "./PlayerAvatar.jsx";
 import ServerStats from "./ServerStats.jsx";
 import createSocket from "../utils/webSocket.js";
-import {Trash} from "lucide-react";
-import CustomButton from "./ui/CustomButton.jsx";
+
 import DeleteConfirmation from "@/utils/deleteConfirmation.jsx";
 
 /**
@@ -21,10 +20,12 @@ function ServerPage({loadedServer}) {
     const [isConnected, setIsConnected] = useState(false);
     const [messages, setMessages] = useState([]);
     const [isRunning, setIsRunning] = useState(loadedServer.isRunning);
+    const [isInstalled, setIsInstalled] = useState(loadedServer.isInstalled);
 
     useEffect(() => {
         setData(null);
         setMessages([]);
+        setIsInstalled(loadedServer.isInstalled);
 
         if(!loadedServer || !loadedServer.name)
             return;
@@ -74,32 +75,45 @@ function ServerPage({loadedServer}) {
 
     return (
         <div className="server-page">
+
             {loadedServer.id === null ? (
                 <h1>Please load a server</h1>
             ) : (
-                <>
-                    <h1>{loadedServer.name}</h1>
-                    <div className="stats-row">
-                        <PlayerAvatar isList serverData={data} />
-                        <ServerStats
-                            cpuUsagePercent={data?.cpu_usage_percent}
-                            memoryUsageMb={data?.memory_usage_mb}
-                        />
-                    </div>
-                    <Console
-                        server={loadedServer}
-                        socket={socket}
-                        isConnected={isConnected}
-                        messages={messages}
-                        setMessages={setMessages}
-                    />
-                    <QuickCommands
-                        server={loadedServer}
-                        isRunning={isRunning}
-                        isConnected={isConnected}
-                    />
-                    <DeleteConfirmation onConfirm={() => loadedServer.uninstall()} />
+                <>{isInstalled===false ? (
+                        <div className="not-installed">
+                            <h1>{loadedServer.name} is not installed</h1>
+                        </div>
 
+                         ) : (
+
+                        <>
+                            <h1>{loadedServer.name}</h1>
+                            <div className="stats-row">
+                                <PlayerAvatar isList serverData={data} />
+                                <ServerStats
+                                    cpuUsagePercent={data?.cpu_usage_percent}
+                                    memoryUsageMb={data?.memory_usage_mb}
+                                />
+                            </div>
+                            <Console
+                                server={loadedServer}
+                                socket={socket}
+                                isConnected={isConnected}
+                                messages={messages}
+                                setMessages={setMessages}
+                            />
+                            <QuickCommands
+                                server={loadedServer}
+                                isRunning={isRunning}
+                                isConnected={isConnected}
+                            />
+                            <DeleteConfirmation onConfirm={async () => {
+                                const result = await loadedServer.uninstall();
+                                if (result === true) setIsInstalled(false);
+                            }} />
+
+                        </>
+                    )}
                 </>
             )}
         </div>
