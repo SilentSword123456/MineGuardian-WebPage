@@ -70,7 +70,7 @@ function ServerPage({loadedServer}) {
             setSocket(null);
             setIsConnected(false);
         };
-    }, [loadedServer.name]);
+    }, [loadedServer.name, loadedServer.isInstalled]);
 
     return (
         <div className="server-page">
