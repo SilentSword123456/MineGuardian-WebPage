@@ -14,21 +14,25 @@ import DeleteConfirmation from "@/utils/deleteConfirmation.jsx";
  * @param {Object} props
  * @param {Server} props.loadedServer
  */
-function ServerPage({loadedServer}) {
+function ServerPage({loadedServer, onUninstall}) {
     const [data, setData] = useState(null);
     const [socket, setSocket] = useState(null);
     const [isConnected, setIsConnected] = useState(false);
     const [messages, setMessages] = useState([]);
     const [isRunning, setIsRunning] = useState(loadedServer.isRunning);
     const [isInstalled, setIsInstalled] = useState(loadedServer.isInstalled);
+    const [generalInfo, setGeneralInfo] = useState(null);
 
     useEffect(() => {
         setData(null);
         setMessages([]);
+        setGeneralInfo(null);
         setIsInstalled(loadedServer.isInstalled);
 
         if(!loadedServer || !loadedServer.name)
             return;
+
+        loadedServer.getGeneralInfo().then(setGeneralInfo).catch(console.error);
 
         console.log(`Creating socket for server: ${loadedServer.name}`);
 
@@ -93,6 +97,7 @@ function ServerPage({loadedServer}) {
                                 <ServerStats
                                     cpuUsagePercent={data?.cpu_usage_percent}
                                     memoryUsageMb={data?.memory_usage_mb}
+                                    MAX_MEMORY_MB={generalInfo?.max_memory_mb}
                                 />
                             </div>
                             <Console
@@ -109,7 +114,10 @@ function ServerPage({loadedServer}) {
                             />
                             <DeleteConfirmation onConfirm={async () => {
                                 const result = await loadedServer.uninstall();
-                                if (result === true) setIsInstalled(false);
+                                if (result === true) {
+                                    setIsInstalled(false);
+                                    onUninstall?.();
+                                }
                             }} />
 
                         </>
