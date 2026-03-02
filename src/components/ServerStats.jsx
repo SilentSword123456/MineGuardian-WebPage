@@ -1,7 +1,6 @@
-const MAX_MEMORY_MB = 2048;
 const blocks = 10;
 
-function ServerStats({ cpuUsagePercent, memoryUsageMb }) {
+function ServerStats({ cpuUsagePercent, memoryUsageMb, MAX_MEMORY_MB }) {
     const cpu = cpuUsagePercent ?? 0;
     const mem = memoryUsageMb ?? 0;
     const memPct = Math.min((mem / MAX_MEMORY_MB) * 100, 100);
