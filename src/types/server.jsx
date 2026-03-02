@@ -4,6 +4,7 @@ class Server {
         this.id = id;
         this.name = name;
         this.isRunning = isRunning;
+        this.isInstalled = true;
     }
 
     async start() {
@@ -54,6 +55,8 @@ class Server {
             }
 
             const result = await response.json();
+            if(result===true)
+                this.isInstalled = false;
             return result;
         } catch (error) {
             console.error(`Error uninstalling server ${this.name}:`, error);
