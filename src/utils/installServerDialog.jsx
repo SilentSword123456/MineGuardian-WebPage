@@ -85,12 +85,15 @@ function AutocompleteInput({ id, name, value, onChange, options, placeholder }) 
 }
 
 export default function InstallServerDialog({ from, showCloseButton }) {
+    const [open, setOpen] = useState(false);
     const [name, setName] = useState("My Server");
     const [software, setSoftware] = useState("");
     const [version, setVersion] = useState("");
     const [eulaAccepted, setEulaAccepted] = useState(false);
     const [availableVersions, setAvailableVersions] = useState([]);
     const [loadingVersions, setLoadingVersions] = useState(false);
+    const [error, setError] = useState(null);
+    const [installing, setInstalling] = useState(false);
 
     function resetForm() {
         setName("My Server");
@@ -98,6 +101,7 @@ export default function InstallServerDialog({ from, showCloseButton }) {
         setVersion("");
         setEulaAccepted(false);
         setAvailableVersions([]);
+        setError(null);
     }
 
     useEffect(() => {
@@ -110,17 +114,31 @@ export default function InstallServerDialog({ from, showCloseButton }) {
             .finally(() => setLoadingVersions(false));
     }, [software]);
 
-    function handleInstall(e) {
+    async function handleInstall(e) {
         e.preventDefault();
         if (!eulaAccepted) {
             alert("You must accept the EULA to install a server.");
             return;
         }
-        const response = manager.installServer(name, software, version, eulaAccepted);
+        setError(null);
+        setInstalling(true);
+        try {
+            const result = await manager.installServer(name, software, version, eulaAccepted);
+            if (result === true) {
+                setOpen(false);
+                resetForm();
+            } else {
+                setError(result?.error ?? "An unknown error occurred.");
+            }
+        } catch {
+            setError("Failed to connect to the server.");
+        } finally {
+            setInstalling(false);
+        }
     }
 
     return (
-        <Dialog onOpenChange={open => { if (!open) resetForm(); }}>
+        <Dialog open={open} onOpenChange={o => { setOpen(o); if (!o) resetForm(); }}>
             <DialogTrigger asChild>
                 <button className="install-server-button">
                     <CloudDownload size={22} />
@@ -184,11 +202,19 @@ export default function InstallServerDialog({ from, showCloseButton }) {
                             </Label>
                         </div>
                     </div>
+                    {error && (
+                        <div style={{ display: "flex", alignItems: "center", gap: 6, color: "#ef4444", fontSize: 13, marginTop: 12 }}>
+                            <MessageCircleWarning size={15} />
+                            <span>{error}</span>
+                        </div>
+                    )}
                     <DialogFooter style={{ marginTop: 16 }}>
                         <DialogClose asChild>
                             <Button variant="outline" className="install-dialog-cancel">Cancel</Button>
                         </DialogClose>
-                        <Button type="submit" className="install-dialog-submit">Install</Button>
+                        <Button type="submit" className="install-dialog-submit" disabled={installing}>
+                            {installing ? "Installing..." : "Install"}
+                        </Button>
                     </DialogFooter>
                 </form>
             </DialogContent>
