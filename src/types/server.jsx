@@ -64,6 +64,24 @@ class Server {
         }
     }
 
+    async getGeneralInfo() {
+        try {
+            const response = await fetch(`${this.baseUrl}/servers/${this.name}`, {
+                method: 'GET'
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            return result;
+        } catch (error) {
+            console.error(`Error uninstalling server ${this.name}:`, error);
+            throw error;
+        }
+    }
+
 }
 
 export default Server;
