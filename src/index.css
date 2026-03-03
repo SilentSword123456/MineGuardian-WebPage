@@ -1042,4 +1042,50 @@ body {
     gap: 10px;
 }
 
+.home-backend-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    border: 1px solid transparent;
+}
+
+.home-backend-status.online {
+    background-color: rgba(34, 197, 94, 0.12);
+    border-color: rgba(34, 197, 94, 0.3);
+    color: #22c55e;
+}
+
+.home-backend-status.offline {
+    background-color: rgba(239, 68, 68, 0.12);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+}
+
+.home-backend-status.checking {
+    background-color: rgba(185, 187, 190, 0.1);
+    border-color: rgba(185, 187, 190, 0.2);
+    color: #b9bbbe;
+}
+
+.home-backend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background-color: currentColor;
+}
+
+.home-backend-status.checking .home-backend-dot {
+    animation: pulse-dot 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
+}
+
 
