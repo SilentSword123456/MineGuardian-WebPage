@@ -1,5 +1,7 @@
+import { BASE_URL } from "@/lib/config.js";
+
 class Server {
-    constructor(id, name, isRunning, baseUrl="http://localhost:5000") {
+    constructor(id, name, isRunning, baseUrl = BASE_URL) {
         this.baseUrl = baseUrl;
         this.id = id;
         this.name = name;
