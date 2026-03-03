@@ -1,5 +1,7 @@
+import { BASE_URL } from "@/lib/config.js";
+
 class Manager{
-    baseUrl = "http://localhost:5000";
+    baseUrl = BASE_URL;
 
     async isBackendUp() {
         try {
