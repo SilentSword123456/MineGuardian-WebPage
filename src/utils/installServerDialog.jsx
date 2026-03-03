@@ -14,8 +14,9 @@ import { Checkbox } from '@/components/animate-ui/components/radix/checkbox.jsx'
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { CloudDownload, MessageCircleWarning } from "lucide-react";
+import { CloudDownload, MessageCircleWarning, WifiOff } from "lucide-react";
 import manager from "@/utils/manager.js";
+import { useBackend } from "@/context/BackendContext.jsx";
 
 const MC_SOFTWARE = ["Vanilla", "Spigot"];
 
@@ -85,6 +86,7 @@ function AutocompleteInput({ id, name, value, onChange, options, placeholder }) 
 }
 
 export default function InstallServerDialog({ from, showCloseButton }) {
+    const { backendUp } = useBackend();
     const [open, setOpen] = useState(false);
     const [name, setName] = useState("My Server");
     const [software, setSoftware] = useState("");
@@ -140,7 +142,7 @@ export default function InstallServerDialog({ from, showCloseButton }) {
     return (
         <Dialog open={open} onOpenChange={o => { setOpen(o); if (!o) resetForm(); }}>
             <DialogTrigger asChild>
-                <button className="install-server-button">
+                <button className="install-server-button" disabled={!backendUp} title={!backendUp ? "Backend offline" : "Install server"}>
                     <CloudDownload size={22} />
                 </button>
             </DialogTrigger>
@@ -157,6 +159,12 @@ export default function InstallServerDialog({ from, showCloseButton }) {
                         </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4" style={{ marginTop: 16 }}>
+                        {!backendUp && (
+                            <div style={{ display: "flex", alignItems: "center", gap: 6, color: "#ef4444", fontSize: 13 }}>
+                                <WifiOff size={15} />
+                                <span>Backend is offline. Cannot install servers right now.</span>
+                            </div>
+                        )}
                         <div className="grid gap-3">
                             <Label htmlFor="server-name" className="install-dialog-label">Server Name</Label>
                             <Input
@@ -212,7 +220,7 @@ export default function InstallServerDialog({ from, showCloseButton }) {
                         <DialogClose asChild>
                             <Button variant="outline" className="install-dialog-cancel">Cancel</Button>
                         </DialogClose>
-                        <Button type="submit" className="install-dialog-submit" disabled={installing}>
+                        <Button type="submit" className="install-dialog-submit" disabled={installing || !backendUp}>
                             {installing ? "Installing..." : "Install"}
                         </Button>
                     </DialogFooter>
