@@ -4,6 +4,7 @@ import HomePage from "./components/HomePage.jsx";
 import {useState} from "react";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import Server from "./types/server.jsx";
+import { BackendProvider } from "./context/BackendContext.jsx";
 
 
 const queryClient = new QueryClient();
@@ -22,14 +23,16 @@ function App() {
 
   return (
         <QueryClientProvider client={queryClient}>
-          <div className="app-container">
-            <ServersBar loadServer={handleLoadServer}/>
-            {view === "home" ? (
-                <HomePage loadServer={setLoadedServer} onSelectServer={() => setView("server")} />
-            ) : (
-                <ServerPage key={loadedServer.id} loadedServer={loadedServer} onUninstall={() => setView("home")} />
-            )}
-          </div>
+          <BackendProvider>
+            <div className="app-container">
+              <ServersBar loadServer={handleLoadServer}/>
+              {view === "home" ? (
+                  <HomePage onSelectServer={handleLoadServer} />
+              ) : (
+                  <ServerPage key={loadedServer.id} loadedServer={loadedServer} onUninstall={() => setView("home")} />
+              )}
+            </div>
+          </BackendProvider>
       </QueryClientProvider>
 
   )
