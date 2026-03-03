@@ -1,41 +1,20 @@
-import { useQuery } from "@tanstack/react-query";
 import Server from "../types/server.jsx";
 import { Router } from "@/components/animate-ui/icons/router";
 import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import InstallServerDialog from "../utils/installServerDialog.jsx";
-import manager from "../utils/manager.js";
+import { useBackend } from "@/context/BackendContext.jsx";
+import { useServers } from "@/hooks/use-servers.jsx";
 
 /**
  * @param {Object} props
- * @param {function(Server): void} props.loadServer
- * @param {function(): void} props.onSelectServer - called after loadServer to switch view
+ * @param {function(Server): void} props.onSelectServer - receives the selected Server and switches view
  */
-function HomePage({ loadServer, onSelectServer }) {
-    async function fetchServers() {
-        const result = await fetch("http://localhost:5000/servers").then((r) =>
-            r.json()
-        );
-        return result.servers;
-    }
-
-    const {
-        data: backendUp,
-        isLoading: isCheckingBackend,
-    } = useQuery({
-        queryFn: () => manager.isBackendUp(),
-        queryKey: ["backendHealth"],
-        refetchInterval: 5000,
-    });
-
-    const { data: servers = [], isLoading } = useQuery({
-        queryFn: fetchServers,
-        queryKey: ["servers"],
-        enabled: backendUp === true,
-    });
+function HomePage({ onSelectServer }) {
+    const { backendUp, isCheckingBackend } = useBackend();
+    const { data: servers = [], isLoading } = useServers();
 
     function handleSelect(server) {
-        loadServer(new Server(server.id, server.name, server.isRunning));
-        onSelectServer();
+        onSelectServer(new Server(server.id, server.name, server.isRunning));
     }
 
     const backendStatus = isCheckingBackend
@@ -59,7 +38,9 @@ function HomePage({ loadServer, onSelectServer }) {
             <div className="home-servers-section">
                 <h2 className="home-section-title">Your Servers</h2>
 
-                {!isCheckingBackend && !backendUp ? (
+                {isCheckingBackend ? (
+                    <p className="home-loading">Checking connection…</p>
+                ) : !backendUp ? (
                     <p className="home-empty">Cannot reach backend. Please make sure MineGuardian is running.</p>
                 ) : isLoading ? (
                     <p className="home-loading">Loading servers…</p>
@@ -91,12 +72,11 @@ function HomePage({ loadServer, onSelectServer }) {
             </div>
 
             <div className="home-install-section">
-                <InstallServerDialog from="homepage" showCloseButton disabled={!backendUp} />
+                <InstallServerDialog from="homepage" showCloseButton />
             </div>
         </div>
     );
 }
 
 export default HomePage;
-
 
