@@ -1,5 +1,19 @@
 class Manager{
     baseUrl = "http://localhost:5000";
+
+    async isBackendUp() {
+        try {
+            const response = await fetch(`${this.baseUrl}/health`, {
+                method: 'GET'
+            });
+
+            return response.ok;
+        } catch (error) {
+            console.error('Error checking backend health:', error);
+            return false;
+        }
+    }
+
     async installServer(Name, Software="Vanilla", Version="latest", acceptEula=false) {
         try {
             const response = await fetch(`${this.baseUrl}/manage/addServer`, {
