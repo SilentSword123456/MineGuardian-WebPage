@@ -17,6 +17,7 @@ import { Input } from '@/components/ui/input';
 import { CloudDownload, MessageCircleWarning, WifiOff } from "lucide-react";
 import manager from "@/utils/manager.js";
 import { useBackend } from "@/context/BackendContext.jsx";
+import { MG_VOID, MG_MIST, MG_SLATE, MG_SNOW, MG_GHOST, MG_CRIMSON, MG_EMERALD } from '@/lib/colors';
 
 const MC_SOFTWARE = ["Vanilla", "Spigot"];
 
@@ -42,10 +43,10 @@ function AutocompleteInput({ id, name, value, onChange, options, placeholder }) 
                 onBlur={() => setTimeout(() => setOpen(false), 150)}
                 placeholder={placeholder}
                 className="install-dialog-input"
-                style={{ borderColor: value && !isValid ? "#ef4444" : undefined }}
+                style={{ borderColor: value && !isValid ? MG_CRIMSON : undefined }}
             />
             {value && !isValid && (
-                <span style={{ color: "#ef4444", fontSize: 12, display: "flex", alignItems: "center", gap: 4, marginTop: 4 }}>
+                <span style={{ color: MG_CRIMSON, fontSize: 12, display: "flex", alignItems: "center", gap: 4, marginTop: 4 }}>
                     <MessageCircleWarning size={13} /> Not a valid option
                 </span>
             )}
@@ -55,8 +56,8 @@ function AutocompleteInput({ id, name, value, onChange, options, placeholder }) 
                     top: "100%",
                     left: 0,
                     right: 0,
-                    background: "#2c2f33",
-                    border: "1px solid #202225",
+                    background: MG_VOID,
+                    border: `1px solid ${MG_MIST}`,
                     borderRadius: 6,
                     maxHeight: 180,
                     overflowY: "auto",
@@ -69,12 +70,12 @@ function AutocompleteInput({ id, name, value, onChange, options, placeholder }) 
                             style={{
                                 padding: "8px 12px",
                                 cursor: "pointer",
-                                color: "#dcddde",
+                                color: MG_SNOW,
                                 fontSize: 14,
-                                backgroundColor: o === value ? "#40444b" : "transparent",
+                                backgroundColor: o === value ? MG_SLATE : "transparent",
                             }}
-                            onMouseEnter={e => e.currentTarget.style.backgroundColor = "#40444b"}
-                            onMouseLeave={e => e.currentTarget.style.backgroundColor = o === value ? "#40444b" : "transparent"}
+                            onMouseEnter={e => e.currentTarget.style.backgroundColor = MG_SLATE}
+                            onMouseLeave={e => e.currentTarget.style.backgroundColor = o === value ? MG_SLATE : "transparent"}
                         >
                             {o}
                         </div>
@@ -159,8 +160,8 @@ export default function InstallServerDialog({ from, showCloseButton }) {
                         </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4" style={{ marginTop: 16 }}>
-                        {!backendUp && (
-                            <div style={{ display: "flex", alignItems: "center", gap: 6, color: "#ef4444", fontSize: 13 }}>
+                    {!backendUp && (
+                            <div style={{ display: "flex", alignItems: "center", gap: 6, color: MG_CRIMSON, fontSize: 13 }}>
                                 <WifiOff size={15} />
                                 <span>Backend is offline. Cannot install servers right now.</span>
                             </div>
@@ -188,7 +189,7 @@ export default function InstallServerDialog({ from, showCloseButton }) {
                         </div>
                         <div className="grid gap-3">
                             <Label htmlFor="server-version" className="install-dialog-label">
-                                Version {loadingVersions && <span style={{ color: "#b9bbbe", fontSize: 12 }}>(loading...)</span>}
+                                Version {loadingVersions && <span style={{ color: MG_GHOST, fontSize: 12 }}>(loading...)</span>}
                             </Label>
                             <AutocompleteInput
                                 id="server-version"
@@ -206,12 +207,12 @@ export default function InstallServerDialog({ from, showCloseButton }) {
                                 onCheckedChange={setEulaAccepted}
                             />
                             <Label htmlFor="accept-eula" className="install-dialog-label" style={{ margin: 0 }}>
-                                I accept the <a href="https://aka.ms/MinecraftEULA" target="_blank" rel="noreferrer" style={{ color: "#7289da" }}>Minecraft EULA</a>
+                                I accept the <a href="https://aka.ms/MinecraftEULA" target="_blank" rel="noreferrer" style={{ color: MG_EMERALD }}>Minecraft EULA</a>
                             </Label>
                         </div>
                     </div>
                     {error && (
-                        <div style={{ display: "flex", alignItems: "center", gap: 6, color: "#ef4444", fontSize: 13, marginTop: 12 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 6, color: MG_CRIMSON, fontSize: 13, marginTop: 12 }}>
                             <MessageCircleWarning size={15} />
                             <span>{error}</span>
                         </div>
