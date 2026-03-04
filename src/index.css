@@ -9,37 +9,60 @@
     --sidebar-total-width: calc(var(--sidebar-width) + 2 * var(--sidebar-padding));
     --console-right-margin: 320px;
     --radius: 0.625rem;
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.145 0 0);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.145 0 0);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(0.205 0 0);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.97 0 0);
-    --secondary-foreground: oklch(0.205 0 0);
-    --muted: oklch(0.97 0 0);
-    --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
-    --accent-foreground: oklch(0.205 0 0);
-    --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.922 0 0);
-    --input: oklch(0.922 0 0);
-    --ring: oklch(0.708 0 0);
+
+    /* ── MineGuardian Palette ─────────────────────────────────── */
+    /* Surfaces */
+    --mg-obsidian: #0D0F14;
+    --mg-void:     #12151C;
+    --mg-stone:    #1C2130;
+    --mg-slate:    #252D40;
+    --mg-mist:     #3A4560;
+    /* Text */
+    --mg-snow:  #E8EDF5;
+    --mg-ghost: #A8B4CC;
+    --mg-fog:   #6B7A99;
+    /* Accents */
+    --mg-emerald:     #2ECC71;
+    --mg-emerald-dim: #1A7A45;
+    --mg-amber:       #F59E0B;
+    --mg-amber-dim:   #92600A;
+    --mg-crimson:     #EF4444;
+    --mg-crimson-dim: #7A1F1F;
+    --mg-cyan:        #22D3EE;
+    --mg-cyan-dim:    #0E6B7A;
+
+    /* ── shadcn / Radix token mapping ────────────────────────── */
+    --background:          var(--mg-obsidian);
+    --foreground:          var(--mg-snow);
+    --card:                var(--mg-void);
+    --card-foreground:     var(--mg-snow);
+    --popover:             var(--mg-void);
+    --popover-foreground:  var(--mg-snow);
+    --primary:             var(--mg-emerald);
+    --primary-foreground:  var(--mg-obsidian);
+    --secondary:           var(--mg-slate);
+    --secondary-foreground: var(--mg-snow);
+    --muted:               var(--mg-stone);
+    --muted-foreground:    var(--mg-ghost);
+    --accent:              var(--mg-slate);
+    --accent-foreground:   var(--mg-snow);
+    --destructive:         var(--mg-crimson);
+    --border:              var(--mg-mist);
+    --input:               var(--mg-stone);
+    --ring:                var(--mg-emerald);
     --chart-1: oklch(0.646 0.222 41.116);
     --chart-2: oklch(0.6 0.118 184.704);
     --chart-3: oklch(0.398 0.07 227.392);
     --chart-4: oklch(0.828 0.189 84.429);
     --chart-5: oklch(0.769 0.188 70.08);
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.205 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-    --sidebar-border: oklch(0.922 0 0);
-    --sidebar-ring: oklch(0.708 0 0);
+    --sidebar:                    var(--mg-stone);
+    --sidebar-foreground:         var(--mg-snow);
+    --sidebar-primary:            var(--mg-emerald);
+    --sidebar-primary-foreground: var(--mg-obsidian);
+    --sidebar-accent:             var(--mg-slate);
+    --sidebar-accent-foreground:  var(--mg-snow);
+    --sidebar-border:             var(--mg-mist);
+    --sidebar-ring:               var(--mg-emerald);
 }
 
 body {
@@ -53,7 +76,7 @@ body {
     height: 100vh;
     overflow: hidden;
     width: 100%;
-    background-color: #36393f;
+    background-color: var(--mg-obsidian);
 }
 
 .sidebar {
@@ -62,7 +85,7 @@ body {
     top: 0;
     width: var(--sidebar-total-width);
     height: 100vh;
-    background-color: #2c2f33;
+    background-color: var(--mg-stone);
     padding: var(--sidebar-padding);
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
@@ -76,7 +99,7 @@ body {
 }
 
 .sidebar h3 {
-    color: #ffffff;
+    color: var(--mg-snow);
     margin-bottom: 20px;
 }
 
@@ -85,16 +108,16 @@ body {
 }
 
 .sidebar::-webkit-scrollbar-track {
-    background: #2c2f33;
+    background: var(--mg-stone);
 }
 
 .sidebar::-webkit-scrollbar-thumb {
-    background: #202225;
+    background: var(--mg-void);
     border-radius: 4px;
 }
 
 .sidebar::-webkit-scrollbar-thumb:hover {
-    background: #7289da;
+    background: var(--mg-emerald);
 }
 
 .sidebar header {
@@ -114,30 +137,40 @@ body {
     align-items: center !important;
     justify-content: center !important;
     padding: 0 !important;
-    background: #7289da !important;
-    color: #ffffff !important;
+    background: var(--mg-emerald) !important;
+    color: var(--mg-obsidian) !important;
     border: none !important;
     border-radius: 50% !important;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), 0 0 0 0 rgba(114, 137, 218, 0.4) !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), 0 0 0 0 rgba(46, 204, 113, 0.4) !important;
     cursor: pointer;
-    transition: background 0.2s ease, box-shadow 0.2s ease !important;
+    transition: background 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease !important;
     animation: install-btn-pulse 3s ease-in-out infinite;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+.install-server-button:disabled {
+    background: var(--mg-emerald) !important;
+    opacity: 0.45 !important;
+    cursor: not-allowed !important;
+    animation: none !important;
+    box-shadow: none !important;
 }
 
 .install-server-button:hover {
-    background: #5b6eae !important;
-    box-shadow: 0 6px 20px rgba(114, 137, 218, 0.45), 0 0 0 0 rgba(114, 137, 218, 0) !important;
+    background: var(--mg-emerald-dim) !important;
+    box-shadow: 0 6px 20px rgba(46, 204, 113, 0.45), 0 0 0 0 rgba(46, 204, 113, 0) !important;
     animation: none;
 }
 
 .install-server-button:active {
-    background: #4e5d94 !important;
+    background: var(--mg-emerald-dim) !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
 }
 
 @keyframes install-btn-pulse {
-    0%, 100% { box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), 0 0 0 0    rgba(114, 137, 218, 0.4); }
-    50%       { box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), 0 0 0 10px rgba(114, 137, 218, 0);   }
+    0%, 100% { box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), 0 0 0 0    rgba(46, 204, 113, 0.4); }
+    50%       { box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), 0 0 0 10px rgba(46, 204, 113, 0);   }
 }
 
 .server-page::-webkit-scrollbar {
@@ -145,24 +178,24 @@ body {
 }
 
 .server-page::-webkit-scrollbar-track {
-    background: #2c2f33;
+    background: var(--mg-stone);
 }
 
 .server-page::-webkit-scrollbar-thumb {
-    background: #202225;
+    background: var(--mg-void);
     border-radius: 5px;
 }
 
 .server-page::-webkit-scrollbar-thumb:hover {
-    background: #7289da;
+    background: var(--mg-emerald);
 }
 
 .refreshButton {
     width: 100%;
     padding: 10px 15px;
     margin-bottom: 15px;
-    background-color: #7289da;
-    color: #ffffff;
+    background-color: var(--mg-emerald);
+    color: var(--mg-obsidian);
     border: none;
     border-radius: 5px;
     font-size: 14px;
@@ -172,19 +205,19 @@ body {
 }
 
 .refreshButton:hover {
-    background-color: #5b6eae;
+    background-color: var(--mg-emerald-dim);
 }
 
 .refreshButton:active {
-    background-color: #4e5d94;
+    background-color: var(--mg-emerald-dim);
     transform: scale(0.98);
 }
 
 .server-item {
     padding: 12px 15px;
     margin-bottom: 10px;
-    background-color: #23272a;
-    color: #ffffff;
+    background-color: var(--mg-void);
+    color: var(--mg-snow);
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.1s ease;
@@ -193,11 +226,11 @@ body {
 
 .server-item:hover {
     transform: translateX(5px);
-    outline: 2px solid #9da7b5;
+    outline: 2px solid var(--mg-mist);
 }
 
 .server-item:active {
-    background-color: #1e2124;
+    background-color: var(--mg-obsidian);
 }
 
 .server-page {
@@ -207,15 +240,15 @@ body {
     overflow-y: auto;
     overflow-x: hidden;
     padding: 20px;
-    background-color: #36393f;
+    background-color: var(--mg-obsidian);
 }
 
 .console-container {
     position: fixed;
     bottom: 0;
     left: var(--sidebar-total-width);
-    right: var(--console-right-margin); /* Leave space for QuickCommands and padding */
-    background-color: #2c2f33;
+    right: var(--console-right-margin);
+    background-color: var(--mg-stone);
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
@@ -240,17 +273,17 @@ body {
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
-    background-color: #23272a;
+    background-color: var(--mg-void);
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
 }
 
 .console-header:hover {
-    background-color: #2c2f33;
+    background-color: var(--mg-stone);
 }
 
 .console-title {
-    color: #ffffff;
+    color: var(--mg-snow);
     font-weight: 600;
     display: flex;
     align-items: center;
@@ -264,17 +297,17 @@ body {
 }
 
 .status-dot.online {
-    background-color: #22c55e;
+    background-color: var(--mg-emerald);
 }
 
 .status-dot.offline {
-    background-color: #ef4444;
+    background-color: var(--mg-crimson);
 }
 
 .console-toggle-btn {
     background: none;
     border: none;
-    color: #7289da;
+    color: var(--mg-ghost);
     font-size: 20px;
     cursor: pointer;
     padding: 0 5px;
@@ -290,7 +323,7 @@ body {
 
 .console-not-connected {
     padding: 20px;
-    color: #ef4444;
+    color: var(--mg-crimson);
     text-align: center;
 }
 
@@ -298,9 +331,9 @@ body {
     flex: 1;
     width: 100%;
     margin-bottom: 10px;
-    background-color: #1e2124;
-    color: #dcddde;
-    border: 2px solid #202225;
+    background-color: var(--mg-obsidian);
+    color: var(--mg-snow);
+    border: 2px solid var(--mg-mist);
     border-radius: 8px;
     padding: 10px;
     font-family: 'Consolas', 'Courier New', monospace;
@@ -317,17 +350,17 @@ body {
 .terminalInput {
     flex: 1;
     padding: 10px 15px;
-    background-color: #40444b;
-    color: #dcddde;
-    border: 2px solid #202225;
+    background-color: var(--mg-slate);
+    color: var(--mg-snow);
+    border: 2px solid var(--mg-mist);
     border-radius: 8px;
     font-size: 14px;
 }
 
 .clear-console-btn {
     padding: 0 15px;
-    background-color: #4f545c;
-    color: white;
+    background-color: var(--mg-slate);
+    color: var(--mg-snow);
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -335,12 +368,12 @@ body {
 }
 
 .clear-console-btn:hover {
-    background-color: #72767d;
+    background-color: var(--mg-mist);
 }
 
 .terminalConnection:focus, .terminalInput:focus {
     outline: none;
-    border-color: #7289da;
+    border-color: var(--mg-emerald);
 }
 
 .terminalConnection::-webkit-scrollbar {
@@ -348,18 +381,18 @@ body {
 }
 
 .terminalConnection::-webkit-scrollbar-track {
-    background: #2c2f33;
+    background: var(--mg-stone);
     border-radius: 10px;
 }
 
 .terminalConnection::-webkit-scrollbar-thumb {
-    background: #202225;
+    background: var(--mg-void);
     border-radius: 10px;
-    border: 2px solid #2c2f33;
+    border: 2px solid var(--mg-stone);
 }
 
 .terminalConnection::-webkit-scrollbar-thumb:hover {
-    background: #40444b;
+    background: var(--mg-slate);
 }
 
 .status-indicator {
@@ -371,11 +404,11 @@ body {
 }
 
 .status-indicator.online {
-    background-color: #22c55e;
+    background-color: var(--mg-emerald);
 }
 
 .status-indicator.offline {
-    background-color: #ef4444;
+    background-color: var(--mg-crimson);
 }
 
 /* Quick Commands Panel */
@@ -383,19 +416,18 @@ body {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background-color: #2c2f33;
+    background-color: var(--mg-stone);
     border-radius: 10px;
     padding: 15px 20px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     z-index: 100;
     min-width: 180px;
-    border: 2px solid #202225;
+    border: 2px solid var(--mg-mist);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-
 .quick-commands h3 {
-    color: #ffffff;
+    color: var(--mg-snow);
     margin: 0 0 12px 0;
     font-size: 16px;
     font-weight: 600;
@@ -406,8 +438,8 @@ body {
     width: 100%;
     padding: 10px 15px;
     margin-bottom: 8px;
-    background-color: #7289da;
-    color: #ffffff;
+    background-color: var(--mg-slate);
+    color: var(--mg-snow);
     border: none;
     border-radius: 6px;
     font-size: 13px;
@@ -422,12 +454,12 @@ body {
 }
 
 .quick-commands button:hover {
-    background-color: #5b6eae;
+    background-color: var(--mg-mist);
     transform: scale(1.02);
 }
 
 .quick-commands button:active {
-    background-color: #4e5d94;
+    background-color: var(--mg-void);
     transform: scale(0.98);
 }
 
@@ -450,13 +482,13 @@ body {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    border: 2px solid #202225;
+    border: 2px solid var(--mg-mist);
     transition: all 0.2s ease;
     display: block;
 }
 
 .player-avatar:hover {
-    border-color: #7289da;
+    border-color: var(--mg-emerald);
     width: 45px;
     height: 45px;
 }
@@ -466,8 +498,8 @@ body {
     bottom: calc(100% + 8px);
     left: 50%;
     transform: translateX(-50%);
-    background-color: #18191c;
-    color: #ffffff;
+    background-color: var(--mg-obsidian);
+    color: var(--mg-snow);
     font-size: 12px;
     font-weight: 600;
     padding: 5px 10px;
@@ -487,7 +519,7 @@ body {
     left: 50%;
     transform: translateX(-50%);
     border: 5px solid transparent;
-    border-top-color: #18191c;
+    border-top-color: var(--mg-obsidian);
 }
 
 .player-avatar-wrapper:hover .player-avatar-tooltip {
@@ -502,15 +534,15 @@ body {
 }
 
 .player-avatar-section {
-    background-color: #2c2f33;
-    border: 2px solid #202225;
+    background-color: var(--mg-void);
+    border: 2px solid var(--mg-mist);
     border-radius: 10px;
     padding: 15px 20px;
     margin-bottom: 20px;
 }
 
 .player-avatar-section-title {
-    color: #b9bbbe;
+    color: var(--mg-ghost);
     font-size: 13px;
     font-weight: 700;
     text-transform: uppercase;
@@ -519,14 +551,14 @@ body {
 }
 
 .player-avatar-empty {
-    color: #72767d;
+    color: var(--mg-fog);
     font-size: 14px;
     font-style: italic;
 }
 
 .ss-card {
-    background-color: #2c2f33;
-    border: 2px solid #202225;
+    background-color: var(--mg-void);
+    border: 2px solid var(--mg-mist);
     border-radius: 10px;
     padding: 15px 20px;
     margin-bottom: 20px;
@@ -545,7 +577,7 @@ body {
 }
 
 .ss-block-label {
-    color: #b9bbbe;
+    color: var(--mg-ghost);
     font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
@@ -570,7 +602,7 @@ body {
 }
 
 .ss-block-off {
-    background-color: #40444b;
+    background-color: var(--mg-slate);
     box-shadow: none;
 }
 
@@ -580,7 +612,7 @@ body {
 }
 
 .ss-block-pct {
-    color: #dcddde;
+    color: var(--mg-snow);
     font-size: 13px;
     font-weight: 600;
     font-family: 'Consolas', 'Courier New', monospace;
@@ -597,26 +629,26 @@ body {
 
 /* ── InstallServerDialog ───────────────────────────────────── */
 .install-dialog-content {
-    background-color: #2c2f33 !important;
-    border: 2px solid #202225 !important;
+    background-color: var(--mg-void) !important;
+    border: 2px solid var(--mg-mist) !important;
     border-radius: 10px !important;
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6) !important;
-    color: #dcddde !important;
+    color: var(--mg-snow) !important;
 }
 
 .install-dialog-title {
-    color: #ffffff !important;
+    color: var(--mg-snow) !important;
     font-size: 18px !important;
     font-weight: 700 !important;
 }
 
 .install-dialog-description {
-    color: #b9bbbe !important;
+    color: var(--mg-ghost) !important;
     font-size: 13px !important;
 }
 
 .install-dialog-label {
-    color: #b9bbbe;
+    color: var(--mg-ghost);
     font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
@@ -624,10 +656,10 @@ body {
 }
 
 .install-dialog-input {
-    background-color: #40444b !important;
-    border: 2px solid #202225 !important;
+    background-color: var(--mg-slate) !important;
+    border: 2px solid var(--mg-mist) !important;
     border-radius: 6px !important;
-    color: #dcddde !important;
+    color: var(--mg-snow) !important;
     font-size: 14px !important;
     padding: 8px 12px !important;
     transition: border-color 0.2s ease !important;
@@ -635,12 +667,12 @@ body {
 
 .install-dialog-input:focus {
     outline: none !important;
-    border-color: #7289da !important;
+    border-color: var(--mg-emerald) !important;
 }
 
 .install-dialog-cancel {
     background: transparent !important;
-    color: #7289da !important;
+    color: var(--mg-ghost) !important;
     border: 2px solid transparent !important;
     border-radius: 6px !important;
     font-size: 13px !important;
@@ -649,14 +681,14 @@ body {
 }
 
 .install-dialog-cancel:hover {
-    color: #5b6eae !important;
-    border-color: #5b6eae !important;
+    color: var(--mg-snow) !important;
+    border-color: var(--mg-mist) !important;
     background: transparent !important;
 }
 
 .install-dialog-submit {
-    background: #7289da !important;
-    color: #ffffff !important;
+    background: var(--mg-emerald) !important;
+    color: var(--mg-obsidian) !important;
     border: none !important;
     border-radius: 6px !important;
     font-size: 13px !important;
@@ -665,11 +697,11 @@ body {
 }
 
 .install-dialog-submit:hover {
-    background: #5b6eae !important;
+    background: var(--mg-emerald-dim) !important;
 }
 
 .install-dialog-submit:active {
-    background: #4e5d94 !important;
+    background: var(--mg-emerald-dim) !important;
     transform: scale(0.97) !important;
 }
 
@@ -677,8 +709,8 @@ body {
 .delete-confirmation-trigger {
     padding: 8px 16px;
     background: transparent;
-    color: #ed4245;
-    border: 2px solid #ed4245;
+    color: var(--mg-crimson);
+    border: 2px solid var(--mg-crimson);
     border-radius: 6px;
     font-size: 13px;
     font-weight: 600;
@@ -687,8 +719,8 @@ body {
 }
 
 .delete-confirmation-trigger:hover {
-    background: #ed4245;
-    color: #ffffff;
+    background: var(--mg-crimson);
+    color: var(--mg-snow);
 }
 
 .delete-confirmation-trigger:active {
@@ -696,28 +728,28 @@ body {
 }
 
 .delete-confirmation-content {
-    background-color: #2c2f33 !important;
-    border: 2px solid #202225 !important;
+    background-color: var(--mg-void) !important;
+    border: 2px solid var(--mg-mist) !important;
     border-radius: 10px !important;
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6) !important;
-    color: #dcddde !important;
+    color: var(--mg-snow) !important;
 }
 
 .delete-confirmation-title {
-    color: #ffffff !important;
+    color: var(--mg-snow) !important;
     font-size: 18px !important;
     font-weight: 700 !important;
 }
 
 .delete-confirmation-description {
-    color: #b9bbbe !important;
+    color: var(--mg-ghost) !important;
     font-size: 14px !important;
 }
 
 .delete-confirmation-action {
-    background: #ed4245 !important;
-    color: #ffffff !important;
-    border: 2px solid #ed4245 !important;
+    background: var(--mg-crimson) !important;
+    color: var(--mg-snow) !important;
+    border: 2px solid var(--mg-crimson) !important;
     border-radius: 6px !important;
     font-size: 13px !important;
     font-weight: 600 !important;
@@ -725,8 +757,8 @@ body {
 }
 
 .delete-confirmation-action:hover {
-    background: #c03537 !important;
-    border-color: #c03537 !important;
+    background: var(--mg-crimson-dim) !important;
+    border-color: var(--mg-crimson-dim) !important;
 }
 
 .delete-confirmation-action:active {
@@ -735,7 +767,7 @@ body {
 
 .delete-confirmation-cancel {
     background: transparent !important;
-    color: #7289da !important;
+    color: var(--mg-ghost) !important;
     border: 2px solid transparent !important;
     border-radius: 6px !important;
     font-size: 13px !important;
@@ -744,8 +776,8 @@ body {
 }
 
 .delete-confirmation-cancel:hover {
-    color: #5b6eae !important;
-    border-color: #5b6eae !important;
+    color: var(--mg-snow) !important;
+    border-color: var(--mg-mist) !important;
 }
 
 .delete-confirmation-cancel:active {
@@ -754,36 +786,36 @@ body {
 
 /* ── ConfirmPopup ──────────────────────────────────────────── */
 .p-confirm-popup {
-    background-color: #2c2f33 !important;
-    border: 2px solid #202225 !important;
+    background-color: var(--mg-void) !important;
+    border: 2px solid var(--mg-mist) !important;
     border-radius: 10px !important;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
-    color: #dcddde !important;
+    color: var(--mg-snow) !important;
     min-width: 260px;
 }
 
 .p-confirm-popup::before {
-    border-bottom-color: #202225 !important;
+    border-bottom-color: var(--mg-mist) !important;
 }
 
 .p-confirm-popup::after {
-    border-bottom-color: #2c2f33 !important;
+    border-bottom-color: var(--mg-void) !important;
 }
 
 .p-confirm-popup .p-confirm-popup-content {
     gap: 12px;
     padding: 14px 18px;
-    border-bottom: 1px solid #202225;
+    border-bottom: 1px solid var(--mg-mist);
 }
 
 .p-confirm-popup .p-confirm-popup-icon {
     font-size: 20px;
-    color: #b9bbbe;
+    color: var(--mg-ghost);
 }
 
 .p-confirm-popup .p-confirm-popup-message {
     font-size: 14px;
-    color: #dcddde;
+    color: var(--mg-snow);
 }
 
 .p-confirm-popup .p-confirm-popup-footer {
@@ -793,21 +825,21 @@ body {
     padding: 10px 14px;
 }
 
-/* Accept button — discord blurple */
+/* Accept button — Emerald (confirm/go action) */
 .p-confirm-popup .p-confirm-popup-accept {
     padding: 7px 16px !important;
-    border: 2px solid #7289da !important;
+    border: 2px solid var(--mg-emerald) !important;
     border-radius: 6px !important;
     font-size: 13px !important;
     font-weight: 600 !important;
-    background: #7289da !important;
-    color: #ffffff !important;
+    background: var(--mg-emerald) !important;
+    color: var(--mg-obsidian) !important;
     transition: background 0.2s ease, transform 0.1s ease;
 }
 
 .p-confirm-popup .p-confirm-popup-accept:hover {
-    background: #5b6eae !important;
-    border-color: #5b6eae !important;
+    background: var(--mg-emerald-dim) !important;
+    border-color: var(--mg-emerald-dim) !important;
 }
 
 .p-confirm-popup .p-confirm-popup-accept:active {
@@ -822,12 +854,12 @@ body {
     font-size: 13px !important;
     font-weight: 600 !important;
     background: transparent !important;
-    color: #7289da !important;
+    color: var(--mg-ghost) !important;
     transition: color 0.2s ease, transform 0.1s ease;
 }
 
 .p-confirm-popup .p-confirm-popup-reject:hover {
-    color: #5b6eae !important;
+    color: var(--mg-snow) !important;
     background: transparent !important;
 }
 
@@ -877,37 +909,38 @@ body {
 }
 
 .dark {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.205 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.205 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.922 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
+    /* The app is always dark — inherit the MineGuardian tokens from :root unchanged */
+    --background:          var(--mg-obsidian);
+    --foreground:          var(--mg-snow);
+    --card:                var(--mg-void);
+    --card-foreground:     var(--mg-snow);
+    --popover:             var(--mg-void);
+    --popover-foreground:  var(--mg-snow);
+    --primary:             var(--mg-emerald);
+    --primary-foreground:  var(--mg-obsidian);
+    --secondary:           var(--mg-slate);
+    --secondary-foreground: var(--mg-snow);
+    --muted:               var(--mg-stone);
+    --muted-foreground:    var(--mg-ghost);
+    --accent:              var(--mg-slate);
+    --accent-foreground:   var(--mg-snow);
+    --destructive:         var(--mg-crimson);
+    --border:              var(--mg-mist);
+    --input:               var(--mg-stone);
+    --ring:                var(--mg-emerald);
     --chart-1: oklch(0.488 0.243 264.376);
     --chart-2: oklch(0.696 0.17 162.48);
     --chart-3: oklch(0.769 0.188 70.08);
     --chart-4: oklch(0.627 0.265 303.9);
     --chart-5: oklch(0.645 0.246 16.439);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.556 0 0);
+    --sidebar:                    var(--mg-stone);
+    --sidebar-foreground:         var(--mg-snow);
+    --sidebar-primary:            var(--mg-emerald);
+    --sidebar-primary-foreground: var(--mg-obsidian);
+    --sidebar-accent:             var(--mg-slate);
+    --sidebar-accent-foreground:  var(--mg-snow);
+    --sidebar-border:             var(--mg-mist);
+    --sidebar-ring:               var(--mg-emerald);
 }
 
 @layer base {
@@ -925,13 +958,13 @@ body {
     margin-left: var(--sidebar-total-width);
     height: 100vh;
     overflow-y: auto;
-    background-color: #36393f;
+    background-color: var(--mg-obsidian);
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 60px 40px 40px;
     gap: 48px;
-    color: #ffffff;
+    color: var(--mg-snow);
 }
 
 .home-header {
@@ -941,13 +974,13 @@ body {
 .home-title {
     font-size: 2.4rem;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--mg-snow);
     margin: 0 0 8px;
 }
 
 .home-subtitle {
     font-size: 1rem;
-    color: #b9bbbe;
+    color: var(--mg-ghost);
     margin: 0;
 }
 
@@ -959,7 +992,7 @@ body {
 .home-section-title {
     font-size: 1.1rem;
     font-weight: 600;
-    color: #b9bbbe;
+    color: var(--mg-ghost);
     text-transform: uppercase;
     letter-spacing: 0.08em;
     margin: 0 0 16px;
@@ -967,7 +1000,7 @@ body {
 
 .home-loading,
 .home-empty {
-    color: #72767d;
+    color: var(--mg-fog);
     font-size: 0.95rem;
 }
 
@@ -978,29 +1011,29 @@ body {
 }
 
 .home-server-card {
-    background-color: #2c2f33;
-    border: 1px solid #202225;
+    background-color: var(--mg-void);
+    border: 1px solid var(--mg-mist);
     border-radius: 10px;
     padding: 20px 18px;
     display: flex;
     align-items: center;
     gap: 14px;
     cursor: pointer;
-    color: #ffffff;
+    color: var(--mg-snow);
     text-align: left;
     transition: background 0.2s, transform 0.15s, border-color 0.2s;
     width: 100%;
 }
 
 .home-server-card:hover {
-    background-color: #3a3d42;
-    border-color: #7289da;
+    background-color: var(--mg-stone);
+    border-color: var(--mg-emerald);
     transform: translateY(-2px);
 }
 
 .home-server-card:active {
     transform: translateY(0);
-    background-color: #23272a;
+    background-color: var(--mg-obsidian);
 }
 
 .home-server-card-icon {
@@ -1028,11 +1061,11 @@ body {
 }
 
 .home-server-status.running {
-    color: #22c55e;
+    color: var(--mg-emerald);
 }
 
 .home-server-status.stopped {
-    color: #ef4444;
+    color: var(--mg-crimson);
 }
 
 .home-install-section {
@@ -1054,21 +1087,21 @@ body {
 }
 
 .home-backend-status.online {
-    background-color: rgba(34, 197, 94, 0.12);
-    border-color: rgba(34, 197, 94, 0.3);
-    color: #22c55e;
+    background-color: rgba(46, 204, 113, 0.12);
+    border-color: rgba(46, 204, 113, 0.3);
+    color: var(--mg-emerald);
 }
 
 .home-backend-status.offline {
     background-color: rgba(239, 68, 68, 0.12);
     border-color: rgba(239, 68, 68, 0.3);
-    color: #ef4444;
+    color: var(--mg-crimson);
 }
 
 .home-backend-status.checking {
-    background-color: rgba(185, 187, 190, 0.1);
-    border-color: rgba(185, 187, 190, 0.2);
-    color: #b9bbbe;
+    background-color: rgba(168, 180, 204, 0.1);
+    border-color: rgba(168, 180, 204, 0.2);
+    color: var(--mg-ghost);
 }
 
 .home-backend-dot {
@@ -1086,6 +1119,45 @@ body {
 @keyframes pulse-dot {
     0%, 100% { opacity: 1; }
     50%       { opacity: 0.3; }
+}
+
+/* ── Server offline banner ─────────────────────────────────── */
+.server-offline-banner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    margin-bottom: 16px;
+    background-color: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 6px;
+    color: var(--mg-crimson);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* ── Not installed state ───────────────────────────────────── */
+.not-installed {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60vh;
+    color: var(--mg-fog);
+}
+
+/* ── Loading state (sidebar) ──────────────────────────────── */
+.loading-state {
+    color: var(--mg-fog);
+    font-size: 13px;
+    padding: 8px 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.loading-state.offline-state {
+    color: var(--mg-crimson);
 }
 
 
