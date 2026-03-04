@@ -7,6 +7,13 @@ import createSocket from "../utils/webSocket.js";
 import DeleteConfirmation from "@/utils/deleteConfirmation.jsx";
 import { useBackend } from "@/context/BackendContext.jsx";
 import { WifiOff } from "lucide-react";
+import {
+    Tabs,
+    TabsContent,
+    TabsContents,
+    TabsList,
+    TabsTrigger
+} from "@/components/animate-ui/components/radix/tabs.jsx";
 
 /**
  * @typedef {import('../types/server.jsx').Server} Server
@@ -91,14 +98,33 @@ function ServerPage({loadedServer, onUninstall}) {
 
                         <>
                             <h1>{loadedServer.name}</h1>
-                            <div className="stats-row">
-                                <PlayerAvatar isList serverData={data} />
-                                <ServerStats
-                                    cpuUsagePercent={data?.cpu_usage_percent}
-                                    memoryUsageMb={data?.memory_usage_mb}
-                                    MAX_MEMORY_MB={generalInfo?.max_memory_mb}
-                                />
-                            </div>
+                            <Tabs defaultValue="overview">
+                                <TabsList>
+                                    <TabsTrigger value="overview">Overview</TabsTrigger>
+                                    <TabsTrigger value="advanced">Advanced</TabsTrigger>
+                                </TabsList>
+                                <TabsContents>
+                                    <TabsContent value="overview">
+                                        <div className="stats-row">
+                                        <PlayerAvatar isList serverData={data} />
+                                        <ServerStats
+                                            cpuUsagePercent={data?.cpu_usage_percent}
+                                            memoryUsageMb={data?.memory_usage_mb}
+                                            MAX_MEMORY_MB={generalInfo?.max_memory_mb}
+                                        />
+                                        </div>
+                                    </TabsContent>
+                                    <TabsContent value="advanced">
+                                        <DeleteConfirmation onConfirm={async () => {
+                                            const result = await loadedServer.uninstall();
+                                            if (result === true) {
+                                                setIsInstalled(false);
+                                                onUninstall?.();
+                                            }
+                                        }}/>
+                                    </TabsContent>
+                                </TabsContents>
+                            </Tabs>
                             <Console
                                 server={loadedServer}
                                 socket={socket}
@@ -111,13 +137,7 @@ function ServerPage({loadedServer, onUninstall}) {
                                 isRunning={isRunning}
                                 isConnected={isConnected}
                             />
-                            <DeleteConfirmation onConfirm={async () => {
-                                const result = await loadedServer.uninstall();
-                                if (result === true) {
-                                    setIsInstalled(false);
-                                    onUninstall?.();
-                                }
-                            }} />
+
 
                         </>
                     )}
