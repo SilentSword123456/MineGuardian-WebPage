@@ -1,3 +1,5 @@
+import { MG_EMERALD, MG_AMBER, MG_CRIMSON } from '@/lib/colors';
+
 const blocks = 10;
 
 function ServerStats({ cpuUsagePercent, memoryUsageMb, MAX_MEMORY_MB }) {
@@ -6,9 +8,9 @@ function ServerStats({ cpuUsagePercent, memoryUsageMb, MAX_MEMORY_MB }) {
     const memPct = Math.min((mem / MAX_MEMORY_MB) * 100, 100);
 
     const getUsageColor = (pct) => {
-        if (pct < 50) return "#22c55e";
-        if (pct < 80) return "#f59e0b";
-        return "#ef4444";
+        if (pct < 50) return MG_EMERALD;
+        if (pct < 80) return MG_AMBER;
+        return MG_CRIMSON;
     };
 
     function displayBlockBar(label, pct) {
@@ -45,4 +47,3 @@ function ServerStats({ cpuUsagePercent, memoryUsageMb, MAX_MEMORY_MB }) {
 }
 
 export default ServerStats;
-
