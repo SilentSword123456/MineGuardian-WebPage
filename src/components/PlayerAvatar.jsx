@@ -1,3 +1,4 @@
+import { MG_VOID, MG_MIST } from '@/lib/colors';
 
 
 function PlayerAvatar({playerName, serverData, isList}) {
@@ -15,8 +16,8 @@ function PlayerAvatar({playerName, serverData, isList}) {
                 flexDirection: 'column',
                 padding: '15px 20px',
                 boxSizing: 'border-box',
-                backgroundColor: '#2c2f33',
-                border: '2px solid #202225',
+                backgroundColor: MG_VOID,
+                border: `2px solid ${MG_MIST}`,
                 borderRadius: '10px',
                 marginBottom: '20px'
             }}>
