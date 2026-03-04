@@ -4,6 +4,7 @@ import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import InstallServerDialog from "../utils/installServerDialog.jsx";
 import { useBackend } from "@/context/BackendContext.jsx";
 import { useServers } from "@/hooks/use-servers.jsx";
+import { MG_EMERALD, MG_CRIMSON } from '@/lib/colors';
 
 /**
  * @param {Object} props
@@ -56,7 +57,7 @@ function HomePage({ onSelectServer }) {
                             >
                                 <div className="home-server-card-icon">
                                     <AnimateIcon animateOnHover>
-                                        <Router color={server.isRunning ? "green" : "red"} size={28} />
+                                        <Router color={server.isRunning ? MG_EMERALD : MG_CRIMSON} size={28} />
                                     </AnimateIcon>
                                 </div>
                                 <div className="home-server-card-info">
@@ -79,4 +80,3 @@ function HomePage({ onSelectServer }) {
 }
 
 export default HomePage;
-
