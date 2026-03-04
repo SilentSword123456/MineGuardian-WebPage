@@ -1,84 +1,125 @@
 # MineGuardian Web Page
 
-MineGuardian is a modern web-based dashboard designed to manage and monitor Minecraft servers. It provides a real-time interface for server administrators to view logs, send commands, and control server states through a clean, responsive UI.
+MineGuardian is a web-based dashboard for managing and monitoring Minecraft servers.
 
-## How it Works (System Architecture)
+---
 
-The system operates as a decoupled frontend-backend architecture. This repository contains the **Frontend**, built with React and Vite.
+## Features
 
-### 1. Data Flow & Communication
-To replicate the full functionality, the frontend expects a backend server (by default at `http://localhost:5000`) that supports both RESTful APIs and WebSockets.
+- **Live server list** — See all your servers at a glance with real-time online/offline status indicators, auto-refreshed every 10 seconds.
+- **Real-time console** — Stream your server's console output live, type commands directly into the terminal, and send them to the server with Enter or a click.
+- **Resource monitoring** — Watch CPU and RAM usage update in real time with color-coded block-bar gauges (green → amber → red).
+- **Online player viewer** — See which players are currently online, displayed as a grid of avatars.
+- **Start / Stop controls** — Start or stop any server with a single click from the Quick Commands panel.
+- **Install servers** — Install new Minecraft servers (Vanilla, Spigot) directly from the UI, picking the software and version from a live-fetched list, with EULA acceptance built in.
+- **Uninstall servers** — Remove a server permanently through a confirmation dialog that prevents accidental deletion.
+- **Offline awareness** — When the backend is unreachable, the UI detects it automatically and disables controls, showing a clear offline banner instead of silently failing.
 
-*   **Server Discovery (Polling)**: The application uses **TanStack Query** to fetch the list of servers from the backend (`GET /servers`). It automatically refreshes this list every 10 seconds to show live status (Online/Offline) in the sidebar.
-*   **Real-time Console (WebSockets)**: When a server is selected, a **Socket.io** connection is established. 
-    *   The client sends a `serverName` query parameter to the backend during the handshake.
-    *   The backend emits `console` or `message` events containing new log lines from the Minecraft server.
-    *   The client emits a `console` event back to the backend when the user types a command in the terminal.
-*   **State Management (Action Requests)**: Commands like "Start" or "Stop" are sent as `POST` requests to `/start_server` and `/stop_server`. The frontend uses a dedicated `Server` class model to encapsulate these API calls.
-
-### 2. UI Components
-*   **Sidebar (`ServersBar`)**: Lists all managed servers. Displays a green/red indicator for `isRunning` status.
-*   **Main Dashboard (`ServerPage`)**: The central area that populates when a server is selected.
-*   **Terminal (`Console`)**: An expandable/collapsible terminal emulator at the bottom of the screen. It maintains a local buffer of messages received via WebSockets.
-*   **Quick Actions (`QuickCommands`)**: A floating panel providing one-click access to critical server functions (Start/Stop).
+---
 
 ## Tech Stack
 
-*   **Framework**: [React 19](https://react.dev/)
-*   **Build Tool**: [Vite](https://vitejs.dev/)
-*   **Real-time**: [Socket.io-client](https://socket.io/docs/v4/client-api/)
-*   **Data Fetching**: [@tanstack/react-query](https://tanstack.com/query/latest)
-*   **Icons**: [Lucide React](https://lucide.dev/)
-*   **Styling**: Custom CSS with CSS Variables for theme consistency.
+| Layer | Library | Version |
+| :--- | :--- | :--- |
+| Framework | [React](https://react.dev/) | ^19 |
+| Build Tool | [Vite](https://vitejs.dev/) | ^7 |
+| Data Fetching | [@tanstack/react-query](https://tanstack.com/query/latest) | ^5 |
+| Real-time | [Socket.io-client](https://socket.io/docs/v4/client-api/) | — |
+| UI Primitives | [Radix UI](https://www.radix-ui.com/) (via animate-ui wrappers) | — |
+| Icons | [Lucide React](https://lucide.dev/) | — |
+| Styling | Custom CSS + CSS Variables | — |
 
-## Replication Guide
+---
 
-To replicate this program, you need to implement a backend that satisfies the following contract:
+## Backend API Contract
 
-### Backend API Contract
-| Endpoint | Method | Payload | Description |
-| :--- | :--- | :--- | :--- |
-| `/servers` | `GET` | N/A | Returns `{ "servers": [{ "id": string, "name": string, "isRunning": boolean }] }` |
-| `/start_server` | `POST` | `{ "serverName": string }` | Initiates the Minecraft server startup sequence. |
-| `/stop_server` | `POST` | `{ "serverName": string }` | Sends a stop command/kills the server process. |
+This frontend expects a backend at `http://localhost:5000` (configurable in `src/lib/config.js`).
+
+### REST Endpoints
+
+| Endpoint | Method | Body | Response | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `/health` | `GET` | — | `200 OK` | Health check. |
+| `/servers` | `GET` | — | `{ "servers": [{ "id": string, "name": string, "isRunning": boolean }] }` | Lists all servers. |
+| `/servers/:name` | `GET` | — | `{ "max_memory_mb": number, ... }` | General info for a server. |
+| `/servers/:name/start` | `POST` | — | JSON | Starts the server. |
+| `/servers/:name/stop` | `POST` | — | JSON | Stops the server. |
+| `/servers/:name/uninstall` | `DELETE` | — | `true` | Uninstalls the server. |
+| `/manage/addServer` | `POST` | `{ "serverName": string, "serverSoftware": string, "serverVersion": string, "acceptEula": boolean }` | JSON | Installs a new server. |
+| `/manage/:software/getAvailableVersions` | `GET` | — | `string[]` | Available versions for the given software. |
 
 ### WebSocket Contract (Socket.io)
-*   **Connection Query**: `?serverName=xyz`
-*   **Server -> Client Events**:
-    *   `console`: `{ "data": "log message text" }`
-    *   `message`: `{ "data": "log message text" }` (fallback)
-*   **Client -> Server Events**:
-    *   `console`: `{ "message": "command_to_run" }` (sends command to server stdin)
 
-### Local Setup
-1.  **Install Node.js** (v18+ recommended).
-2.  **Clone the project** and navigate to the directory.
-3.  **Install Dependencies**:
-    ```bash
-    npm install
-    ```
-4.  **Launch Development Server**:
-    ```bash
-    npm run dev
-    ```
-5.  **Build for Production**:
-    ```bash
-    npm run build
-    ```
+**Connection**: `io("http://localhost:5000", { query: { serverName: "my-server" }, transports: ["websocket"] })`
+
+| Direction | Event | Payload | Purpose |
+| :--- | :--- | :--- | :--- |
+| Server → Client | `console` | `{ "data": "log line" }` | Console output |
+| Server → Client | `message` | `{ "data": "log line" }` | Console output (fallback) |
+| Server → Client | `resources` | `{ "cpu_usage_percent": number, "memory_usage_mb": number }` | Resource stats |
+| Server → Client | `status` | `{ "running": boolean }` | Running-state updates |
+| Client → Server | `console` | `{ "message": "command" }` | Send command to server stdin |
+
+---
+
+## Local Setup
+
+1. **Install Node.js** (v18+ recommended).
+2. **Clone the project** and navigate to the directory.
+3. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+4. **Start the development server**:
+   ```bash
+   npm run dev
+   ```
+5. **Build for production**:
+   ```bash
+   npm run build
+   ```
+6. **Preview the production build**:
+   ```bash
+   npm run preview
+   ```
+
+---
 
 ## Project Structure
+
 ```text
 src/
-├── components/          # UI Components
-│   ├── ui/              # Generic UI elements (Buttons, etc.)
-│   ├── Console.jsx      # WebSocket-powered terminal
-│   ├── QuickCommands.jsx# Action buttons (Start/Stop)
-│   ├── ServerPage.jsx   # Main layout for a selected server
-│   └── ServersBar.jsx   # Sidebar server listing
+├── App.jsx                      # Root component — view routing & global providers
+├── index.css                    # Global styles and CSS variable theme
+├── main.jsx                     # React DOM entry point
+│
+├── components/
+│   ├── Console.jsx              # Terminal emulator
+│   ├── HomePage.jsx             # Landing screen with server grid
+│   ├── PlayerAvatar.jsx         # Online-player avatar grid
+│   ├── QuickCommands.jsx        # Start / Stop buttons
+│   ├── ServerPage.jsx           # Main layout for a selected server
+│   ├── ServersBar.jsx           # Left sidebar — server listing
+│   ├── ServerStats.jsx          # CPU & RAM gauges
+│   ├── animate-ui/              # Animated Radix UI wrappers
+│   └── ui/                      # Generic UI elements
+│
+├── context/
+│   └── BackendContext.jsx       # Backend health state
+│
+├── hooks/
+│   └── use-servers.jsx          # Server list query
+│
+├── lib/
+│   ├── colors.js                # Color palette constants
+│   └── config.js                # BASE_URL config
+│
 ├── types/
-│   └── server.jsx       # Server class model & API logic
-├── utils/
-│   └── webSocket.js     # Socket.io configuration
-├── App.jsx              # Root component & State coordinator
-└── index.css            # Global styles and layout
+│   └── server.jsx               # Server model (start / stop / uninstall / getGeneralInfo)
+│
+└── utils/
+    ├── deleteConfirmation.jsx   # Uninstall confirmation dialog
+    ├── installServerDialog.jsx  # Server installation dialog
+    ├── manager.js               # Health check & installation API calls
+    └── webSocket.js             # Socket.io factory
 ```
