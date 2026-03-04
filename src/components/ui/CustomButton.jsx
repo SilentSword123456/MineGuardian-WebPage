@@ -1,4 +1,5 @@
 import React from 'react';
+import { MG_EMERALD, MG_OBSIDIAN, MG_SLATE, MG_SNOW, MG_CRIMSON, MG_GHOST } from '@/lib/colors';
 
 /**
  * A reusable CustomButton component - This is the core idea of a component library!
@@ -41,10 +42,10 @@ const CustomButton = ({
     };
 
     const variants = {
-        primary: { backgroundColor: '#7289da', color: 'white' },
-        secondary: { backgroundColor: '#4f545c', color: 'white' },
-        danger: { backgroundColor: '#ef4444', color: 'white' },
-        ghost: { backgroundColor: 'transparent', color: '#7289da' }
+        primary:   { backgroundColor: MG_EMERALD,     color: MG_OBSIDIAN },
+        secondary: { backgroundColor: MG_SLATE,       color: MG_SNOW },
+        danger:    { backgroundColor: 'transparent',  color: MG_CRIMSON, border: `2px solid ${MG_CRIMSON}` },
+        ghost:     { backgroundColor: 'transparent',  color: MG_GHOST }
     };
 
     const sizes = {
