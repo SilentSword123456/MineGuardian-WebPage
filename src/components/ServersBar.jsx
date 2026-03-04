@@ -6,6 +6,7 @@ import { Router } from '@/components/animate-ui/icons/router';
 import { AnimateIcon } from '@/components/animate-ui/icons/icon';
 import { useBackend } from "@/context/BackendContext.jsx";
 import { useServers } from "@/hooks/use-servers.jsx";
+import { MG_EMERALD, MG_CRIMSON } from '@/lib/colors';
 
 /**
  * @typedef {import('../types/server.jsx').Server} Server
@@ -39,7 +40,7 @@ function ServersBar({loadServer}) {
                     className="server-item"
                     onClick={() => loadServer(new Server(server.id, server.name, server.isRunning))}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <Router color={server.isRunning ? 'green' : 'red'}/>
+                        <Router color={server.isRunning ? MG_EMERALD : MG_CRIMSON}/>
                         {server.name}
                     </div>
                 </button>
