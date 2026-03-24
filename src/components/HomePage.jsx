@@ -1,4 +1,3 @@
-import Server from "../types/server.jsx";
 import { Router } from "@/components/animate-ui/icons/router";
 import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { useBackend } from "@/context/BackendContext.jsx";
@@ -7,14 +6,14 @@ import { MG_EMERALD, MG_CRIMSON } from '@/lib/colors';
 
 /**
  * @param {Object} props
- * @param {function(Server): void} props.onSelectServer - receives the selected Server and switches view
+ * @param {function(string): void} props.onSelectServer - receives the selected server name
  */
 function HomePage({ onSelectServer }) {
     const { backendUp, isCheckingBackend } = useBackend();
     const { data: servers = [], isLoading } = useServers();
 
     function handleSelect(server) {
-        onSelectServer(new Server(server.id, server.name, server.isRunning));
+        onSelectServer(server.name);
     }
 
     const backendStatus = isCheckingBackend
