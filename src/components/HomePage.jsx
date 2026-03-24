@@ -1,7 +1,6 @@
 import Server from "../types/server.jsx";
 import { Router } from "@/components/animate-ui/icons/router";
 import { AnimateIcon } from "@/components/animate-ui/icons/icon";
-import InstallServerDialog from "../utils/installServerDialog.jsx";
 import { useBackend } from "@/context/BackendContext.jsx";
 import { useServers } from "@/hooks/use-servers.jsx";
 import { MG_EMERALD, MG_CRIMSON } from '@/lib/colors';
@@ -72,9 +71,6 @@ function HomePage({ onSelectServer }) {
                 )}
             </div>
 
-            <div className="home-install-section">
-                <InstallServerDialog from="homepage" showCloseButton />
-            </div>
         </div>
     );
 }
