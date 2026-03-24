@@ -95,6 +95,38 @@ body {
     color: var(--mg-snow);
 }
 
+.app-main-body {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    height: 100%;
+    overflow: hidden;
+    align-items: stretch;
+}
+
+.app-server-sidebar {
+    flex: 0 0 280px;
+    width: 280px;
+    min-width: 280px;
+    height: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border-right: 1px solid var(--mg-mist);
+    background-color: var(--mg-stone);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.app-route-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+}
+
 .app-sidebar-nav {
     padding: 10px;
 }
@@ -115,7 +147,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    min-height: 0;
+    min-height: 100%;
 }
 
 .sidebar {
@@ -167,6 +199,9 @@ body {
 
 .sidebar-footer-shell {
     margin-top: auto;
+    display: flex;
+    justify-content: center;
+    padding-top: 8px;
 }
 
 .install-server-button {
@@ -197,7 +232,7 @@ body {
     left: auto !important;
     right: auto !important;
     bottom: auto !important;
-    margin: 6px auto 0;
+    margin: 0 !important;
 }
 
 .install-server-button:disabled {
@@ -289,21 +324,25 @@ body {
 }
 
 .server-page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
     flex: 1;
     margin-left: 0;
-    height: 100%;
+    min-height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
     padding: 20px;
+    padding-bottom: 90px;
     background-color: var(--mg-obsidian);
 }
 
 .console-container {
-    position: sticky;
+    position: fixed;
     bottom: 0;
-    left: auto;
-    right: auto;
-    width: calc(100% - var(--console-right-margin));
+    left: var(--sidebar-width);
+    right: var(--console-right-margin);
+    width: auto;
     background-color: var(--mg-stone);
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
