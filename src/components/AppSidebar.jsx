@@ -1,4 +1,5 @@
-import { House, ServerIcon } from "lucide-react";
+import { ArrowLeft, House, ServerIcon } from "lucide-react";
+import { useState } from "react";
 import {
     SidebarContent,
     SidebarHeader,
@@ -8,15 +9,13 @@ import {
     SidebarSeparator,
     useSidebar,
 } from "@/components/animate-ui/components/radix/sidebar.jsx";
+import { useNavigate } from "react-router-dom";
 import ServersBar from "./ServersBar.jsx";
 
-function AppSidebar({
-    sidebarSection,
-    onSidebarSectionChange,
-    onGoHome,
-    onLoadServer,
-}) {
+function AppSidebar() {
+    const [sidebarView, setSidebarView] = useState("main"); // main | servers
     const { isMobile, setOpen, setOpenMobile } = useSidebar();
+    const navigate = useNavigate();
 
     function collapseSidebar() {
         if (isMobile) {
@@ -27,54 +26,62 @@ function AppSidebar({
     }
 
     function handleHomeClick() {
-        onGoHome();
-        onSidebarSectionChange("home");
+        setSidebarView("main");
+        navigate("/");
         collapseSidebar();
     }
 
-    function handleServersClick() {
-        onSidebarSectionChange("servers");
-        collapseSidebar();
+    function handleOpenServersFolder() {
+        setSidebarView("servers");
     }
 
-    function handleLoadServer(server) {
-        onLoadServer(server);
+    function handleBackFromServers() {
+        setSidebarView("main");
+    }
+
+    function handleLoadServer(serverName) {
+        navigate(`/server/${encodeURIComponent(serverName)}`);
     }
 
     return (
         <>
             <SidebarHeader className="app-sidebar-nav">
-                <SidebarMenu>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton
-                            isActive={sidebarSection === "home"}
-                            onClick={handleHomeClick}
-                        >
-                            <House />
-                            <span>Home</span>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton
-                            isActive={sidebarSection === "servers"}
-                            onClick={handleServersClick}
-                        >
-                            <ServerIcon />
-                            <span>Servers</span>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                </SidebarMenu>
+                {sidebarView === "servers" ? (
+                    <SidebarMenu key="sidebar-servers-folder">
+                        <SidebarMenuItem>
+                            <SidebarMenuButton onClick={handleBackFromServers}>
+                                <ArrowLeft />
+                                <span>Back</span>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    </SidebarMenu>
+                ) : (
+                    <SidebarMenu key="sidebar-main-menu">
+                        <SidebarMenuItem>
+                            <SidebarMenuButton isActive onClick={handleHomeClick}>
+                                <House />
+                                <span>Home</span>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton onClick={handleOpenServersFolder}>
+                                <ServerIcon />
+                                <span>Servers</span>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    </SidebarMenu>
+                )}
             </SidebarHeader>
             <SidebarSeparator />
-            <SidebarContent className="app-sidebar-panel">
-                {sidebarSection === "servers" ? (
+            {sidebarView === "servers" ? (
+                <SidebarContent className="app-sidebar-panel">
                     <ServersBar loadServer={handleLoadServer} />
-                ) : (
-                    <div className="app-sidebar-home-hint">
-                        Select <strong>Servers</strong> to open the server list.
-                    </div>
-                )}
-            </SidebarContent>
+                </SidebarContent>
+            ) : (
+                <div className="app-sidebar-home-hint">
+                    Open <strong>Servers</strong> to browse and pick a server.
+                </div>
+            )}
         </>
     );
 }
