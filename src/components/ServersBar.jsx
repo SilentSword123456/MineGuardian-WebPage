@@ -49,8 +49,8 @@ function ServersBar({loadServer}) {
     }
 
     return (
-        <div className="sidebar">
-            <header className="header">
+        <div className="servers-panel">
+            <div className="sidebar-header-shell">
                 <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <LayoutGrid size={20} />
                     Servers
@@ -64,9 +64,13 @@ function ServersBar({loadServer}) {
                     size={'sm'}
                     disabled={!backendUp}
                 ></CustomButton>
-            </header>
-            {getServerList()}
-            <InstallServerDialog />
+            </div>
+            <div className="sidebar-content-shell">
+                {getServerList()}
+            </div>
+            <div className="sidebar-footer-shell">
+                <InstallServerDialog triggerClassName="install-server-button-sidebar" />
+            </div>
         </div>
     );
 }
