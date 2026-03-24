@@ -1,4 +1,3 @@
-import Server from "../types/server.jsx";
 import { RefreshCcw, LayoutGrid, WifiOff } from "lucide-react";
 import CustomButton from "./ui/CustomButton.jsx";
 import InstallServerDialog from "../utils/installServerDialog.jsx";
@@ -9,7 +8,8 @@ import { useServers } from "@/hooks/use-servers.jsx";
 import { MG_EMERALD, MG_CRIMSON } from '@/lib/colors';
 
 /**
- * @typedef {import('../types/server.jsx').Server} Server
+ * @param {Object} props
+ * @param {function(string): void} props.loadServer - receives the selected server name
  */
 function ServersBar({loadServer}) {
     const { backendUp, isCheckingBackend } = useBackend();
@@ -38,7 +38,7 @@ function ServersBar({loadServer}) {
             <AnimateIcon key={server.id} animateOnHover asChild>
                 <button
                     className="server-item"
-                    onClick={() => loadServer(new Server(server.id, server.name, server.isRunning))}>
+                    onClick={() => loadServer(server.name)}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                         <Router color={server.isRunning ? MG_EMERALD : MG_CRIMSON}/>
                         {server.name}
