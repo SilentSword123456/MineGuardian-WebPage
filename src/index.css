@@ -79,18 +79,53 @@ body {
     background-color: var(--mg-obsidian);
 }
 
-.sidebar {
-    position: fixed;
-    left: 0;
+.app-content-toolbar {
+    position: sticky;
     top: 0;
-    width: var(--sidebar-total-width);
-    height: 100vh;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    height: 48px;
+    padding: 0 12px;
+    background: rgba(18, 21, 28, 0.85);
+    backdrop-filter: blur(8px);
+}
+
+.app-sidebar-trigger {
+    color: var(--mg-snow);
+}
+
+.app-sidebar-nav {
+    padding: 10px;
+}
+
+.app-sidebar-panel {
+    padding: 8px 10px 10px;
+    overflow-x: hidden;
+}
+
+.app-sidebar-home-hint {
+    color: var(--mg-ghost);
+    font-size: 0.92rem;
+    line-height: 1.4;
+    padding: 8px 6px;
+}
+
+.servers-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 0;
+}
+
+.sidebar {
+    width: 100%;
+    height: 100%;
     background-color: var(--mg-stone);
-    padding: var(--sidebar-padding);
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    padding: 10px 12px 12px;
     overflow-y: auto;
     overflow-x: hidden;
-    z-index: 1000;
+    box-sizing: border-box;
     border: none;
 }
 
@@ -120,10 +155,18 @@ body {
     background: var(--mg-emerald);
 }
 
-.sidebar header {
+.sidebar-header-shell {
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.sidebar-content-shell {
+    padding: 2px;
+}
+
+.sidebar-footer-shell {
+    margin-top: auto;
 }
 
 .install-server-button {
@@ -147,6 +190,14 @@ body {
     animation: install-btn-pulse 3s ease-in-out infinite;
     opacity: 1 !important;
     pointer-events: auto !important;
+}
+
+.install-server-button-sidebar {
+    position: static !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    margin: 6px auto 0;
 }
 
 .install-server-button:disabled {
@@ -214,6 +265,10 @@ body {
 }
 
 .server-item {
+    width: 100%;
+    display: block;
+    box-sizing: border-box;
+    text-align: left;
     padding: 12px 15px;
     margin-bottom: 10px;
     background-color: var(--mg-void);
@@ -235,8 +290,8 @@ body {
 
 .server-page {
     flex: 1;
-    margin-left: var(--sidebar-total-width);
-    height: 100vh;
+    margin-left: 0;
+    height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
     padding: 20px;
@@ -244,10 +299,11 @@ body {
 }
 
 .console-container {
-    position: fixed;
+    position: sticky;
     bottom: 0;
-    left: var(--sidebar-total-width);
-    right: var(--console-right-margin);
+    left: auto;
+    right: auto;
+    width: calc(100% - var(--console-right-margin));
     background-color: var(--mg-stone);
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
@@ -955,8 +1011,8 @@ body {
 /* ── HomePage ── */
 .home-page {
     flex: 1;
-    margin-left: var(--sidebar-total-width);
-    height: 100vh;
+    margin-left: 0;
+    height: 100%;
     overflow-y: auto;
     background-color: var(--mg-obsidian);
     display: flex;
