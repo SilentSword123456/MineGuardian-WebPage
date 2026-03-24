@@ -86,7 +86,7 @@ function AutocompleteInput({ id, name, value, onChange, options, placeholder }) 
     );
 }
 
-export default function InstallServerDialog({ from, showCloseButton }) {
+export default function InstallServerDialog({ from, showCloseButton, triggerClassName = "" }) {
     const { backendUp } = useBackend();
     const [open, setOpen] = useState(false);
     const [name, setName] = useState("My Server");
@@ -143,7 +143,11 @@ export default function InstallServerDialog({ from, showCloseButton }) {
     return (
         <Dialog open={open} onOpenChange={o => { setOpen(o); if (!o) resetForm(); }}>
             <DialogTrigger asChild>
-                <button className="install-server-button" disabled={!backendUp} title={!backendUp ? "Backend offline" : "Install server"}>
+                <button
+                    className={`install-server-button ${triggerClassName}`.trim()}
+                    disabled={!backendUp}
+                    title={!backendUp ? "Backend offline" : "Install server"}
+                >
                     <CloudDownload size={22} />
                 </button>
             </DialogTrigger>
