@@ -38,7 +38,7 @@ const NAVIGATION_SECTIONS = [
         id: "players",
         label: "Players",
         icon: Users,
-        onNavigate: (navigate) => navigate("/players"),
+        onNavigate: (navigate) => navigate("/player/SilentSword_123"),
     }
 ];
 
