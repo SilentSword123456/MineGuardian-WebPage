@@ -12,6 +12,7 @@ import {
 import AppSidebar from "./components/AppSidebar.jsx";
 import { Navigate, Route, Routes, useNavigate, useParams } from "react-router-dom";
 import { useServers } from "@/hooks/use-servers.jsx";
+import PlayerManager from "@/components/PlayerManager.jsx";
 
 
 const queryClient = new QueryClient();
@@ -72,6 +73,7 @@ function App() {
                           <Route path="/" element={<HomePage onSelectServer={handleSelectServer} />} />
                           <Route path="/server/:serverName" element={<ServerRouteView />} />
                           <Route path="*" element={<Navigate to="/" replace />} />
+                          <Route path="/players" element={<PlayerManager/>} />
                       </Routes>
                   </SidebarInset>
               </SidebarProvider>
