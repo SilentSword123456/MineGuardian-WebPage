@@ -11,9 +11,40 @@ import {
 } from "@/components/animate-ui/components/radix/sidebar.jsx";
 import { useNavigate } from "react-router-dom";
 import ServersBar from "./ServersBar.jsx";
+import {Users} from "@/components/animate-ui/icons/users.jsx";
+import PlayerManager from "@/components/PlayerManager.jsx";
+
+/**
+ * - id: unique identifier
+ * - label: display name
+ * - icon: lucide-react icon component
+ * - content: React component to render in the panel (optional if using onNavigate)
+ * - onNavigate: optional callback when section is clicked
+ */
+const NAVIGATION_SECTIONS = [
+    {
+        id: "home",
+        label: "Home",
+        icon: House,
+        onNavigate: (navigate) => navigate("/"),
+    },
+    {
+        id: "servers",
+        label: "Servers",
+        icon: ServerIcon,
+        content: ServersBar,
+    },
+    {
+        id: "players",
+        label: "Players",
+        icon: Users,
+        onNavigate: (navigate) => navigate("/players"),
+    }
+];
 
 function AppSidebar() {
-    const [sidebarView, setSidebarView] = useState("main"); // main | servers
+    const [activeSection, setActiveSection] = useState("home");
+    const [previousSection, setPreviousSection] = useState(null);
     const { isMobile, setOpen, setOpenMobile } = useSidebar();
     const navigate = useNavigate();
 
@@ -25,31 +56,36 @@ function AppSidebar() {
         setOpen(false);
     }
 
-    function handleHomeClick() {
-        setSidebarView("main");
-        navigate("/");
-        collapseSidebar();
+    function handleSectionClick(section) {
+        if (section.onNavigate) {
+            section.onNavigate(navigate);
+            setActiveSection(section.id);
+            collapseSidebar();
+            return;
+        }
+
+        setPreviousSection(activeSection);
+        setActiveSection(section.id);
     }
 
-    function handleOpenServersFolder() {
-        setSidebarView("servers");
-    }
-
-    function handleBackFromServers() {
-        setSidebarView("main");
+    function handleBack() {
+        setActiveSection(previousSection || "home");
     }
 
     function handleLoadServer(serverName) {
         navigate(`/server/${encodeURIComponent(serverName)}`);
     }
 
+    const activeSectionData = NAVIGATION_SECTIONS.find((s) => s.id === activeSection);
+    const isMainView = previousSection === null;
+
     return (
         <>
             <SidebarHeader className="app-sidebar-nav">
-                {sidebarView === "servers" ? (
-                    <SidebarMenu key="sidebar-servers-folder">
+                {!isMainView ? (
+                    <SidebarMenu key="sidebar-back-menu">
                         <SidebarMenuItem>
-                            <SidebarMenuButton onClick={handleBackFromServers}>
+                            <SidebarMenuButton onClick={handleBack}>
                                 <ArrowLeft />
                                 <span>Back</span>
                             </SidebarMenuButton>
@@ -57,31 +93,32 @@ function AppSidebar() {
                     </SidebarMenu>
                 ) : (
                     <SidebarMenu key="sidebar-main-menu">
-                        <SidebarMenuItem>
-                            <SidebarMenuButton isActive onClick={handleHomeClick}>
-                                <House />
-                                <span>Home</span>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                        <SidebarMenuItem>
-                            <SidebarMenuButton onClick={handleOpenServersFolder}>
-                                <ServerIcon />
-                                <span>Servers</span>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
+                        {NAVIGATION_SECTIONS.map((section) => (
+                            <SidebarMenuItem key={section.id}>
+                                <SidebarMenuButton
+                                    isActive={activeSection === section.id}
+                                    onClick={() => handleSectionClick(section)}
+                                >
+                                    <section.icon />
+                                    <span>{section.label}</span>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        ))}
                     </SidebarMenu>
                 )}
             </SidebarHeader>
             <SidebarSeparator />
-            {sidebarView === "servers" ? (
-                <SidebarContent className="app-sidebar-panel">
-                    <ServersBar loadServer={handleLoadServer} />
-                </SidebarContent>
-            ) : (
+            {isMainView ? (
                 <div className="app-sidebar-home-hint">
-                    Open <strong>Servers</strong> to browse and pick a server.
+                    Select a section from above to get started.
                 </div>
-            )}
+            ) : activeSectionData?.content ? (
+                <SidebarContent className="app-sidebar-panel">
+                    {activeSectionData.content === ServersBar && (
+                        <ServersBar loadServer={handleLoadServer} />
+                    )}
+                </SidebarContent>
+            ) : null}
         </>
     );
 }
