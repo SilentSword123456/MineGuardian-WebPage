@@ -1,8 +1,12 @@
+import PlayerAvatar from "@/components/PlayerAvatar.jsx";
 
+function PlayerManager({playerName=""}) {
 
-function PlayerManager() {
     return (
-        <div className="PlayerManager">It works!</div>
+        <div className="PlayerManager">
+            <h1>{playerName}</h1>
+            <PlayerAvatar playerName={playerName} />
+        </div>
     )
 }
 
