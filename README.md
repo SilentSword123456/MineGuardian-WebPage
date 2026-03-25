@@ -96,7 +96,7 @@ src/
 ├── components/
 │   ├── Console.jsx              # Terminal emulator
 │   ├── HomePage.jsx             # Landing screen with server grid
-│   ├── PlayerAvatar.jsx         # Online-player avatar grid
+│   ├── PlayersAvatarPanel.jsx         # Online-player avatar grid
 │   ├── QuickCommands.jsx        # Start / Stop buttons
 │   ├── ServerPage.jsx           # Main layout for a selected server
 │   ├── ServersBar.jsx           # Left sidebar — server listing
