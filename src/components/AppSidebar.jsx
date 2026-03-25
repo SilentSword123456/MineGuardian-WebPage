@@ -1,127 +1,73 @@
-import { ArrowLeft, House, ServerIcon } from "lucide-react";
-import { useState } from "react";
+import { House, ServerIcon } from "lucide-react";
 import {
-    SidebarContent,
     SidebarHeader,
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-    SidebarSeparator,
-    useSidebar,
 } from "@/components/animate-ui/components/radix/sidebar.jsx";
-import { useNavigate } from "react-router-dom";
-import ServersBar from "./ServersBar.jsx";
-import {Users} from "@/components/animate-ui/icons/users.jsx";
-import PlayerManager from "@/components/PlayerManager.jsx";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Users } from "@/components/animate-ui/icons/users.jsx";
 
-/**
- * - id: unique identifier
- * - label: display name
- * - icon: lucide-react icon component
- * - content: React component to render in the panel (optional if using onNavigate)
- * - onNavigate: optional callback when section is clicked
- */
 const NAVIGATION_SECTIONS = [
     {
         id: "home",
         label: "Home",
         icon: House,
-        onNavigate: (navigate) => navigate("/"),
+        path: "/",
     },
     {
         id: "servers",
         label: "Servers",
         icon: ServerIcon,
-        content: ServersBar,
+        path: "/servers",
     },
     {
         id: "players",
         label: "Players",
         icon: Users,
-        onNavigate: (navigate) => navigate("/player/SilentSword_123"),
-    }
+        path: "/players",
+    },
 ];
 
 function AppSidebar() {
-    const [activeSection, setActiveSection] = useState("home");
-    const [previousSection, setPreviousSection] = useState(null);
-    const { isMobile, setOpen, setOpenMobile } = useSidebar();
     const navigate = useNavigate();
+    const location = useLocation();
 
-    function collapseSidebar() {
-        if (isMobile) {
-            setOpenMobile(false);
-            return;
+    function isActive(section) {
+        if (section.id === "servers") {
+            // Highlight for both the server list and individual server pages
+            return (
+                location.pathname === "/servers" ||
+                location.pathname.startsWith("/server/")
+            );
         }
-        setOpen(false);
-    }
-
-    function handleSectionClick(section) {
-        if (section.onNavigate) {
-            section.onNavigate(navigate);
-            setActiveSection(section.id);
-            collapseSidebar();
-            return;
+        if (section.id === "players") {
+            // Highlight for both the player list and individual player pages
+            return (
+                location.pathname === "/players" ||
+                location.pathname.startsWith("/player/")
+            );
         }
-
-        setPreviousSection(activeSection);
-        setActiveSection(section.id);
+        return location.pathname === section.path;
     }
-
-    function handleBack() {
-        setActiveSection(previousSection || "home");
-    }
-
-    function handleLoadServer(serverName) {
-        navigate(`/server/${encodeURIComponent(serverName)}`);
-    }
-
-    const activeSectionData = NAVIGATION_SECTIONS.find((s) => s.id === activeSection);
-    const isMainView = previousSection === null;
 
     return (
-        <>
-            <SidebarHeader className="app-sidebar-nav">
-                {!isMainView ? (
-                    <SidebarMenu key="sidebar-back-menu">
-                        <SidebarMenuItem>
-                            <SidebarMenuButton onClick={handleBack}>
-                                <ArrowLeft />
-                                <span>Back</span>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                    </SidebarMenu>
-                ) : (
-                    <SidebarMenu key="sidebar-main-menu">
-                        {NAVIGATION_SECTIONS.map((section) => (
-                            <SidebarMenuItem key={section.id}>
-                                <SidebarMenuButton
-                                    isActive={activeSection === section.id}
-                                    onClick={() => handleSectionClick(section)}
-                                >
-                                    <section.icon />
-                                    <span>{section.label}</span>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                        ))}
-                    </SidebarMenu>
-                )}
-            </SidebarHeader>
-            <SidebarSeparator />
-            {isMainView ? (
-                <div className="app-sidebar-home-hint">
-                    Select a section from above to get started.
-                </div>
-            ) : activeSectionData?.content ? (
-                <SidebarContent className="app-sidebar-panel">
-                    {activeSectionData.content === ServersBar && (
-                        <ServersBar loadServer={handleLoadServer} />
-                    )}
-                </SidebarContent>
-            ) : null}
-        </>
+        <SidebarHeader className="app-sidebar-nav">
+            <SidebarMenu>
+                {NAVIGATION_SECTIONS.map((section) => (
+                    <SidebarMenuItem key={section.id}>
+                        <SidebarMenuButton
+                            isActive={isActive(section)}
+                            onClick={() => navigate(section.path)}
+                        >
+                            <section.icon />
+                            <span>{section.label}</span>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                ))}
+            </SidebarMenu>
+        </SidebarHeader>
     );
 }
 
 export default AppSidebar;
-
