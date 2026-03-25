@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Console from "./Console.jsx";
 import QuickCommands from "./QuickCommands.jsx";
-import PlayerAvatar from "./PlayerAvatar.jsx";
+import PlayersAvatarPanel from "./PlayersAvatarPanel.jsx";
 import ServerStats from "./ServerStats.jsx";
 import createSocket from "../utils/webSocket.js";
 import DeleteConfirmation from "@/utils/deleteConfirmation.jsx";
@@ -106,7 +106,7 @@ function ServerPage({loadedServer, onUninstall}) {
                                 <TabsContents>
                                     <TabsContent value="overview">
                                         <div className="stats-row">
-                                        <PlayerAvatar isList serverData={data} />
+                                        <PlayersAvatarPanel isList serverData={data} />
                                         <ServerStats
                                             cpuUsagePercent={data?.cpu_usage_percent}
                                             memoryUsageMb={data?.memory_usage_mb}
