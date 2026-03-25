@@ -1,7 +1,8 @@
 import { MG_VOID, MG_MIST } from '@/lib/colors';
+import PlayerAvatar from "@/components/PlayerAvatar.jsx";
 
 
-function PlayerAvatar({playerName, serverData, isList}) {
+function PlayersAvatarPanel({playerName, serverData, isList}) {
     if (isList) {
         const n = serverData?.online_players?.max || 1;
         const cols = Math.max(1, Math.floor(Math.sqrt(n)));
@@ -35,7 +36,7 @@ function PlayerAvatar({playerName, serverData, isList}) {
                         alignContent: 'flex-start'
                     }}>
                         {playersNameList.map(name => (
-                            <PlayerAvatar key={name} playerName={name} />
+                            <PlayersAvatarPanel key={name} playerName={name} />
                         ))}
                     </div>
                 )}
@@ -45,18 +46,10 @@ function PlayerAvatar({playerName, serverData, isList}) {
 
     return (
         <div className="player-avatar-wrapper">
-            <img
-                className={"player-avatar"}
-                src={`https://minotar.net/avatar/${playerName}/64`}
-                alt={playerName}
-                style={{
-                    borderRadius: 6,
-                    imageRendering: "pixelated",
-                }}
-            />
+            <PlayerAvatar playerName={playerName} />
             <span className="player-avatar-tooltip">{playerName}</span>
         </div>
     )
 }
 
-export default PlayerAvatar;
+export default PlayersAvatarPanel;
