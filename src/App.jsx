@@ -72,8 +72,8 @@ function App() {
                       <Routes>
                           <Route path="/" element={<HomePage onSelectServer={handleSelectServer} />} />
                           <Route path="/server/:serverName" element={<ServerRouteView />} />
+                          <Route path="/player/:playerName" element={<PlayerManager/>} />
                           <Route path="*" element={<Navigate to="/" replace />} />
-                          <Route path="/players" element={<PlayerManager/>} />
                       </Routes>
                   </SidebarInset>
               </SidebarProvider>
