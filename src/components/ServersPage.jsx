@@ -9,6 +9,7 @@ import { useBackend } from "@/context/BackendContext.jsx";
 import { useGlobalResources } from "@/hooks/use-global-resources.jsx";
 import { useServers } from "@/hooks/use-servers.jsx";
 import { MG_EMERALD, MG_CRIMSON } from "@/lib/colors";
+import PlayersAvatarPanel from "@/components/PlayersAvatarPanel.jsx";
 import ServerStats from "@/components/ServerStats.jsx";
 
 const MIN_SPIN_MS = 600;
@@ -96,7 +97,8 @@ function ServersPage() {
                 <div className="sidebar-content-shell">
                     {getServerList()}
                 </div>
-                <div>
+                <div className="stats-row">
+                    <PlayersAvatarPanel isList serverData={displayedGlobalResources} />
                     <ServerStats
                         cpuUsagePercent={displayedGlobalResources.cpu_usage_percent}
                         memoryUsageMb={displayedGlobalResources.memory_usage_mb}
