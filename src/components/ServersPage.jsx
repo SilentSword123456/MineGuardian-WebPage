@@ -1,16 +1,112 @@
+import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import ServersBar from "./ServersBar.jsx";
+import { RefreshCcw, LayoutGrid, WifiOff } from "lucide-react";
+import CustomButton from "./ui/CustomButton.jsx";
+import InstallServerDialog from "../utils/installServerDialog.jsx";
+import { Router } from "@/components/animate-ui/icons/router";
+import { AnimateIcon } from "@/components/animate-ui/icons/icon";
+import { useBackend } from "@/context/BackendContext.jsx";
+import { useGlobalResources } from "@/hooks/use-global-resources.jsx";
+import { useServers } from "@/hooks/use-servers.jsx";
+import { MG_EMERALD, MG_CRIMSON } from "@/lib/colors";
+import ServerStats from "@/components/ServerStats.jsx";
+
+const MIN_SPIN_MS = 600;
 
 function ServersPage() {
     const navigate = useNavigate();
+    const { backendUp, isCheckingBackend } = useBackend();
+    const { data: servers = [], isLoading, refetch } = useServers();
+    const { displayedGlobalResources, refetchGlobalResources } = useGlobalResources();
+    const [isSpinning, setIsSpinning] = useState(false);
 
-    function handleLoadServer(serverName) {
-        navigate(`/server/${encodeURIComponent(serverName)}`);
+    const handleLoadServer = useCallback(
+        (serverName) => {
+            navigate(`/server/${encodeURIComponent(serverName)}`);
+        },
+        [navigate]
+    );
+
+    const handleRefresh = useCallback(async () => {
+        if (isSpinning) return;
+        setIsSpinning(true);
+
+        const [,] = await Promise.all([
+            refetch(),
+            refetchGlobalResources(),
+            new Promise((r) => setTimeout(r, MIN_SPIN_MS)),
+        ]);
+
+        setIsSpinning(false);
+    }, [isSpinning, refetch, refetchGlobalResources]);
+
+    function getServerList() {
+        if (isCheckingBackend) {
+            return <div className="loading-state">Checking connection...</div>;
+        }
+        if (!backendUp) {
+            return (
+                <div className="loading-state offline-state">
+                    <WifiOff size={16} style={{ marginBottom: 4 }} />
+                    <span>Can't connect to backend</span>
+                </div>
+            );
+        }
+        if (isLoading) {
+            return <div className="loading-state">Loading...</div>;
+        }
+        if (!servers || servers.length === 0) {
+            return <div className="loading-state">No servers found</div>;
+        }
+
+        return servers.map((server) => (
+            <AnimateIcon key={server.id} animateOnHover asChild>
+                <button
+                    className="server-item"
+                    onClick={() => handleLoadServer(server.name)}
+                >
+                    <div style={{display: "flex", alignItems: "center", gap: "10px",}}>
+                        <Router color={server.isRunning ? MG_EMERALD : MG_CRIMSON}/>
+                        {server.name}
+                    </div>
+                </button>
+            </AnimateIcon>
+        ));
     }
 
     return (
         <div className="servers-page">
-            <ServersBar loadServer={handleLoadServer} />
+            <div className="servers-panel">
+                <div className="sidebar-header-shell">
+                    <h3
+                        style={{display: "flex", alignItems: "center", gap: "8px",}}>
+                        <LayoutGrid size={20} />
+                        Servers
+                    </h3>
+                    <CustomButton
+                        className={`refreshButton${isSpinning ? " refreshButton-spinning" : ""}`}
+                        onClick={handleRefresh}
+                        icon={RefreshCcw}
+                        loading={isSpinning}
+                        circle={true}
+                        size={"sm"}
+                        disabled={!backendUp || isSpinning}
+                    />
+                </div>
+                <div className="sidebar-content-shell">
+                    {getServerList()}
+                </div>
+                <div>
+                    <ServerStats
+                        cpuUsagePercent={displayedGlobalResources.cpu_usage_percent}
+                        memoryUsageMb={displayedGlobalResources.memory_usage_mb}
+                        MAX_MEMORY_MB={Math.max(displayedGlobalResources.max_memory_mb ?? 1, 1)}
+                    />
+                </div>
+                <div className="sidebar-footer-shell">
+                    <InstallServerDialog triggerClassName="install-server-button-sidebar" />
+                </div>
+            </div>
         </div>
     );
 }
