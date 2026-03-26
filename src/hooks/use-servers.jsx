@@ -1,11 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useBackend } from "@/context/BackendContext.jsx";
-import { BASE_URL } from "@/lib/config.js";
-
-async function fetchServers() {
-    const result = await fetch(`${BASE_URL}/servers`).then((r) => r.json());
-    return result.servers;
-}
+import manager from "@/utils/manager.js";
 
 /**
  * Returns the list of servers, fetched only when the backend is up.
@@ -15,7 +10,7 @@ export function useServers() {
     const { backendUp } = useBackend();
 
     return useQuery({
-        queryFn: fetchServers,
+        queryFn: () => manager.getServers(),
         queryKey: ["servers"],
         enabled: backendUp === true,
         refetchInterval: 10 * 1000,
