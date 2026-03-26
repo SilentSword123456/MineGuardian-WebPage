@@ -5,7 +5,11 @@ import manager from "@/utils/manager.js";
 export const DEFAULT_GLOBAL_RESOURCES = {
     cpu_usage_percent: 0,
     memory_usage_mb: 0,
-    online_players_count: 0,
+    online_players: {
+        max: 0,
+        online: 0,
+        players: [],
+    },
     max_memory_mb: 1,
 };
 
