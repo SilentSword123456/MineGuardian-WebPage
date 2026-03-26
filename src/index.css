@@ -4,9 +4,6 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-    --sidebar-width: 150px;
-    --sidebar-padding: 20px;
-    --sidebar-total-width: calc(var(--sidebar-width) + 2 * var(--sidebar-padding));
     --console-right-margin: 320px;
     --radius: 0.625rem;
 
@@ -207,7 +204,7 @@ body {
 .install-server-button {
     position: fixed !important;
     bottom: 20px;
-    left: calc(var(--sidebar-total-width) / 2 - 26px) !important;
+    left: 20px !important;
     z-index: 2000;
     width: 52px !important;
     height: 52px !important;
@@ -276,27 +273,15 @@ body {
     background: var(--mg-emerald);
 }
 
+/* .refreshButton is applied to a circle CustomButton — don't override its size/color,
+   just ensure it doesn't stretch */
 .refreshButton {
-    width: 100%;
-    padding: 10px 15px;
-    margin-bottom: 15px;
-    background-color: var(--mg-emerald);
-    color: var(--mg-obsidian);
-    border: none;
-    border-radius: 5px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+    flex-shrink: 0 !important;
 }
 
-.refreshButton:hover {
-    background-color: var(--mg-emerald-dim);
-}
-
-.refreshButton:active {
-    background-color: var(--mg-emerald-dim);
-    transform: scale(0.98);
+/* Spin animation applied while refreshing (min duration enforced via JS) */
+.refreshButton-spinning svg {
+    animation: spin 0.6s linear infinite;
 }
 
 .server-item {
@@ -340,7 +325,10 @@ body {
 .console-container {
     position: fixed;
     bottom: 0;
-    left: var(--sidebar-width);
+    /* Use the Radix sidebar's dynamic --sidebar-width variable.
+       It lives on the SidebarProvider element, not :root, so it correctly
+       reads 0 when the sidebar is collapsed (offcanvas). */
+    left: var(--sidebar-width, 0px);
     right: var(--console-right-margin);
     width: auto;
     background-color: var(--mg-stone);
@@ -348,9 +336,15 @@ body {
     border-top-right-radius: 10px;
     box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
     z-index: 1100;
-    transition: all 0.3s ease;
+    transition: left 0.3s ease, right 0.3s ease, height 0.3s ease;
     display: flex;
     flex-direction: column;
+}
+
+/* Fallback: if Radix doesn't update the variable when collapsed,
+   detect collapsed state via the data-state attribute on the sidebar element */
+:root:has([data-sidebar="sidebar"][data-state="collapsed"]) .console-container {
+    left: 0;
 }
 
 .console-container.collapsed {
@@ -1039,11 +1033,11 @@ body {
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
+    * {
+        @apply border-border outline-ring/50;
     }
-  body {
-    @apply bg-background text-foreground;
+    body {
+        @apply bg-background text-foreground;
     }
 }
 
@@ -1240,7 +1234,98 @@ body {
     color: var(--mg-fog);
 }
 
-/* ── Loading state (sidebar) ──────────────────────────────── */
+/* ── ServersPage ───────────────────────────────────────────── */
+.servers-page {
+    flex: 1;
+    height: 100%;
+    overflow-y: auto;
+    background-color: var(--mg-obsidian);
+    padding: 32px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    max-width: 860px;
+}
+
+/* Header row: title + actions */
+.servers-page .sidebar-header-shell {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--mg-mist);
+}
+
+.servers-page .sidebar-header-shell h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--mg-snow);
+    margin: 0;
+    gap: 10px;
+}
+
+/* Server list: clean rows instead of sidebar cards */
+.servers-page .sidebar-content-shell {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+}
+
+.servers-page .server-item {
+    padding: 14px 16px;
+    margin-bottom: 0;
+    border-radius: 0;
+    border-bottom: 1px solid var(--mg-stone);
+    background-color: transparent;
+    font-size: 0.95rem;
+    transition: background-color 0.15s ease;
+}
+
+.servers-page .server-item:first-child {
+    border-top: 1px solid var(--mg-stone);
+    border-radius: 8px 8px 0 0;
+}
+
+.servers-page .server-item:last-child {
+    border-bottom: none;
+    border-radius: 0 0 8px 8px;
+}
+
+.servers-page .server-item:only-child {
+    border-radius: 8px;
+}
+
+.servers-page .server-item:hover {
+    background-color: var(--mg-void);
+    transform: none;
+    outline: none;
+}
+
+.servers-page .server-item:active {
+    background-color: var(--mg-stone);
+}
+
+/* Footer: install button sits flush left, not centered */
+.servers-page .sidebar-footer-shell {
+    justify-content: flex-start;
+    padding-top: 20px;
+}
+
+.servers-page .install-server-button-sidebar {
+    width: auto !important;
+    padding: 8px 18px !important;
+    border-radius: 8px !important;
+    background: var(--mg-emerald) !important;
+    color: var(--mg-obsidian) !important;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    animation: none !important;
+    box-shadow: none !important;
+    transition: background 0.2s ease !important;
+}
+
+.servers-page .install-server-button-sidebar:hover {
+    background: var(--mg-emerald-dim) !important;
+}
 .loading-state {
     color: var(--mg-fog);
     font-size: 13px;

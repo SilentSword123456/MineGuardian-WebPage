@@ -1,3 +1,4 @@
+import { useState, useCallback } from "react";
 import { RefreshCcw, LayoutGrid, WifiOff } from "lucide-react";
 import CustomButton from "./ui/CustomButton.jsx";
 import InstallServerDialog from "../utils/installServerDialog.jsx";
@@ -7,13 +8,28 @@ import { useBackend } from "@/context/BackendContext.jsx";
 import { useServers } from "@/hooks/use-servers.jsx";
 import { MG_EMERALD, MG_CRIMSON } from '@/lib/colors';
 
+const MIN_SPIN_MS = 600;
+
 /**
  * @param {Object} props
- * @param {function(string): void} props.loadServer - receives the selected server name
+ * @param {function(string): void} props.loadServer
  */
-function ServersBar({loadServer}) {
+function ServersBar({ loadServer }) {
     const { backendUp, isCheckingBackend } = useBackend();
     const { data: servers = [], isLoading, refetch } = useServers();
+    const [isSpinning, setIsSpinning] = useState(false);
+
+    const handleRefresh = useCallback(async () => {
+        if (isSpinning) return;
+        setIsSpinning(true);
+
+        const [,] = await Promise.all([
+            refetch(),
+            new Promise((r) => setTimeout(r, MIN_SPIN_MS)),
+        ]);
+
+        setIsSpinning(false);
+    }, [isSpinning, refetch]);
 
     function getServerList() {
         if (isCheckingBackend) {
@@ -38,9 +54,10 @@ function ServersBar({loadServer}) {
             <AnimateIcon key={server.id} animateOnHover asChild>
                 <button
                     className="server-item"
-                    onClick={() => loadServer(server.name)}>
+                    onClick={() => loadServer(server.name)}
+                >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <Router color={server.isRunning ? MG_EMERALD : MG_CRIMSON}/>
+                        <Router color={server.isRunning ? MG_EMERALD : MG_CRIMSON} />
                         {server.name}
                     </div>
                 </button>
@@ -56,14 +73,14 @@ function ServersBar({loadServer}) {
                     Servers
                 </h3>
                 <CustomButton
-                    className={"refreshButton"}
-                    onClick={() => refetch()}
+                    className={`refreshButton${isSpinning ? ' refreshButton-spinning' : ''}`}
+                    onClick={handleRefresh}
                     icon={RefreshCcw}
-                    loading={isLoading}
+                    loading={isSpinning}
                     circle={true}
                     size={'sm'}
-                    disabled={!backendUp}
-                ></CustomButton>
+                    disabled={!backendUp || isSpinning}
+                />
             </div>
             <div className="sidebar-content-shell">
                 {getServerList()}

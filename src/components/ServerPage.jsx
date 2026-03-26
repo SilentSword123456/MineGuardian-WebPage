@@ -90,57 +90,56 @@ function ServerPage({loadedServer, onUninstall}) {
                 <h1>Please load a server</h1>
             ) : (
                 <>{isInstalled===false ? (
-                        <div className="not-installed">
-                            <h1>{loadedServer.name} is not installed</h1>
-                        </div>
+                    <div className="not-installed">
+                        <h1>{loadedServer.name} is not installed</h1>
+                    </div>
 
-                         ) : (
+                ) : (
 
-                        <>
-                            <h1>{loadedServer.name}</h1>
-                            <Tabs defaultValue="overview">
-                                <TabsList>
-                                    <TabsTrigger value="overview">Overview</TabsTrigger>
-                                    <TabsTrigger value="advanced">Advanced</TabsTrigger>
-                                </TabsList>
-                                <TabsContents>
-                                    <TabsContent value="overview">
-                                        <div className="stats-row">
+                    <>
+                        <Tabs defaultValue="overview">
+                            <TabsList>
+                                <TabsTrigger value="overview">Overview</TabsTrigger>
+                                <TabsTrigger value="advanced">Advanced</TabsTrigger>
+                            </TabsList>
+                            <TabsContents>
+                                <TabsContent value="overview">
+                                    <div className="stats-row">
                                         <PlayersAvatarPanel isList serverData={data} />
                                         <ServerStats
                                             cpuUsagePercent={data?.cpu_usage_percent}
                                             memoryUsageMb={data?.memory_usage_mb}
                                             MAX_MEMORY_MB={generalInfo?.max_memory_mb}
                                         />
-                                        </div>
-                                    </TabsContent>
-                                    <TabsContent value="advanced">
-                                        <DeleteConfirmation onConfirm={async () => {
-                                            const result = await loadedServer.uninstall();
-                                            if (result === true) {
-                                                setIsInstalled(false);
-                                                onUninstall?.();
-                                            }
-                                        }}/>
-                                    </TabsContent>
-                                </TabsContents>
-                            </Tabs>
-                            <Console
-                                server={loadedServer}
-                                socket={socket}
-                                isConnected={isConnected}
-                                messages={messages}
-                                setMessages={setMessages}
-                            />
-                            <QuickCommands
-                                server={loadedServer}
-                                isRunning={isRunning}
-                                isConnected={isConnected}
-                            />
+                                    </div>
+                                </TabsContent>
+                                <TabsContent value="advanced">
+                                    <DeleteConfirmation onConfirm={async () => {
+                                        const result = await loadedServer.uninstall();
+                                        if (result === true) {
+                                            setIsInstalled(false);
+                                            onUninstall?.();
+                                        }
+                                    }}/>
+                                </TabsContent>
+                            </TabsContents>
+                        </Tabs>
+                        <Console
+                            server={loadedServer}
+                            socket={socket}
+                            isConnected={isConnected}
+                            messages={messages}
+                            setMessages={setMessages}
+                        />
+                        <QuickCommands
+                            server={loadedServer}
+                            isRunning={isRunning}
+                            isConnected={isConnected}
+                        />
 
 
-                        </>
-                    )}
+                    </>
+                )}
                 </>
             )}
         </div>
