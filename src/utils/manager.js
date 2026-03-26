@@ -77,11 +77,16 @@ class Manager{
         try{
             const servers = await this.getServers();
             let statsCount = 0;
+            const playersSet = new Set();
 
             const resources = {
                 cpu_usage_percent: 0,
                 memory_usage_mb: 0,
-                online_players_count: 0,
+                online_players: {
+                    max: 0,
+                    online: 0,
+                    players: [],
+                },
                 max_memory_mb: 0,
             };
 
@@ -93,8 +98,6 @@ class Manager{
                 const response = await fetch(`${this.baseUrl}/servers/${encodeURIComponent(server.name)}/stats`, {
                     method: 'GET'
                 });
-
-                console.log(`Fetched: ${this.baseUrl}/servers/${encodeURIComponent(server.name)}/stats`);
 
                 if (response.status === 404) {
                     continue;
@@ -109,9 +112,16 @@ class Manager{
 
                 resources.cpu_usage_percent += Number(stats?.cpu_usage_percent ?? 0);
                 resources.memory_usage_mb += Number(stats?.memory_usage_mb ?? 0);
-                resources.online_players_count += Number(stats?.online_players?.online ?? 0);
+                resources.online_players.max += Number(stats?.online_players?.max ?? 0);
+                resources.online_players.online += Number(stats?.online_players?.online ?? 0);
                 resources.max_memory_mb += Number(stats?.max_memory_mb ?? 0);
+
+                for (const player of stats?.online_players?.players ?? []) {
+                    playersSet.add(player);
+                }
             }
+
+            resources.online_players.players = Array.from(playersSet);
 
             if (statsCount > 0) {
                 resources.cpu_usage_percent = Math.min(resources.cpu_usage_percent / statsCount, 100);
