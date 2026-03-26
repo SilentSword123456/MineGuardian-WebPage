@@ -30,19 +30,16 @@ function ServerPage({loadedServer, onUninstall}) {
     const [messages, setMessages] = useState([]);
     const [isRunning, setIsRunning] = useState(loadedServer.isRunning);
     const [isInstalled, setIsInstalled] = useState(loadedServer.isInstalled);
-    const [generalInfo, setGeneralInfo] = useState(null);
 
     useEffect(() => {
         setData(null);
         setMessages([]);
-        setGeneralInfo(null);
         setIsInstalled(loadedServer.isInstalled);
 
         if(!loadedServer || !loadedServer.name)
             return;
 
         if (backendUp) {
-            loadedServer.getGeneralInfo().then(setGeneralInfo).catch(console.error);
 
             console.log(`Creating socket for server: ${loadedServer.name}`);
 
@@ -109,7 +106,7 @@ function ServerPage({loadedServer, onUninstall}) {
                                         <ServerStats
                                             cpuUsagePercent={data?.cpu_usage_percent}
                                             memoryUsageMb={data?.memory_usage_mb}
-                                            MAX_MEMORY_MB={generalInfo?.max_memory_mb}
+                                            MAX_MEMORY_MB={data?.max_memory_mb}
                                         />
                                     </div>
                                 </TabsContent>
