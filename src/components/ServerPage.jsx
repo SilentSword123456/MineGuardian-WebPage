@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Console from "./Console.jsx";
 import QuickCommands from "./QuickCommands.jsx";
 import PlayersAvatarPanel from "./PlayersAvatarPanel.jsx";
@@ -6,6 +6,7 @@ import ServerStats from "./ServerStats.jsx";
 import createSocket from "../utils/webSocket.js";
 import DeleteConfirmation from "@/utils/deleteConfirmation.jsx";
 import { useBackend } from "@/context/BackendContext.jsx";
+import ServerLiveData from "@/types/serverLiveData.jsx";
 import { WifiOff } from "lucide-react";
 import {
     Tabs,
@@ -24,17 +25,26 @@ import {
  */
 function ServerPage({loadedServer, onUninstall}) {
     const { backendUp } = useBackend();
-    const [data, setData] = useState(null);
+    const [data, setData] = useState(() => new ServerLiveData().toObject());
     const [socket, setSocket] = useState(null);
     const [isConnected, setIsConnected] = useState(false);
     const [messages, setMessages] = useState([]);
     const [isRunning, setIsRunning] = useState(loadedServer.isRunning);
+    const isRunningRef = useRef(loadedServer.isRunning);
     const [isInstalled, setIsInstalled] = useState(loadedServer.isInstalled);
 
     useEffect(() => {
-        setData(null);
+        if (isRunning === false) {
+            setData((prev) => new ServerLiveData(prev).reset(true).toObject());
+        }
+    }, [isRunning]);
+
+    useEffect(() => {
+        setData(new ServerLiveData().toObject());
         setMessages([]);
         setIsInstalled(loadedServer.isInstalled);
+        setIsRunning(loadedServer.isRunning);
+        isRunningRef.current = loadedServer.isRunning;
 
         if(!loadedServer || !loadedServer.name)
             return;
@@ -48,18 +58,33 @@ function ServerPage({loadedServer, onUninstall}) {
 
             newSocket.on('connect', () => setIsConnected(true));
             newSocket.on('disconnect', () => setIsConnected(false));
-            newSocket.on('message', (data) => setMessages(prev => [...prev, {type:"", text: data.data }]));
-            newSocket.on('console', (data) => setMessages(prev => [...prev, {type:"", text: data.data }]));
-            newSocket.on('resources', (data) => setData(data));
+            newSocket.on('system', (data) => {
+                if (isRunningRef.current) {
+                    setMessages(prev => [...prev, {type:"system", text: data.data }]);
+                }
+            });
+
+            newSocket.on('console', (data) => {
+                if (isRunningRef.current) {
+                    setMessages(prev => [...prev, {type:"server", text: data.data }]);
+                }
+            });
+            newSocket.on('resources', (statsData) => {
+                if (isRunningRef.current) {
+                    console.log("Received resources", statsData);
+                    setData(new ServerLiveData(statsData).toObject());
+                }
+            });
             newSocket.on('status', (data) => {
-                loadedServer.isConnected = data.running;
+                console.log("Received status:", data);
                 setIsRunning(data.running);
+                isRunningRef.current = data.running;
             });
 
             return () => {
                 newSocket.off('connect');
                 newSocket.off('disconnect');
-                newSocket.off('message');
+                newSocket.off('system');
                 newSocket.off('console');
                 newSocket.off('resources');
                 newSocket.off('status');
@@ -72,7 +97,7 @@ function ServerPage({loadedServer, onUninstall}) {
             setSocket(null);
             setIsConnected(false);
         }
-    }, [loadedServer.name, loadedServer.isInstalled, backendUp]);
+    }, [loadedServer.name, loadedServer.isInstalled, loadedServer.isRunning, backendUp]);
 
     return (
         <div className="server-page">
@@ -102,7 +127,7 @@ function ServerPage({loadedServer, onUninstall}) {
                             <TabsContents>
                                 <TabsContent value="overview">
                                     <div className="stats-row">
-                                        <PlayersAvatarPanel isList serverData={data} />
+                                        <PlayersAvatarPanel online_players={data?.online_players} />
                                         <ServerStats
                                             cpuUsagePercent={data?.cpu_usage_percent}
                                             memoryUsageMb={data?.memory_usage_mb}
