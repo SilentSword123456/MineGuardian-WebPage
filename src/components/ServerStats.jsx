@@ -5,7 +5,8 @@ const blocks = 10;
 function ServerStats({ cpuUsagePercent, memoryUsageMb, MAX_MEMORY_MB }) {
     const cpu = cpuUsagePercent ?? 0;
     const mem = memoryUsageMb ?? 0;
-    const memPct = Math.min((mem / MAX_MEMORY_MB) * 100, 100);
+    const maxMem = Math.max(MAX_MEMORY_MB ?? 0, 1);
+    const memPct = Math.min((mem / maxMem) * 100, 100);
 
     const getUsageColor = (pct) => {
         if (pct < 50) return MG_EMERALD;
