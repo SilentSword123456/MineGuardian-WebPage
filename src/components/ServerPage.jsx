@@ -46,10 +46,30 @@ function ServerPage({loadedServer, onUninstall}) {
         setIsRunning(loadedServer.isRunning);
         isRunningRef.current = loadedServer.isRunning;
 
+        let isActive = false;
+
         if(!loadedServer || !loadedServer.name)
             return;
 
         if (backendUp) {
+            loadedServer.getGeneralInfo()
+                .then((serverInfo) => {
+                    if (isActive) {
+                        return;
+                    }
+
+                    setData((prev) => new ServerLiveData({
+                        ...prev,
+                    }).set({
+                        max_memory_mb: Number(serverInfo?.max_memory_mb ?? prev?.max_memory_mb ?? 0),
+                        online_players: {
+                            max: Number(serverInfo?.online_players?.max ?? prev?.online_players?.max ?? 0),
+                        },
+                    }).toObject());
+                })
+                .catch((error) => {
+                    console.error(`Error fetching general server info for ${loadedServer.name}:`, error);
+                });
 
             console.log(`Creating socket for server: ${loadedServer.name}`);
 
@@ -72,7 +92,7 @@ function ServerPage({loadedServer, onUninstall}) {
             newSocket.on('resources', (statsData) => {
                 if (isRunningRef.current) {
                     console.log("Received resources", statsData);
-                    setData(new ServerLiveData(statsData).toObject());
+                    setData((prev) => new ServerLiveData(prev).set(statsData).toObject());
                 }
             });
             newSocket.on('status', (data) => {
@@ -82,6 +102,7 @@ function ServerPage({loadedServer, onUninstall}) {
             });
 
             return () => {
+                isActive = true;
                 newSocket.off('connect');
                 newSocket.off('disconnect');
                 newSocket.off('system');
@@ -93,6 +114,7 @@ function ServerPage({loadedServer, onUninstall}) {
                 setIsConnected(false);
             };
         } else {
+            isActive = true;
             // Backend is down — clean up any existing socket
             setSocket(null);
             setIsConnected(false);
