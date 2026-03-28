@@ -98,7 +98,7 @@ function ServersPage() {
                     {getServerList()}
                 </div>
                 <div className="stats-row">
-                    <PlayersAvatarPanel isList serverData={displayedGlobalResources} />
+                    <PlayersAvatarPanel online_players={displayedGlobalResources.online_players} />
                     <ServerStats
                         cpuUsagePercent={displayedGlobalResources.cpu_usage_percent}
                         memoryUsageMb={displayedGlobalResources.memory_usage_mb}
