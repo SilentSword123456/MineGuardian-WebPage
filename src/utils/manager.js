@@ -1,4 +1,5 @@
 import { BASE_URL } from "@/lib/config.js";
+import ServerLiveData from "@/types/serverLiveData.jsx";
 
 class Manager{
     baseUrl = BASE_URL;
@@ -79,16 +80,7 @@ class Manager{
             let statsCount = 0;
             const playersSet = new Set();
 
-            const resources = {
-                cpu_usage_percent: 0,
-                memory_usage_mb: 0,
-                online_players: {
-                    max: 0,
-                    online: 0,
-                    players: [],
-                },
-                max_memory_mb: 0,
-            };
+            const resources = new ServerLiveData();
 
             for (const server of servers) {
                 if (server?.isRunning === false) {
@@ -131,7 +123,7 @@ class Manager{
                 resources.max_memory_mb = Math.max(resources.memory_usage_mb, 1);
             }
 
-            return resources;
+            return resources.toObject();
         } catch (error) {
             console.error(`Error fetching used resources:`, error);
             throw error;
