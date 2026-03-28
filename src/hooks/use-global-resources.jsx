@@ -1,15 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { useBackend } from "@/context/BackendContext.jsx";
 import manager from "@/utils/manager.js";
+import ServerLiveData from "@/types/serverLiveData.jsx";
 
 export const DEFAULT_GLOBAL_RESOURCES = {
-    cpu_usage_percent: 0,
-    memory_usage_mb: 0,
-    online_players: {
-        max: 0,
-        online: 0,
-        players: [],
-    },
+    ...new ServerLiveData().toObject(),
     max_memory_mb: 1,
 };
 
