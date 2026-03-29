@@ -1,0 +1,228 @@
+.console-container {
+    position: fixed;
+    bottom: 0;
+    /* Uses Radix sidebar --sidebar-width from SidebarProvider; 0 when collapsed */
+    left: var(--sidebar-width, 0px);
+    right: var(--console-right-margin);
+    width: auto;
+    background-color: var(--mg-stone);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 1100;
+    transition: left 0.3s ease, right 0.3s ease, height 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Fallback if the sidebar variable is not updated while collapsed */
+:root:has([data-sidebar="sidebar"][data-state="collapsed"]) .console-container {
+    left: 0;
+}
+
+.console-container.collapsed {
+    height: 40px;
+}
+
+.console-container.expanded {
+    height: 60vh;
+}
+
+.console-header {
+    height: 40px;
+    padding: 0 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    background-color: var(--mg-void);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.console-header:hover {
+    background-color: var(--mg-stone);
+}
+
+.console-title {
+    color: var(--mg-snow);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.status-dot.online {
+    background-color: var(--mg-emerald);
+}
+
+.status-dot.offline {
+    background-color: var(--mg-crimson);
+}
+
+.console-toggle-btn {
+    background: none;
+    border: none;
+    color: var(--mg-ghost);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+.console-content {
+    flex: 1;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.console-not-connected {
+    padding: 20px;
+    color: var(--mg-crimson);
+    text-align: center;
+}
+
+.terminalConnection {
+    flex: 1;
+    width: 100%;
+    margin-bottom: 10px;
+    background-color: var(--mg-obsidian);
+    color: var(--mg-snow);
+    border: 2px solid var(--mg-mist);
+    border-radius: 8px;
+    padding: 10px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 13px;
+    resize: none;
+    overflow-y: auto;
+}
+
+.console-input-group {
+    display: flex;
+    gap: 10px;
+}
+
+.terminalInput {
+    flex: 1;
+    padding: 10px 15px;
+    background-color: var(--mg-slate);
+    color: var(--mg-snow);
+    border: 2px solid var(--mg-mist);
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.clear-console-btn {
+    padding: 0 15px;
+    background-color: var(--mg-slate);
+    color: var(--mg-snow);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.clear-console-btn:hover {
+    background-color: var(--mg-mist);
+}
+
+.terminalConnection:focus,
+.terminalInput:focus {
+    outline: none;
+    border-color: var(--mg-emerald);
+}
+
+.terminalConnection::-webkit-scrollbar {
+    width: 12px;
+}
+
+.terminalConnection::-webkit-scrollbar-track {
+    background: var(--mg-stone);
+    border-radius: 10px;
+}
+
+.terminalConnection::-webkit-scrollbar-thumb {
+    background: var(--mg-void);
+    border-radius: 10px;
+    border: 2px solid var(--mg-stone);
+}
+
+.terminalConnection::-webkit-scrollbar-thumb:hover {
+    background: var(--mg-slate);
+}
+
+.status-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.status-indicator.online {
+    background-color: var(--mg-emerald);
+}
+
+.status-indicator.offline {
+    background-color: var(--mg-crimson);
+}
+
+/* Quick Commands Panel */
+.quick-commands {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: var(--mg-stone);
+    border-radius: 10px;
+    padding: 15px 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+    min-width: 180px;
+    border: 2px solid var(--mg-mist);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.quick-commands h3 {
+    color: var(--mg-snow);
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.quick-commands button {
+    width: 100%;
+    padding: 10px 15px;
+    margin-bottom: 8px;
+    background-color: var(--mg-slate);
+    color: var(--mg-snow);
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    font-family: 'Consolas', 'Courier New', monospace;
+}
+
+.quick-commands button:last-child {
+    margin-bottom: 0;
+}
+
+.quick-commands button:hover {
+    background-color: var(--mg-mist);
+    transform: scale(1.02);
+}
+
+.quick-commands button:active {
+    background-color: var(--mg-void);
+    transform: scale(0.98);
+}
+

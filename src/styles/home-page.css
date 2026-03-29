@@ -1,0 +1,169 @@
+/* -- HomePage -------------------------------------------------- */
+.home-page {
+    flex: 1;
+    margin-left: 0;
+    height: 100%;
+    overflow-y: auto;
+    background-color: var(--mg-obsidian);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 40px 40px;
+    gap: 48px;
+    color: var(--mg-snow);
+}
+
+.home-header {
+    text-align: center;
+}
+
+.home-title {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--mg-snow);
+    margin: 0 0 8px;
+}
+
+.home-subtitle {
+    font-size: 1rem;
+    color: var(--mg-ghost);
+    margin: 0;
+}
+
+.home-servers-section {
+    width: 100%;
+    max-width: 800px;
+}
+
+.home-section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--mg-ghost);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 16px;
+}
+
+.home-loading,
+.home-empty {
+    color: var(--mg-fog);
+    font-size: 0.95rem;
+}
+
+.home-server-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.home-server-card {
+    background-color: var(--mg-void);
+    border: 1px solid var(--mg-mist);
+    border-radius: 10px;
+    padding: 20px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    color: var(--mg-snow);
+    text-align: left;
+    transition: background 0.2s, transform 0.15s, border-color 0.2s;
+    width: 100%;
+}
+
+.home-server-card:hover {
+    background-color: var(--mg-stone);
+    border-color: var(--mg-emerald);
+    transform: translateY(-2px);
+}
+
+.home-server-card:active {
+    transform: translateY(0);
+    background-color: var(--mg-obsidian);
+}
+
+.home-server-card-icon {
+    flex-shrink: 0;
+}
+
+.home-server-card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.home-server-name {
+    font-size: 1rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.home-server-status {
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.home-server-status.running {
+    color: var(--mg-emerald);
+}
+
+.home-server-status.stopped {
+    color: var(--mg-crimson);
+}
+
+.home-install-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.home-backend-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    border: 1px solid transparent;
+}
+
+.home-backend-status.online {
+    background-color: rgba(46, 204, 113, 0.12);
+    border-color: rgba(46, 204, 113, 0.3);
+    color: var(--mg-emerald);
+}
+
+.home-backend-status.offline {
+    background-color: rgba(239, 68, 68, 0.12);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: var(--mg-crimson);
+}
+
+.home-backend-status.checking {
+    background-color: rgba(168, 180, 204, 0.1);
+    border-color: rgba(168, 180, 204, 0.2);
+    color: var(--mg-ghost);
+}
+
+.home-backend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background-color: currentColor;
+}
+
+.home-backend-status.checking .home-backend-dot {
+    animation: pulse-dot 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+

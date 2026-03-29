@@ -1,0 +1,240 @@
+/* -- InstallServerDialog -------------------------------------- */
+.install-dialog-content {
+    background-color: var(--mg-void) !important;
+    border: 2px solid var(--mg-mist) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6) !important;
+    color: var(--mg-snow) !important;
+}
+
+.install-dialog-title {
+    color: var(--mg-snow) !important;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+}
+
+.install-dialog-description {
+    color: var(--mg-ghost) !important;
+    font-size: 13px !important;
+}
+
+.install-dialog-label {
+    color: var(--mg-ghost);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.install-dialog-input {
+    background-color: var(--mg-slate) !important;
+    border: 2px solid var(--mg-mist) !important;
+    border-radius: 6px !important;
+    color: var(--mg-snow) !important;
+    font-size: 14px !important;
+    padding: 8px 12px !important;
+    transition: border-color 0.2s ease !important;
+}
+
+.install-dialog-input:focus {
+    outline: none !important;
+    border-color: var(--mg-emerald) !important;
+}
+
+.install-dialog-cancel {
+    background: transparent !important;
+    color: var(--mg-ghost) !important;
+    border: 2px solid transparent !important;
+    border-radius: 6px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    transition: color 0.2s ease, border-color 0.2s ease !important;
+}
+
+.install-dialog-cancel:hover {
+    color: var(--mg-snow) !important;
+    border-color: var(--mg-mist) !important;
+    background: transparent !important;
+}
+
+.install-dialog-submit {
+    background: var(--mg-emerald) !important;
+    color: var(--mg-obsidian) !important;
+    border: none !important;
+    border-radius: 6px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    transition: background 0.2s ease, transform 0.1s ease !important;
+}
+
+.install-dialog-submit:hover {
+    background: var(--mg-emerald-dim) !important;
+}
+
+.install-dialog-submit:active {
+    background: var(--mg-emerald-dim) !important;
+    transform: scale(0.97) !important;
+}
+
+/* -- DeleteConfirmation --------------------------------------- */
+.delete-confirmation-trigger {
+    padding: 8px 16px;
+    background: transparent;
+    color: var(--mg-crimson);
+    border: 2px solid var(--mg-crimson);
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.1s ease;
+}
+
+.delete-confirmation-trigger:hover {
+    background: var(--mg-crimson);
+    color: var(--mg-snow);
+}
+
+.delete-confirmation-trigger:active {
+    transform: scale(0.97);
+}
+
+.delete-confirmation-content {
+    background-color: var(--mg-void) !important;
+    border: 2px solid var(--mg-mist) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6) !important;
+    color: var(--mg-snow) !important;
+}
+
+.delete-confirmation-title {
+    color: var(--mg-snow) !important;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+}
+
+.delete-confirmation-description {
+    color: var(--mg-ghost) !important;
+    font-size: 14px !important;
+}
+
+.delete-confirmation-action {
+    background: var(--mg-crimson) !important;
+    color: var(--mg-snow) !important;
+    border: 2px solid var(--mg-crimson) !important;
+    border-radius: 6px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.1s ease !important;
+}
+
+.delete-confirmation-action:hover {
+    background: var(--mg-crimson-dim) !important;
+    border-color: var(--mg-crimson-dim) !important;
+}
+
+.delete-confirmation-action:active {
+    transform: scale(0.97) !important;
+}
+
+.delete-confirmation-cancel {
+    background: transparent !important;
+    color: var(--mg-ghost) !important;
+    border: 2px solid transparent !important;
+    border-radius: 6px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    transition: color 0.2s ease, border-color 0.2s ease, transform 0.1s ease !important;
+}
+
+.delete-confirmation-cancel:hover {
+    color: var(--mg-snow) !important;
+    border-color: var(--mg-mist) !important;
+}
+
+.delete-confirmation-cancel:active {
+    transform: scale(0.97) !important;
+}
+
+/* -- ConfirmPopup --------------------------------------------- */
+.p-confirm-popup {
+    background-color: var(--mg-void) !important;
+    border: 2px solid var(--mg-mist) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+    color: var(--mg-snow) !important;
+    min-width: 260px;
+}
+
+.p-confirm-popup::before {
+    border-bottom-color: var(--mg-mist) !important;
+}
+
+.p-confirm-popup::after {
+    border-bottom-color: var(--mg-void) !important;
+}
+
+.p-confirm-popup .p-confirm-popup-content {
+    gap: 12px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--mg-mist);
+}
+
+.p-confirm-popup .p-confirm-popup-icon {
+    font-size: 20px;
+    color: var(--mg-ghost);
+}
+
+.p-confirm-popup .p-confirm-popup-message {
+    font-size: 14px;
+    color: var(--mg-snow);
+}
+
+.p-confirm-popup .p-confirm-popup-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 10px 14px;
+}
+
+/* Accept button - Emerald (confirm/go action) */
+.p-confirm-popup .p-confirm-popup-accept {
+    padding: 7px 16px !important;
+    border: 2px solid var(--mg-emerald) !important;
+    border-radius: 6px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    background: var(--mg-emerald) !important;
+    color: var(--mg-obsidian) !important;
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.p-confirm-popup .p-confirm-popup-accept:hover {
+    background: var(--mg-emerald-dim) !important;
+    border-color: var(--mg-emerald-dim) !important;
+}
+
+.p-confirm-popup .p-confirm-popup-accept:active {
+    transform: scale(0.97);
+}
+
+/* Reject button - ghost */
+.p-confirm-popup .p-confirm-popup-reject {
+    padding: 7px 16px !important;
+    border: none !important;
+    border-radius: 6px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    background: transparent !important;
+    color: var(--mg-ghost) !important;
+    transition: color 0.2s ease, transform 0.1s ease;
+}
+
+.p-confirm-popup .p-confirm-popup-reject:hover {
+    color: var(--mg-snow) !important;
+    background: transparent !important;
+}
+
+.p-confirm-popup .p-confirm-popup-reject:active {
+    transform: scale(0.97);
+}
+

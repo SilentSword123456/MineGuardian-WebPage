@@ -1,0 +1,148 @@
+/* -- ServersPage ---------------------------------------------- */
+.servers-page {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+    background-color: var(--mg-obsidian);
+    padding: 32px 40px;
+    box-sizing: border-box;
+}
+
+/* Two-column layout: server list on left, stats on right */
+.servers-layout {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;   /* both cols share the same height */
+    flex: 1;                /* fill all remaining page height */
+    gap: 32px;
+    width: 100%;
+    max-width: 1100px;
+}
+
+/* Left: server list */
+.servers-list-col {
+    flex: 0 0 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+/* Right: players + stats — centered in the blank space */
+.servers-stats-col {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: row;     /* cards sit side by side */
+    justify-content: center; /* push them to the horizontal center */
+    align-items: flex-start; /* pin to top */
+}
+
+/* Header row: title + actions */
+.sidebar-header-shell {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--mg-mist);
+}
+
+.sidebar-header-shell h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--mg-snow);
+    margin: 0;
+    gap: 10px;
+}
+
+/* Server list: clean rows */
+.sidebar-content-shell {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+}
+
+.server-item {
+    padding: 14px 16px;
+    margin-bottom: 0;
+    border-radius: 0;
+    border-bottom: 1px solid var(--mg-stone);
+    background-color: transparent;
+    font-size: 0.95rem;
+    transition: background-color 0.15s ease;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    color: inherit;
+}
+
+.server-item:first-child {
+    border-top: 1px solid var(--mg-stone);
+    border-radius: 8px 8px 0 0;
+}
+
+.server-item:last-child {
+    border-bottom: none;
+    border-radius: 0 0 8px 8px;
+}
+
+.server-item:only-child {
+    border-radius: 8px;
+}
+
+.server-item:hover {
+    background-color: var(--mg-void);
+    transform: none;
+    outline: none;
+}
+
+.server-item:active {
+    background-color: var(--mg-stone);
+}
+
+/* Footer — margin-top: auto pushes it to the bottom of the flex column */
+.sidebar-footer-shell {
+    display: flex;
+    justify-content: flex-start;
+    padding-top: 20px;
+    margin-top: auto;
+}
+
+.install-server-button-sidebar {
+    width: auto !important;
+    padding: 8px 18px !important;
+    border-radius: 8px !important;
+    background: var(--mg-emerald) !important;
+    color: var(--mg-obsidian) !important;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    animation: none !important;
+    box-shadow: none !important;
+    transition: background 0.2s ease !important;
+}
+
+.install-server-button-sidebar:hover {
+    background: var(--mg-emerald-dim) !important;
+}
+
+/* Loading / offline states */
+.loading-state {
+    color: var(--mg-fog);
+    font-size: 13px;
+    padding: 8px 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.loading-state.offline-state {
+    color: var(--mg-crimson);
+}
+
+/* Player overflow label */
+.player-avatar-overflow {
+    margin-top: 8px;
+    font-size: 0.75rem;
+    color: var(--mg-fog);
+}
