@@ -76,52 +76,24 @@ class Manager{
 
     async getGlobalUsedResources(){
         try{
-            const servers = await this.getServers();
-            let statsCount = 0;
-            const playersSet = new Set();
+            const response = await fetch(`${this.baseUrl}/servers/globalStats`, {
+                method: 'GET'
+            });
 
-            const resources = new ServerLiveData();
-
-            for (const server of servers) {
-                if (server?.isRunning === false) {
-                    continue;
-                }
-
-                const response = await fetch(`${this.baseUrl}/servers/${encodeURIComponent(server.name)}/stats`, {
-                    method: 'GET'
-                });
-
-                if (response.status === 404) {
-                    continue;
-                }
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const stats = await response.json();
-                statsCount += 1;
-
-                resources.cpu_usage_percent += Number(stats?.cpu_usage_percent ?? 0);
-                resources.memory_usage_mb += Number(stats?.memory_usage_mb ?? 0);
-                resources.online_players.max += Number(stats?.online_players?.max ?? 0);
-                resources.online_players.online += Number(stats?.online_players?.online ?? 0);
-                resources.max_memory_mb += Number(stats?.max_memory_mb ?? 0);
-
-                for (const player of stats?.online_players?.players ?? []) {
-                    playersSet.add(player);
-                }
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            resources.online_players.players = Array.from(playersSet);
+            const stats = await response.json();
+            const resources = new ServerLiveData().set(stats);
 
-            if (statsCount > 0) {
-                resources.cpu_usage_percent = Math.min(resources.cpu_usage_percent / statsCount, 100);
-            }
+            resources.cpu_usage_percent = Math.min(resources.cpu_usage_percent, 100);
 
             if (resources.max_memory_mb <= 0) {
                 resources.max_memory_mb = Math.max(resources.memory_usage_mb, 1);
             }
+
+            console.log("Received resources:", resources);
 
             return resources.toObject();
         } catch (error) {
