@@ -66,8 +66,8 @@ function ServersPage() {
                     className="server-item"
                     onClick={() => handleLoadServer(server.name)}
                 >
-                    <div style={{display: "flex", alignItems: "center", gap: "10px",}}>
-                        <Router color={server.isRunning ? MG_EMERALD : MG_CRIMSON}/>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <Router color={server.isRunning ? MG_EMERALD : MG_CRIMSON} />
                         {server.name}
                     </div>
                 </button>
@@ -77,37 +77,45 @@ function ServersPage() {
 
     return (
         <div className="servers-page">
-            <div className="servers-panel">
-                <div className="sidebar-header-shell">
-                    <h3
-                        style={{display: "flex", alignItems: "center", gap: "8px",}}>
-                        <LayoutGrid size={20} />
-                        Servers
-                    </h3>
-                    <CustomButton
-                        className={`refreshButton${isSpinning ? " refreshButton-spinning" : ""}`}
-                        onClick={handleRefresh}
-                        icon={RefreshCcw}
-                        loading={isSpinning}
-                        circle={true}
-                        size={"sm"}
-                        disabled={!backendUp || isSpinning}
-                    />
+            <div className="servers-layout">
+
+                {/* Left column: list */}
+                <div className="servers-list-col">
+                    <div className="sidebar-header-shell">
+                        <h3 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                            <LayoutGrid size={20} />
+                            Servers
+                        </h3>
+                        <CustomButton
+                            className={`refreshButton${isSpinning ? " refreshButton-spinning" : ""}`}
+                            onClick={handleRefresh}
+                            icon={RefreshCcw}
+                            loading={isSpinning}
+                            circle={true}
+                            size={"sm"}
+                            disabled={!backendUp || isSpinning}
+                        />
+                    </div>
+                    <div className="sidebar-content-shell">
+                        {getServerList()}
+                    </div>
+                    <div className="sidebar-footer-shell">
+                        <InstallServerDialog triggerClassName="install-server-button-sidebar" />
+                    </div>
                 </div>
-                <div className="sidebar-content-shell">
-                    {getServerList()}
+
+                {/* Right column: stats */}
+                <div className="servers-stats-col">
+                    <div className="stats-row">
+                        <PlayersAvatarPanel online_players={displayedGlobalResources.online_players} />
+                        <ServerStats
+                            cpuUsagePercent={displayedGlobalResources.cpu_usage_percent}
+                            memoryUsageMb={displayedGlobalResources.memory_usage_mb}
+                            MAX_MEMORY_MB={Math.max(displayedGlobalResources.max_memory_mb ?? 1, 1)}
+                        />
+                    </div>
                 </div>
-                <div className="stats-row">
-                    <PlayersAvatarPanel online_players={displayedGlobalResources.online_players} />
-                    <ServerStats
-                        cpuUsagePercent={displayedGlobalResources.cpu_usage_percent}
-                        memoryUsageMb={displayedGlobalResources.memory_usage_mb}
-                        MAX_MEMORY_MB={Math.max(displayedGlobalResources.max_memory_mb ?? 1, 1)}
-                    />
-                </div>
-                <div className="sidebar-footer-shell">
-                    <InstallServerDialog triggerClassName="install-server-button-sidebar" />
-                </div>
+
             </div>
         </div>
     );
