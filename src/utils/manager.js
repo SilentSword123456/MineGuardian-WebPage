@@ -1,5 +1,6 @@
-import { BASE_URL } from "@/lib/config.js";
+import {BASE_URL} from "@/lib/config.js";
 import ServerLiveData from "@/types/serverLiveData.jsx";
+import Server from "@/types/server.jsx";
 
 class Manager{
     baseUrl = BASE_URL;
@@ -15,7 +16,9 @@ class Manager{
             }
 
             const result = await response.json();
-            return result?.servers ?? [];
+
+            const servers = result?.servers?.map((server) => (new Server(server?.id, server?.name, server?.isRunning, this.baseUrl)));
+            return servers;
         } catch (error) {
             console.error('Error fetching servers:', error);
             throw error;
