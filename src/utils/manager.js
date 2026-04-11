@@ -96,8 +96,6 @@ class Manager{
                 resources.max_memory_mb = Math.max(resources.memory_usage_mb, 1);
             }
 
-            console.log("Received resources:", resources);
-
             return resources.toObject();
         } catch (error) {
             console.error(`Error fetching used resources:`, error);
