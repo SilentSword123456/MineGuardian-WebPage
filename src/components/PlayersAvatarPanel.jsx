@@ -59,7 +59,7 @@ function PlayersAvatarPanel({ online_players }) {
                         gap: '10px',
                         margin: 0,
                         alignContent: 'flex-start',
-                        overflow: 'hidden',
+                        overflow: 'visible',
                     }}>
                         {shown.map(name => (
                             <PlayerAvatarItem key={name} playerName={name} />
