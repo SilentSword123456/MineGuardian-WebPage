@@ -63,6 +63,7 @@
 }
 
 .server-item {
+    position: relative;
     padding: 14px 16px;
     margin-bottom: 0;
     border-radius: 0;
@@ -100,6 +101,10 @@
     background-color: var(--mg-stone);
 }
 
+.server-item .server-action-button {
+    position: absolute;
+    right: 0;
+}
 /* Footer — margin-top: auto pushes it to the bottom of the flex column */
 .sidebar-footer-shell {
     display: flex;
