@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { RefreshCcw, LayoutGrid, WifiOff } from "lucide-react";
+import {RefreshCcw, LayoutGrid, WifiOff, Play, Square} from "lucide-react";
 import CustomButton from "./ui/CustomButton.jsx";
 import InstallServerDialog from "../utils/installServerDialog.jsx";
 import { Router } from "@/components/animate-ui/icons/router";
@@ -11,6 +11,7 @@ import { useServers } from "@/hooks/use-servers.jsx";
 import { MG_EMERALD, MG_CRIMSON } from "@/lib/colors";
 import PlayersAvatarPanel from "@/components/PlayersAvatarPanel.jsx";
 import ServerStats from "@/components/ServerStats.jsx";
+import server from "@/types/server.jsx";
 
 const MIN_SPIN_MS = 600;
 
@@ -60,17 +61,35 @@ function ServersPage() {
             return <div className="loading-state">No servers found</div>;
         }
 
+
+        const icon = (server) => (server.isRunning ? Square : Play);
+        const type = (server) => (server.isRunning ? "danger" : "primary");
+        const action = (server) => (server.isRunning ? () => server.stop() : () => server.start());
         return servers.map((server) => (
             <AnimateIcon key={server.id} animateOnHover asChild>
-                <button
+                <div
                     className="server-item"
-                    onClick={() => handleLoadServer(server.name)}
-                >
+                    onClick={() => handleLoadServer(server.name)}>
+
                     <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+
                         <Router color={server.isRunning ? MG_EMERALD : MG_CRIMSON} />
                         {server.name}
+
+                        <CustomButton
+                            className={"server-action-button"}
+                            onClick={async (e) => {
+                                e.stopPropagation();
+                                await action(server)();
+                                refetch()
+                            }}
+                            icon={icon(server)}
+                            variant={type(server)}
+                            size={"sm"}
+                            rounded={true}>
+                        </CustomButton>
                     </div>
-                </button>
+                </div>
             </AnimateIcon>
         ));
     }
