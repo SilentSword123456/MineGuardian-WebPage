@@ -8,7 +8,7 @@ import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { useBackend } from "@/context/BackendContext.jsx";
 import { useGlobalResources } from "@/hooks/use-global-resources.jsx";
 import { useServers } from "@/hooks/use-servers.jsx";
-import { MG_EMERALD, MG_CRIMSON } from "@/lib/colors";
+import {MG_EMERALD, MG_CRIMSON, MG_CYAN} from "@/lib/colors";
 import PlayersAvatarPanel from "@/components/PlayersAvatarPanel.jsx";
 import ServerStats from "@/components/ServerStats.jsx";
 import server from "@/types/server.jsx";
@@ -107,6 +107,7 @@ function ServersPage() {
                         </h3>
                         <CustomButton
                             className={`refreshButton${isSpinning ? " refreshButton-spinning" : ""}`}
+                            style={{ backgroundColor: MG_CYAN}}
                             onClick={handleRefresh}
                             icon={RefreshCcw}
                             loading={isSpinning}
