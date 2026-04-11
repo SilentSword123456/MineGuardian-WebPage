@@ -3,18 +3,24 @@ import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { useBackend } from "@/context/BackendContext.jsx";
 import { useServers } from "@/hooks/use-servers.jsx";
 import { MG_EMERALD, MG_CRIMSON } from '@/lib/colors';
+import {useCallback} from "react";
+import {useNavigate} from "react-router-dom";
 
 /**
  * @param {Object} props
  * @param {function(string): void} props.onSelectServer - receives the selected server name
  */
-function HomePage({ onSelectServer }) {
+function HomePage() {
+    const navigate = useNavigate();
     const { backendUp, isCheckingBackend } = useBackend();
     const { data: servers = [], isLoading } = useServers();
 
-    function handleSelect(server) {
-        onSelectServer(server.name);
-    }
+    const handleLoadServer = useCallback(
+        (server) => {
+            navigate(`/server/${encodeURIComponent(server.name)}`);
+        },
+        [navigate]
+    );
 
     const backendStatus = isCheckingBackend
         ? { label: "Checking connection…", cls: "checking" }
@@ -51,7 +57,7 @@ function HomePage({ onSelectServer }) {
                             <button
                                 key={server.id}
                                 className="home-server-card"
-                                onClick={() => handleSelect(server)}
+                                onClick={() => handleLoadServer(server)}
                             >
                                 <div className="home-server-card-icon">
                                     <AnimateIcon animateOnHover>
