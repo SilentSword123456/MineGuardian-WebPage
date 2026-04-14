@@ -32,7 +32,7 @@ function HomePage() {
         <div className="home-page">
             <div className="home-header">
                 <h1 className="home-title">MineGuardian</h1>
-                <p className="home-subtitle">Select a server to manage, or install a new one.Testing again; test 2</p>
+                <p className="home-subtitle">Select a server to manage, or install a new one.</p>
             </div>
 
             <div className={`home-backend-status ${backendStatus.cls}`}>
