@@ -14,6 +14,7 @@ import AppSidebar from "./components/AppSidebar.jsx";
 import { Navigate, Route, Routes, useNavigate, useParams } from "react-router-dom";
 import { useServers } from "@/hooks/use-servers.jsx";
 import PlayerManager from "@/components/PlayerManager.jsx";
+import Settings from "@/components/Settings.jsx";
 
 const queryClient = new QueryClient();
 
