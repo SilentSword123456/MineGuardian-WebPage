@@ -23,13 +23,15 @@ function LoginPage({ onLogin, loading, error, backendUp, isCheckingBackend, back
     }
 
     function handleSaveUrl() {
-        const trimmed = urlDraft.trim().replace(/\/+$/, "");
-        if (trimmed && trimmed !== backendUrl) {
-            onBackendUrlChange(trimmed);
+        if (normalizedUrl && normalizedUrl !== backendUrl) {
+            onBackendUrlChange(normalizedUrl);
         }
     }
 
     const loginDisabled = loading || backendUp !== true;
+
+    const trimmedUrl = urlDraft.trim();
+    const normalizedUrl = trimmedUrl.replace(/\/+$/, "");
 
     const errorMessage = validationError
         || (error?.message)
@@ -142,7 +144,7 @@ function LoginPage({ onLogin, loading, error, backendUp, isCheckingBackend, back
                                 variant="outline"
                                 size="sm"
                                 onClick={handleSaveUrl}
-                                disabled={!urlDraft.trim() || urlDraft.trim().replace(/\/+$/, "") === backendUrl}
+                                disabled={!trimmedUrl || normalizedUrl === backendUrl}
                             >
                                 Save
                             </Button>
