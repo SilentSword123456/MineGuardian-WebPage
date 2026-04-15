@@ -21,14 +21,14 @@ import LoginPage from "@/components/LoginPage.jsx";
 
 const queryClient = new QueryClient();
 
-function AppContent() {
+function AppContent({ currentUser }) {
     return (
         <SidebarProvider>
             <Sidebar collapsible="offcanvas">
                 <AppSidebar />
             </Sidebar>
             <SidebarInset>
-                <Toolbar />
+                <Toolbar currentUsername={currentUser?.username} />
                 <Routes>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/servers" element={<ServersPage />} />
@@ -75,7 +75,7 @@ function ServerRouteView() {
 
 function App() {
     const { backendUp, isCheckingBackend, baseUrl, setBaseUrl } = useBackend();
-    const { authenticated, authLoading, login, loginPending, loginError, register, registerPending, registerError, refetchAuthSession } = useAuthSession();
+    const { authenticated, authLoading, login, loginPending, loginError, register, registerPending, registerError, refetchAuthSession, currentUser } = useAuthSession();
 
     async function handleLogin(username, password) {
         await login({ username, password });
@@ -93,23 +93,30 @@ function App() {
         return <div className="p-4">Checking authentication...</div>;
     }
 
-    if (!authenticated) {
-        return (
-            <LoginPage
-                onLogin={handleLogin}
-                onRegister={handleRegister}
-                loading={isLoading}
-                error={currentError}
-                backendUp={backendUp}
-                isCheckingBackend={isCheckingBackend}
-                backendUrl={baseUrl}
-                onBackendUrlChange={setBaseUrl}
-            />
-        );
-    }
+    const loginPage = (
+        <LoginPage
+            onLogin={handleLogin}
+            onRegister={handleRegister}
+            loading={isLoading}
+            error={currentError}
+            backendUp={backendUp}
+            isCheckingBackend={isCheckingBackend}
+            backendUrl={baseUrl}
+            onBackendUrlChange={setBaseUrl}
+        />
+    );
 
     return (
-        <AppContent />
+        <Routes>
+            <Route
+                path="/login"
+                element={authenticated ? <Navigate to="/" replace /> : loginPage}
+            />
+            <Route
+                path="/*"
+                element={authenticated ? <AppContent currentUser={currentUser} /> : <Navigate to="/login" replace />}
+            />
+        </Routes>
     );
 }
 

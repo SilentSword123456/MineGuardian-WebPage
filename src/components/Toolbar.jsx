@@ -116,7 +116,7 @@ function BreadcrumbSegment({ segment }) {
     );
 }
 
-function Toolbar() {
+function Toolbar({ currentUsername }) {
     const breadcrumbs = useBreadcrumbs();
 
     return (
@@ -132,6 +132,12 @@ function Toolbar() {
                         </div>
                     ))}
                 </nav>
+            )}
+
+            {currentUsername && (
+                <div className="toolbar-user-chip" title={`Signed in as ${currentUsername}`}>
+                    {currentUsername}
+                </div>
             )}
         </div>
     );
