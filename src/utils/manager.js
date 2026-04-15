@@ -9,9 +9,19 @@ class Manager{
         this.baseUrl = newUrl;
     }
 
+    async request(path, options = {}) {
+        return fetch(`${this.baseUrl}${path}`, options);
+    }
+
+    async requestJson(path, options = {}) {
+        const response = await this.request(path, options);
+        const payload = await response.json().catch(() => ({}));
+        return { response, payload };
+    }
+
     async register(username, password) {
         try {
-            const response = await fetch(`${this.baseUrl}/user`, {
+            const { response, payload } = await this.requestJson("/user", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -20,13 +30,10 @@ class Manager{
             });
 
             if (!response.ok) {
-                const body = await response.json().catch(() => ({}));
-                throw new Error(body.error || `HTTP error! status: ${response.status}`);
+                throw new Error(payload.error || `HTTP error! status: ${response.status}`);
             }
 
-            const result = await response.json();
-
-            if (result.status === false) {
+            if (payload.status === false) {
                 throw new Error("Username already exists.");
             }
 
@@ -39,7 +46,7 @@ class Manager{
 
     async login(username, password) {
         try {
-            const response = await fetch(`${this.baseUrl}/login`, {
+            const { response, payload } = await this.requestJson("/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -49,13 +56,11 @@ class Manager{
             });
 
             if (response.status === 400) {
-                const body = await response.json().catch(() => ({}));
-                throw new Error(body.message || "Missing username or password.");
+                throw new Error(payload.message || "Missing username or password.");
             }
 
             if (response.status === 401) {
-                const body = await response.json().catch(() => ({}));
-                throw new Error(body.message || "Invalid credentials.");
+                throw new Error(payload.message || "Invalid credentials.");
             }
 
             if (!response.ok) {
@@ -71,7 +76,7 @@ class Manager{
 
     async getServers() {
         try {
-            const response = await fetch(`${this.baseUrl}/servers`, {
+            const { response, payload } = await this.requestJson("/servers", {
                 method: 'GET',
                 credentials: "include"
             });
@@ -80,9 +85,7 @@ class Manager{
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const result = await response.json();
-
-            const servers = result?.servers?.map((server) => (new Server(server?.id, server?.name, server?.isRunning, this.baseUrl)));
+            const servers = payload?.servers?.map((server) => (new Server(server?.id, server?.name, server?.isRunning, this.baseUrl)));
             return servers;
         } catch (error) {
             console.error('Error fetching servers:', error);
@@ -92,7 +95,7 @@ class Manager{
 
     async checkAuthSession() {
         try {
-            const response = await fetch(`${this.baseUrl}/favoriteServers`, {
+            const response = await this.request("/favoriteServers", {
                 method: 'GET',
                 credentials: "include"
             });
@@ -114,7 +117,7 @@ class Manager{
 
     async isBackendUp() {
         try {
-            const response = await fetch(`${this.baseUrl}/health`, {
+            const response = await this.request("/health", {
                 method: 'GET'
             });
 
@@ -127,7 +130,7 @@ class Manager{
 
     async installServer(Name, Software="Vanilla", Version="latest", acceptEula=false) {
         try {
-            const response = await fetch(`${this.baseUrl}/manage/addServer`, {
+            const { response, payload } = await this.requestJson("/manage/addServer", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -137,11 +140,10 @@ class Manager{
             });
 
             if (!response.ok) {
-                const body = await response.json().catch(() => ({}));
-                throw new Error(body.message || `HTTP error! status: ${response.status}`);
+                throw new Error(payload.message || `HTTP error! status: ${response.status}`);
             }
 
-            return await response.json();
+            return payload;
 
         } catch (error) {
             console.error(`Error installing server ${Name}:`, error);
@@ -151,7 +153,7 @@ class Manager{
 
     async getAvailableVersions(Software = "Vanilla") {
         try {
-            const response = await fetch(`${this.baseUrl}/manage/${Software}/getAvailableVersions`, {
+            const { response, payload } = await this.requestJson(`/manage/${Software}/getAvailableVersions`, {
                 method: 'GET',
                 credentials: "include"
             });
@@ -160,7 +162,7 @@ class Manager{
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            return await response.json();
+            return payload;
         } catch (error) {
             console.error(`Error fetching versions for ${Software}:`, error);
             throw error;
@@ -169,7 +171,7 @@ class Manager{
 
     async getGlobalUsedResources(){
         try{
-            const response = await fetch(`${this.baseUrl}/servers/globalStats`, {
+            const { response, payload } = await this.requestJson("/servers/globalStats", {
                 method: 'GET',
                 credentials: "include"
             });
@@ -178,8 +180,7 @@ class Manager{
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const stats = await response.json();
-            const resources = new ServerLiveData().set(stats);
+            const resources = new ServerLiveData().set(payload);
 
             resources.cpu_usage_percent = Math.min(resources.cpu_usage_percent, 100);
 

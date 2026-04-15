@@ -1,10 +1,13 @@
+import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useBackend } from "@/context/BackendContext.jsx";
 import manager from "@/utils/manager.js";
+import { clearStoredAuthUser, readStoredAuthUser, storeAuthUser } from "@/lib/auth-user.js";
 
 export function useAuthSession() {
     const queryClient = useQueryClient();
     const { backendUp, baseUrl } = useBackend();
+    const [currentUser, setCurrentUser] = useState(() => readStoredAuthUser(baseUrl));
 
     const authQuery = useQuery({
         queryKey: ["auth-session", baseUrl],
@@ -16,7 +19,10 @@ export function useAuthSession() {
 
     const loginMutation = useMutation({
         mutationFn: ({ username, password }) => manager.login(username, password),
-        onSuccess: async () => {
+        onSuccess: async (_, variables) => {
+            const storedUser = storeAuthUser(baseUrl, variables?.username);
+            setCurrentUser(storedUser);
+            queryClient.setQueryData(["auth-session", baseUrl], true);
             await queryClient.invalidateQueries({ queryKey: ["auth-session", baseUrl] });
             await queryClient.invalidateQueries({ queryKey: ["servers", baseUrl] });
             await queryClient.invalidateQueries({ queryKey: ["global-resources", baseUrl] });
@@ -27,10 +33,21 @@ export function useAuthSession() {
         mutationFn: ({ username, password }) => manager.register(username, password),
     });
 
+    useEffect(() => {
+        setCurrentUser(readStoredAuthUser(baseUrl));
+    }, [baseUrl]);
+
+    useEffect(() => {
+        if (backendUp === true && authQuery.data === false) {
+            clearStoredAuthUser(baseUrl);
+            setCurrentUser(null);
+        }
+    }, [authQuery.data, backendUp, baseUrl]);
+
     return {
-        authenticated: authQuery.data === true,
+        authenticated: authQuery.data === true || (!!currentUser && authQuery.data !== false),
         authError: authQuery.error,
-        authLoading: backendUp === true && authQuery.isLoading,
+        authLoading: backendUp === true && authQuery.isLoading && !currentUser,
         loginError: loginMutation.error,
         loginPending: loginMutation.isPending,
         login: loginMutation.mutateAsync,
@@ -38,6 +55,6 @@ export function useAuthSession() {
         registerPending: registerMutation.isPending,
         register: registerMutation.mutateAsync,
         refetchAuthSession: authQuery.refetch,
+        currentUser: authQuery.data === true ? currentUser : null,
     };
 }
-

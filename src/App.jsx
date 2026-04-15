@@ -16,7 +16,8 @@ import { useServers } from "@/hooks/use-servers.jsx";
 import PlayerManager from "@/components/PlayerManager.jsx";
 import Settings from "@/components/Settings.jsx";
 import { useBackend } from "@/context/BackendContext.jsx";
-import { useAuthSession } from "@/hooks/use-auth-session.jsx";
+import { AuthSessionProvider } from "@/context/AuthSessionContext.jsx";
+import { useAuthSessionContext } from "@/hooks/use-auth-session-context.jsx";
 import LoginPage from "@/components/LoginPage.jsx";
 
 const queryClient = new QueryClient();
@@ -75,7 +76,7 @@ function ServerRouteView() {
 
 function App() {
     const { backendUp, isCheckingBackend, baseUrl, setBaseUrl } = useBackend();
-    const { authenticated, authLoading, login, loginPending, loginError, register, registerPending, registerError, refetchAuthSession } = useAuthSession();
+    const { authenticated, authLoading, login, loginPending, loginError, register, registerPending, registerError, refetchAuthSession } = useAuthSessionContext();
 
     async function handleLogin(username, password) {
         await login({ username, password });
@@ -93,23 +94,30 @@ function App() {
         return <div className="p-4">Checking authentication...</div>;
     }
 
-    if (!authenticated) {
-        return (
-            <LoginPage
-                onLogin={handleLogin}
-                onRegister={handleRegister}
-                loading={isLoading}
-                error={currentError}
-                backendUp={backendUp}
-                isCheckingBackend={isCheckingBackend}
-                backendUrl={baseUrl}
-                onBackendUrlChange={setBaseUrl}
-            />
-        );
-    }
+    const loginPage = (
+        <LoginPage
+            onLogin={handleLogin}
+            onRegister={handleRegister}
+            loading={isLoading}
+            error={currentError}
+            backendUp={backendUp}
+            isCheckingBackend={isCheckingBackend}
+            backendUrl={baseUrl}
+            onBackendUrlChange={setBaseUrl}
+        />
+    );
 
     return (
-        <AppContent />
+        <Routes>
+            <Route
+                path="/login"
+                element={authenticated ? <Navigate to="/" replace /> : loginPage}
+            />
+            <Route
+                path="/*"
+                element={authenticated ? <AppContent /> : <Navigate to="/login" replace />}
+            />
+        </Routes>
     );
 }
 
@@ -117,7 +125,9 @@ function AppWithProviders() {
     return (
         <QueryClientProvider client={queryClient}>
             <BackendProvider>
-                <App />
+                <AuthSessionProvider>
+                    <App />
+                </AuthSessionProvider>
             </BackendProvider>
         </QueryClientProvider>
     );
