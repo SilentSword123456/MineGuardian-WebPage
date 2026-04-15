@@ -74,7 +74,7 @@ function ServerRouteView() {
 }
 
 function App() {
-    const { backendUp, isCheckingBackend } = useBackend();
+    const { backendUp, isCheckingBackend, baseUrl, setBaseUrl } = useBackend();
     const { authenticated, authLoading, login, loginPending, loginError, refetchAuthSession } = useAuthSession();
 
     async function handleLogin(username, password) {
@@ -82,16 +82,22 @@ function App() {
         await refetchAuthSession();
     }
 
-    if (isCheckingBackend) {
-        return <div className="p-4">Checking backend connection...</div>;
-    }
-
     if (backendUp === true && authLoading) {
         return <div className="p-4">Checking authentication...</div>;
     }
 
-    if (backendUp === true && !authenticated) {
-        return <LoginPage onLogin={handleLogin} loading={loginPending} error={loginError} />;
+    if (!authenticated) {
+        return (
+            <LoginPage
+                onLogin={handleLogin}
+                loading={loginPending}
+                error={loginError}
+                backendUp={backendUp}
+                isCheckingBackend={isCheckingBackend}
+                backendUrl={baseUrl}
+                onBackendUrlChange={setBaseUrl}
+            />
+        );
     }
 
     return (

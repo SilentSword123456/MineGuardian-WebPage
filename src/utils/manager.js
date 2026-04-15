@@ -17,17 +17,24 @@ class Manager{
                     "Content-Type": "application/json"
                 },
                 credentials: "include",
-                body: JSON.stringify({ username, password })
+                body: JSON.stringify({ user_id: username, password })
             });
+
+            if (response.status === 400) {
+                const body = await response.json().catch(() => ({}));
+                throw new Error(body.message || "Missing username or password.");
+            }
+
+            if (response.status === 401) {
+                const body = await response.json().catch(() => ({}));
+                throw new Error(body.message || "Invalid credentials.");
+            }
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const result = await response.json();
-
-            const servers = result?.servers?.map((server) => (new Server(server?.id, server?.name, server?.isRunning, this.baseUrl)));
-            return servers;
+            return true;
         } catch (error) {
             console.error('Error logging in:', error);
             throw error;
