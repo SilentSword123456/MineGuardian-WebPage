@@ -33,6 +33,10 @@ function useBreadcrumbs() {
         return [{ label: "Players", path: null }];
     }
 
+    if(pathname === "/settings") {
+        return [{ label: "Settings", path: null }];
+    }
+
     return [];
 }
 
