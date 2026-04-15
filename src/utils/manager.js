@@ -137,7 +137,8 @@ class Manager{
             });
 
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                const body = await response.json().catch(() => ({}));
+                throw new Error(body.message || `HTTP error! status: ${response.status}`);
             }
 
             return await response.json();
