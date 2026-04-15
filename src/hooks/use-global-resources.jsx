@@ -9,10 +9,10 @@ export const DEFAULT_GLOBAL_RESOURCES = {
 };
 
 export function useGlobalResources() {
-    const { backendUp } = useBackend();
+    const { backendUp, baseUrl } = useBackend();
 
     const query = useQuery({
-        queryKey: ["global-resources"],
+        queryKey: ["global-resources", baseUrl],
         queryFn: () => manager.getGlobalUsedResources(),
         enabled: backendUp === true,
         refetchInterval: 10 * 1000,
@@ -28,4 +28,3 @@ export function useGlobalResources() {
         refetchGlobalResources: query.refetch,
     };
 }
-
