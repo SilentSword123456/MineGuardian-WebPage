@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 
 vi.mock('@/lib/config.js', () => ({ BASE_URL: 'http://localhost:5000' }));
 
@@ -71,6 +71,33 @@ describe('Manager.getServers()', () => {
     it('throws on network error', async () => {
         global.fetch = mockFetchNetworkError();
         await expect(manager.getServers()).rejects.toThrow();
+    });
+});
+
+describe('Manager.checkAuthSession()', () => {
+    it('returns true when the auth probe endpoint responds ok', async () => {
+        global.fetch = vi.fn().mockResolvedValue({ ok: true });
+        await expect(manager.checkAuthSession()).resolves.toBe(true);
+    });
+
+    it('returns false on 401', async () => {
+        global.fetch = vi.fn().mockResolvedValue({ ok: false, status: 401 });
+        await expect(manager.checkAuthSession()).resolves.toBe(false);
+    });
+
+    it('returns false on 403', async () => {
+        global.fetch = vi.fn().mockResolvedValue({ ok: false, status: 403 });
+        await expect(manager.checkAuthSession()).resolves.toBe(false);
+    });
+
+    it('throws on non-auth HTTP errors', async () => {
+        global.fetch = vi.fn().mockResolvedValue({ ok: false, status: 500 });
+        await expect(manager.checkAuthSession()).rejects.toThrow();
+    });
+
+    it('throws on network error', async () => {
+        global.fetch = mockFetchNetworkError();
+        await expect(manager.checkAuthSession()).rejects.toThrow();
     });
 });
 
