@@ -15,8 +15,33 @@ import { Navigate, Route, Routes, useNavigate, useParams } from "react-router-do
 import { useServers } from "@/hooks/use-servers.jsx";
 import PlayerManager from "@/components/PlayerManager.jsx";
 import Settings from "@/components/Settings.jsx";
+import { useBackend } from "@/context/BackendContext.jsx";
+import { useAuthSession } from "@/hooks/use-auth-session.jsx";
+import LoginPage from "@/components/LoginPage.jsx";
 
 const queryClient = new QueryClient();
+
+function AppContent() {
+    return (
+        <SidebarProvider>
+            <Sidebar collapsible="offcanvas">
+                <AppSidebar />
+            </Sidebar>
+            <SidebarInset>
+                <Toolbar />
+                <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/servers" element={<ServersPage />} />
+                    <Route path="/server/:serverName" element={<ServerRouteView />} />
+                    <Route path="/players" element={<PlayerManager />} />
+                    <Route path="/player/:playerName" element={<PlayerManager />} />
+                    <Route path="/settings" element={<Settings />} />
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+            </SidebarInset>
+        </SidebarProvider>
+    );
+}
 
 function ServerRouteView() {
     const { serverName = "" } = useParams();
@@ -49,29 +74,39 @@ function ServerRouteView() {
 }
 
 function App() {
+    const { backendUp, isCheckingBackend } = useBackend();
+    const { authenticated, authLoading, login, loginPending, loginError, refetchAuthSession } = useAuthSession();
+
+    async function handleLogin(username, password) {
+        await login({ username, password });
+        await refetchAuthSession();
+    }
+
+    if (isCheckingBackend) {
+        return <div className="p-4">Checking backend connection...</div>;
+    }
+
+    if (backendUp === true && authLoading) {
+        return <div className="p-4">Checking authentication...</div>;
+    }
+
+    if (backendUp === true && !authenticated) {
+        return <LoginPage onLogin={handleLogin} loading={loginPending} error={loginError} />;
+    }
+
+    return (
+        <AppContent />
+    );
+}
+
+function AppWithProviders() {
     return (
         <QueryClientProvider client={queryClient}>
             <BackendProvider>
-                <SidebarProvider>
-                    <Sidebar collapsible="offcanvas">
-                        <AppSidebar />
-                    </Sidebar>
-                    <SidebarInset>
-                        <Toolbar />
-                        <Routes>
-                            <Route path="/" element={<HomePage />} />
-                            <Route path="/servers" element={<ServersPage />} />
-                            <Route path="/server/:serverName" element={<ServerRouteView />} />
-                            <Route path="/players" element={<PlayerManager />} />
-                            <Route path="/player/:playerName" element={<PlayerManager />} />
-                            <Route path="/settings" element={<Settings />} />
-                            <Route path="*" element={<Navigate to="/" replace />} />
-                        </Routes>
-                    </SidebarInset>
-                </SidebarProvider>
+                <App />
             </BackendProvider>
         </QueryClientProvider>
     );
 }
 
-export default App;
+export default AppWithProviders;
