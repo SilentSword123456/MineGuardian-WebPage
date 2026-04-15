@@ -1,11 +1,3 @@
-import {
-    Dialog,
-    DialogContent, DialogDescription,
-    DialogFooter,
-    DialogHeader, DialogTitle,
-    DialogTrigger
-} from "./animate-ui/components/radix/dialog.jsx";
-import CustomButton from "./ui/CustomButton.jsx";
 import { useBackend } from "../context/BackendContext.jsx";
 import { Input } from "./ui/input.jsx";
 
