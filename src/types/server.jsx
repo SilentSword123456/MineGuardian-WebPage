@@ -12,7 +12,8 @@ class Server {
     async start() {
         try {
             const response = await fetch(`${this.baseUrl}/servers/${this.name}/start`, {
-                method: 'POST'
+                method: 'POST',
+                credentials: 'include'
             });
 
             if (!response.ok) {
@@ -31,7 +32,8 @@ class Server {
     async stop() {
         try {
             const response = await fetch(`${this.baseUrl}/servers/${this.name}/stop`, {
-                method: 'POST'
+                method: 'POST',
+                credentials: 'include'
             });
 
             if (!response.ok) {
@@ -49,7 +51,8 @@ class Server {
     async uninstall() {
         try {
             const response = await fetch(`${this.baseUrl}/servers/${this.name}/uninstall`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                credentials: 'include'
             });
 
             if (!response.ok) {
@@ -69,7 +72,8 @@ class Server {
     async getGeneralInfo() {
         try {
             const response = await fetch(`${this.baseUrl}/servers/${this.name}`, {
-                method: 'GET'
+                method: 'GET',
+                credentials: 'include'
             });
 
             if (!response.ok) {
