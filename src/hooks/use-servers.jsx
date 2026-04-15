@@ -7,13 +7,12 @@ import manager from "@/utils/manager.js";
  * Automatically re-fetches every 10 seconds.
  */
 export function useServers() {
-    const { backendUp } = useBackend();
+    const { backendUp, baseUrl } = useBackend();
 
     return useQuery({
         queryFn: () => manager.getServers(),
-        queryKey: ["servers"],
+        queryKey: ["servers", baseUrl],
         enabled: backendUp === true,
         refetchInterval: 10 * 1000,
     });
 }
-
