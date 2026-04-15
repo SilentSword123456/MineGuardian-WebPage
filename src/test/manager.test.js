@@ -172,6 +172,37 @@ describe('Manager.getAvailableVersions()', () => {
     });
 });
 
+describe('Manager.register()', () => {
+    it('POSTs to /user with username and password and returns true on success', async () => {
+        global.fetch = mockFetchOk({ status: true });
+        const result = await manager.register('newuser', 'pass123');
+        expect(fetch).toHaveBeenCalledWith(
+            'http://localhost:5000/user',
+            expect.objectContaining({
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: 'newuser', password: 'pass123' }),
+            })
+        );
+        expect(result).toBe(true);
+    });
+
+    it('throws when username already exists (status: false)', async () => {
+        global.fetch = mockFetchOk({ status: false });
+        await expect(manager.register('existing', 'pass')).rejects.toThrow(/username already exists/i);
+    });
+
+    it('throws when the response is not ok', async () => {
+        global.fetch = mockFetchFail(400);
+        await expect(manager.register('u', 'p')).rejects.toThrow();
+    });
+
+    it('throws on network error', async () => {
+        global.fetch = mockFetchNetworkError();
+        await expect(manager.register('u', 'p')).rejects.toThrow();
+    });
+});
+
 describe('Manager.getGlobalUsedResources()', () => {
     it('returns a stats object with cpu capped at 100', async () => {
         global.fetch = mockFetchOk({

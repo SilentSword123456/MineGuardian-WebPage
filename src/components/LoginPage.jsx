@@ -3,23 +3,51 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Shield, ChevronDown, ChevronUp, CircleCheck, CircleX, Loader2 } from "lucide-react";
 
-function LoginPage({ onLogin, loading, error, backendUp, isCheckingBackend, backendUrl, onBackendUrlChange }) {
+function LoginPage({ onLogin, onRegister, loading, error, backendUp, isCheckingBackend, backendUrl, onBackendUrlChange }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
     const [validationError, setValidationError] = useState("");
     const [showSettings, setShowSettings] = useState(false);
     const [urlDraft, setUrlDraft] = useState(backendUrl || "");
+    const [isRegisterMode, setIsRegisterMode] = useState(false);
+    const [registerSuccess, setRegisterSuccess] = useState("");
 
     async function handleSubmit(event) {
         event.preventDefault();
+        setRegisterSuccess("");
 
         if (!username.trim() || !password) {
             setValidationError("Username and password are required.");
             return;
         }
 
+        if (isRegisterMode) {
+            if (password !== confirmPassword) {
+                setValidationError("Passwords do not match.");
+                return;
+            }
+
+            setValidationError("");
+            try {
+                await onRegister(username.trim(), password);
+                setRegisterSuccess("Account created! You can now sign in.");
+                setIsRegisterMode(false);
+                setConfirmPassword("");
+            } catch {
+                // error is handled by the error prop
+            }
+        } else {
+            setValidationError("");
+            await onLogin(username.trim(), password);
+        }
+    }
+
+    function handleToggleMode() {
+        setIsRegisterMode(!isRegisterMode);
         setValidationError("");
-        await onLogin(username.trim(), password);
+        setRegisterSuccess("");
+        setConfirmPassword("");
     }
 
     function handleSaveUrl() {
@@ -35,7 +63,7 @@ function LoginPage({ onLogin, loading, error, backendUp, isCheckingBackend, back
 
     const errorMessage = validationError
         || (error?.message)
-        || (error ? "Invalid username or password." : "");
+        || (error ? (isRegisterMode ? "Registration failed." : "Invalid username or password.") : "");
 
     return (
         <div className="flex min-h-screen items-center justify-center p-4 bg-background">
@@ -46,10 +74,12 @@ function LoginPage({ onLogin, loading, error, backendUp, isCheckingBackend, back
                         <Shield className="w-8 h-8" />
                     </div>
                     <h1 className="text-2xl font-bold tracking-tight text-foreground">MineGuardian</h1>
-                    <p className="text-sm text-muted-foreground">Sign in to manage your servers.</p>
+                    <p className="text-sm text-muted-foreground">
+                        {isRegisterMode ? "Create a new account." : "Sign in to manage your servers."}
+                    </p>
                 </div>
 
-                {/* Login Card */}
+                {/* Login / Register Card */}
                 <form
                     onSubmit={handleSubmit}
                     className="w-full rounded-xl border border-border bg-card p-6 shadow-lg flex flex-col gap-5"
@@ -94,10 +124,31 @@ function LoginPage({ onLogin, loading, error, backendUp, isCheckingBackend, back
                             placeholder="Enter your password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            autoComplete="current-password"
+                            autoComplete={isRegisterMode ? "new-password" : "current-password"}
                             disabled={loading}
                         />
                     </div>
+
+                    {isRegisterMode && (
+                        <div className="flex flex-col gap-1.5">
+                            <label htmlFor="login-confirm-password" className="text-sm font-medium text-foreground">Confirm Password</label>
+                            <Input
+                                id="login-confirm-password"
+                                type="password"
+                                placeholder="Confirm your password"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                autoComplete="new-password"
+                                disabled={loading}
+                            />
+                        </div>
+                    )}
+
+                    {registerSuccess && (
+                        <p className="text-sm text-emerald-500" role="status">
+                            {registerSuccess}
+                        </p>
+                    )}
 
                     {errorMessage && (
                         <p className="text-sm text-red-500" role="alert">
@@ -109,10 +160,21 @@ function LoginPage({ onLogin, loading, error, backendUp, isCheckingBackend, back
                         {loading ? (
                             <>
                                 <Loader2 className="w-4 h-4 animate-spin" />
-                                Signing in…
+                                {isRegisterMode ? "Creating account…" : "Signing in…"}
                             </>
-                        ) : "Sign in"}
+                        ) : isRegisterMode ? "Create account" : "Sign in"}
                     </Button>
+
+                    <p className="text-sm text-center text-muted-foreground">
+                        {isRegisterMode ? "Already have an account?" : "Don't have an account?"}{" "}
+                        <button
+                            type="button"
+                            onClick={handleToggleMode}
+                            className="text-primary hover:underline cursor-pointer font-medium"
+                        >
+                            {isRegisterMode ? "Sign in" : "Create one"}
+                        </button>
+                    </p>
                 </form>
 
                 {/* Backend URL Settings */}

@@ -23,6 +23,10 @@ export function useAuthSession() {
         },
     });
 
+    const registerMutation = useMutation({
+        mutationFn: ({ username, password }) => manager.register(username, password),
+    });
+
     return {
         authenticated: authQuery.data === true,
         authError: authQuery.error,
@@ -30,6 +34,9 @@ export function useAuthSession() {
         loginError: loginMutation.error,
         loginPending: loginMutation.isPending,
         login: loginMutation.mutateAsync,
+        registerError: registerMutation.error,
+        registerPending: registerMutation.isPending,
+        register: registerMutation.mutateAsync,
         refetchAuthSession: authQuery.refetch,
     };
 }
