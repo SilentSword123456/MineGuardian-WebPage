@@ -63,6 +63,7 @@ function App() {
                             <Route path="/server/:serverName" element={<ServerRouteView />} />
                             <Route path="/players" element={<PlayerManager />} />
                             <Route path="/player/:playerName" element={<PlayerManager />} />
+                            <Route path="/settings" element={<Settings />} />
                             <Route path="*" element={<Navigate to="/" replace />} />
                         </Routes>
                     </SidebarInset>
