@@ -7,7 +7,7 @@ vi.mock('@/lib/config.js', () => ({ BASE_URL: 'http://localhost:5000' }));
 vi.mock('@/utils/manager.js', () => ({
     default: {
         getAvailableVersions: vi.fn().mockResolvedValue({ versions: ['1.21.4', '1.20.6'] }),
-        installServer: vi.fn().mockResolvedValue(true),
+        installServer: vi.fn().mockResolvedValue({ status: true }),
     },
 }));
 
@@ -27,7 +27,7 @@ function setup(backendUp = true, props = {}) {
 describe('InstallServerDialog', () => {
     beforeEach(() => {
         manager.getAvailableVersions.mockResolvedValue({ versions: ['1.21.4', '1.20.6'] });
-        manager.installServer.mockResolvedValue(true);
+        manager.installServer.mockResolvedValue({ status: true });
     });
 
     afterEach(() => {
@@ -134,7 +134,7 @@ describe('InstallServerDialog', () => {
         });
 
         await waitFor(() =>
-            expect(screen.getByText(/failed to connect/i)).toBeInTheDocument()
+            expect(screen.getByText(/Network failure/i)).toBeInTheDocument()
         );
     });
 });

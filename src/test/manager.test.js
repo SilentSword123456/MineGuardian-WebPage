@@ -135,6 +135,15 @@ describe('Manager.installServer()', () => {
         await expect(manager.installServer('X')).rejects.toThrow();
     });
 
+    it('includes the backend error message when the response is not ok', async () => {
+        global.fetch = vi.fn().mockResolvedValue({
+            ok: false,
+            status: 400,
+            json: () => Promise.resolve({ message: 'Server name already taken' }),
+        });
+        await expect(manager.installServer('X')).rejects.toThrow('Server name already taken');
+    });
+
     it('throws on network error', async () => {
         global.fetch = mockFetchNetworkError();
         await expect(manager.installServer('X')).rejects.toThrow();

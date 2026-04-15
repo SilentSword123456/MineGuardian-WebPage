@@ -127,14 +127,14 @@ export default function InstallServerDialog({ from, showCloseButton, triggerClas
         setInstalling(true);
         try {
             const result = await manager.installServer(name, software, version, eulaAccepted);
-            if (result === true) {
+            if (result?.status === true) {
                 setOpen(false);
                 resetForm();
             } else {
                 setError(result?.error ?? "An unknown error occurred.");
             }
-        } catch {
-            setError("Failed to connect to the server.");
+        } catch (err) {
+            setError(err?.message || "Failed to connect to the server.");
         } finally {
             setInstalling(false);
         }
@@ -147,6 +147,7 @@ export default function InstallServerDialog({ from, showCloseButton, triggerClas
                     className={`install-server-button ${triggerClassName}`.trim()}
                     disabled={!backendUp}
                     title={!backendUp ? "Backend offline" : "Install server"}
+                    style={open ? { visibility: 'hidden' } : undefined}
                 >
                     <CloudDownload size={22} />
                 </button>
