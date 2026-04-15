@@ -1,0 +1,140 @@
+/* ================================================================
+   Mobile-responsive overrides  (≤ 768 px)
+   ================================================================ */
+
+@media (max-width: 768px) {
+
+    /* -- Foundation ---------------------------------------------- */
+    :root {
+        --console-right-margin: 0px;
+    }
+
+    body {
+        overflow: auto;
+    }
+
+    /* -- Home page ---------------------------------------------- */
+    .home-page {
+        padding: 32px 16px;
+        gap: 32px;
+    }
+
+    .home-title {
+        font-size: 1.8rem;
+    }
+
+    .home-server-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* -- Servers page ------------------------------------------- */
+    .servers-page {
+        padding: 20px 12px;
+    }
+
+    .servers-layout {
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .servers-list-col {
+        flex: 1 1 auto;
+        width: 100%;
+    }
+
+    .servers-stats-col {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    /* -- Stats row (used on server page & servers page) ---------- */
+    .stats-row {
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+    }
+
+    /* Player avatar section - don't force a fixed pixel width */
+    .player-avatar-section {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100%;
+    }
+
+    .ss-card {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* -- Server page -------------------------------------------- */
+    .server-page {
+        padding: 16px 12px 100px;
+    }
+
+    /* -- Console ------------------------------------------------ */
+    .console-container {
+        left: 0;
+        right: 0;
+    }
+
+    .console-container.expanded {
+        height: 50vh;
+    }
+
+    /* -- Quick Commands ----------------------------------------- */
+    .quick-commands {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        min-width: 0;
+        width: 100%;
+        border-radius: 10px 10px 0 0;
+        padding: 12px 16px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .quick-commands h3 {
+        font-size: 14px;
+        margin: 0 0 4px 0;
+    }
+
+    .quick-commands button {
+        padding: 8px 12px;
+        margin-bottom: 0;
+    }
+
+    /* -- Install server FAB ------------------------------------- */
+    .install-server-button {
+        width: 46px !important;
+        height: 46px !important;
+        bottom: 14px;
+        left: 14px !important;
+    }
+
+    /* -- App sidebar (Radix offcanvas already handles this,
+         but ensure correct width) ------------------------------ */
+    .sidebar {
+        width: 100%;
+    }
+
+    /* -- Toolbar ------------------------------------------------ */
+    .toolbar-breadcrumb-label {
+        font-size: 0.8rem;
+    }
+
+    /* -- Dialogs ------------------------------------------------ */
+    .install-dialog-content,
+    .delete-confirmation-content {
+        max-width: calc(100vw - 32px) !important;
+    }
+
+    /* -- Block bars: shrink blocks on narrow screens ------------- */
+    .ss-block {
+        width: 14px;
+        height: 14px;
+    }
+}
