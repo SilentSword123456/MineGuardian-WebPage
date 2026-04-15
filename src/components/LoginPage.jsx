@@ -56,7 +56,7 @@ function LoginPage({ onLogin, onRegister, loading, error, backendUp, isCheckingB
         }
     }
 
-    const loginDisabled = loading || backendUp !== true;
+    const loginDisabled = loading;
 
     const trimmedUrl = urlDraft.trim();
     const normalizedUrl = trimmedUrl.replace(/\/+$/, "");
@@ -219,4 +219,3 @@ function LoginPage({ onLogin, onRegister, loading, error, backendUp, isCheckingB
 }
 
 export default LoginPage;
-

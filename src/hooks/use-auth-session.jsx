@@ -22,6 +22,7 @@ export function useAuthSession() {
         onSuccess: async (_, variables) => {
             const storedUser = storeAuthUser(baseUrl, variables?.username);
             setCurrentUser(storedUser);
+            queryClient.setQueryData(["auth-session", baseUrl], true);
             await queryClient.invalidateQueries({ queryKey: ["auth-session", baseUrl] });
             await queryClient.invalidateQueries({ queryKey: ["servers", baseUrl] });
             await queryClient.invalidateQueries({ queryKey: ["global-resources", baseUrl] });
@@ -44,9 +45,9 @@ export function useAuthSession() {
     }, [authQuery.data, backendUp, baseUrl]);
 
     return {
-        authenticated: authQuery.data === true,
+        authenticated: authQuery.data === true || (!!currentUser && authQuery.data !== false),
         authError: authQuery.error,
-        authLoading: backendUp === true && authQuery.isLoading,
+        authLoading: backendUp === true && authQuery.isLoading && !currentUser,
         loginError: loginMutation.error,
         loginPending: loginMutation.isPending,
         login: loginMutation.mutateAsync,

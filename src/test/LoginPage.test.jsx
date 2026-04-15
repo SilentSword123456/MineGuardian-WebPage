@@ -53,10 +53,10 @@ describe('LoginPage', () => {
         expect(screen.getByText(/backend unreachable/i)).toBeInTheDocument();
     });
 
-    it('disables sign in when backend is down', () => {
+    it('keeps sign in enabled when backend is down', () => {
         render(<LoginPage {...defaultProps} backendUp={false} isCheckingBackend={false} />);
 
-        expect(screen.getByRole('button', { name: /sign in/i })).toBeDisabled();
+        expect(screen.getByRole('button', { name: /sign in/i })).toBeEnabled();
     });
 
     it('shows backend URL settings when toggled', () => {
@@ -114,4 +114,3 @@ describe('LoginPage', () => {
         expect(onRegister).toHaveBeenCalledWith('newuser', 'secret');
     });
 });
-
