@@ -92,7 +92,7 @@ class Manager{
 
     async checkAuthSession() {
         try {
-            const response = await fetch(`${this.baseUrl}/servers`, {
+            const response = await fetch(`${this.baseUrl}/favoriteServers`, {
                 method: 'GET',
                 credentials: "include"
             });
