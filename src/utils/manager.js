@@ -5,6 +5,10 @@ import Server from "@/types/server.jsx";
 class Manager{
     baseUrl = BASE_URL;
 
+    setBaseUrl(newUrl) {
+        this.baseUrl = newUrl;
+    }
+
     async getServers() {
         try {
             const response = await fetch(`${this.baseUrl}/servers`, {
