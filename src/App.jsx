@@ -16,19 +16,20 @@ import { useServers } from "@/hooks/use-servers.jsx";
 import PlayerManager from "@/components/PlayerManager.jsx";
 import Settings from "@/components/Settings.jsx";
 import { useBackend } from "@/context/BackendContext.jsx";
-import { useAuthSession } from "@/hooks/use-auth-session.jsx";
+import { AuthSessionProvider } from "@/context/AuthSessionContext.jsx";
+import { useAuthSessionContext } from "@/hooks/use-auth-session-context.jsx";
 import LoginPage from "@/components/LoginPage.jsx";
 
 const queryClient = new QueryClient();
 
-function AppContent({ currentUser }) {
+function AppContent() {
     return (
         <SidebarProvider>
             <Sidebar collapsible="offcanvas">
                 <AppSidebar />
             </Sidebar>
             <SidebarInset>
-                <Toolbar currentUsername={currentUser?.username} />
+                <Toolbar />
                 <Routes>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/servers" element={<ServersPage />} />
@@ -75,7 +76,7 @@ function ServerRouteView() {
 
 function App() {
     const { backendUp, isCheckingBackend, baseUrl, setBaseUrl } = useBackend();
-    const { authenticated, authLoading, login, loginPending, loginError, register, registerPending, registerError, refetchAuthSession, currentUser } = useAuthSession();
+    const { authenticated, authLoading, login, loginPending, loginError, register, registerPending, registerError, refetchAuthSession } = useAuthSessionContext();
 
     async function handleLogin(username, password) {
         await login({ username, password });
@@ -114,7 +115,7 @@ function App() {
             />
             <Route
                 path="/*"
-                element={authenticated ? <AppContent currentUser={currentUser} /> : <Navigate to="/login" replace />}
+                element={authenticated ? <AppContent /> : <Navigate to="/login" replace />}
             />
         </Routes>
     );
@@ -124,7 +125,9 @@ function AppWithProviders() {
     return (
         <QueryClientProvider client={queryClient}>
             <BackendProvider>
-                <App />
+                <AuthSessionProvider>
+                    <App />
+                </AuthSessionProvider>
             </BackendProvider>
         </QueryClientProvider>
     );

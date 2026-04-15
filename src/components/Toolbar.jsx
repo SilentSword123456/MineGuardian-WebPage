@@ -5,6 +5,7 @@ import { useServers } from "@/hooks/use-servers.jsx";
 import { MG_EMERALD, MG_CRIMSON } from "@/lib/colors.js";
 import { Router } from "@/components/animate-ui/icons/router";
 import { ChevronRight, ChevronDown } from "lucide-react";
+import { useAuthSessionContext } from "@/hooks/use-auth-session-context.jsx";
 
 
 function useBreadcrumbs() {
@@ -116,8 +117,10 @@ function BreadcrumbSegment({ segment }) {
     );
 }
 
-function Toolbar({ currentUsername }) {
+function Toolbar() {
     const breadcrumbs = useBreadcrumbs();
+    const { currentUser } = useAuthSessionContext();
+    const currentUsername = currentUser?.username;
 
     return (
         <div className="app-content-toolbar">
