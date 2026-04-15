@@ -9,6 +9,34 @@ class Manager{
         this.baseUrl = newUrl;
     }
 
+    async register(username, password) {
+        try {
+            const response = await fetch(`${this.baseUrl}/user`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ username, password })
+            });
+
+            if (!response.ok) {
+                const body = await response.json().catch(() => ({}));
+                throw new Error(body.error || `HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+
+            if (result.status === false) {
+                throw new Error("Username already exists.");
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Error registering:', error);
+            throw error;
+        }
+    }
+
     async login(username, password) {
         try {
             const response = await fetch(`${this.baseUrl}/login`, {

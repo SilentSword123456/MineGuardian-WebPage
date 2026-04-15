@@ -75,12 +75,19 @@ function ServerRouteView() {
 
 function App() {
     const { backendUp, isCheckingBackend, baseUrl, setBaseUrl } = useBackend();
-    const { authenticated, authLoading, login, loginPending, loginError, refetchAuthSession } = useAuthSession();
+    const { authenticated, authLoading, login, loginPending, loginError, register, registerPending, registerError, refetchAuthSession } = useAuthSession();
 
     async function handleLogin(username, password) {
         await login({ username, password });
         await refetchAuthSession();
     }
+
+    async function handleRegister(username, password) {
+        await register({ username, password });
+    }
+
+    const isLoading = loginPending || registerPending;
+    const currentError = loginError || registerError;
 
     if (backendUp === true && authLoading) {
         return <div className="p-4">Checking authentication...</div>;
@@ -90,8 +97,9 @@ function App() {
         return (
             <LoginPage
                 onLogin={handleLogin}
-                loading={loginPending}
-                error={loginError}
+                onRegister={handleRegister}
+                loading={isLoading}
+                error={currentError}
                 backendUp={backendUp}
                 isCheckingBackend={isCheckingBackend}
                 backendUrl={baseUrl}

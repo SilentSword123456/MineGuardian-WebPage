@@ -4,6 +4,7 @@ import LoginPage from '@/components/LoginPage.jsx';
 
 const defaultProps = {
     onLogin: vi.fn(),
+    onRegister: vi.fn(),
     loading: false,
     error: null,
     backendUp: true,
@@ -65,6 +66,52 @@ describe('LoginPage', () => {
         fireEvent.click(screen.getByText(/backend settings/i));
 
         expect(screen.getByLabelText(/backend url/i)).toBeInTheDocument();
+    });
+
+    it('toggles to registration mode when "Create one" is clicked', () => {
+        render(<LoginPage {...defaultProps} />);
+
+        fireEvent.click(screen.getByText(/create one/i));
+
+        expect(screen.getByText(/create a new account/i)).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /create account/i })).toBeInTheDocument();
+        expect(screen.getByLabelText(/confirm password/i)).toBeInTheDocument();
+    });
+
+    it('toggles back to login mode from registration', () => {
+        render(<LoginPage {...defaultProps} />);
+
+        fireEvent.click(screen.getByText(/create one/i));
+        fireEvent.click(screen.getByText(/sign in/i));
+
+        expect(screen.getByText(/sign in to manage your servers/i)).toBeInTheDocument();
+    });
+
+    it('shows password mismatch error in registration mode', async () => {
+        const onRegister = vi.fn();
+        render(<LoginPage {...defaultProps} onRegister={onRegister} />);
+
+        fireEvent.click(screen.getByText(/create one/i));
+        fireEvent.change(screen.getByLabelText(/^username$/i), { target: { value: 'newuser' } });
+        fireEvent.change(screen.getByLabelText(/^password$/i), { target: { value: 'pass1' } });
+        fireEvent.change(screen.getByLabelText(/confirm password/i), { target: { value: 'pass2' } });
+        fireEvent.click(screen.getByRole('button', { name: /create account/i }));
+
+        expect(screen.getByText(/passwords do not match/i)).toBeInTheDocument();
+        expect(onRegister).not.toHaveBeenCalled();
+    });
+
+    it('calls onRegister with matching passwords in registration mode', async () => {
+        const onRegister = vi.fn().mockResolvedValue(undefined);
+        render(<LoginPage {...defaultProps} onRegister={onRegister} />);
+
+        fireEvent.click(screen.getByText(/create one/i));
+        fireEvent.change(screen.getByLabelText(/^username$/i), { target: { value: 'newuser' } });
+        fireEvent.change(screen.getByLabelText(/^password$/i), { target: { value: 'secret' } });
+        fireEvent.change(screen.getByLabelText(/confirm password/i), { target: { value: 'secret' } });
+        fireEvent.click(screen.getByRole('button', { name: /create account/i }));
+
+        expect(onRegister).toHaveBeenCalledWith('newuser', 'secret');
     });
 });
 
