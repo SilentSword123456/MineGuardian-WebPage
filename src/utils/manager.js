@@ -9,10 +9,36 @@ class Manager{
         this.baseUrl = newUrl;
     }
 
+    async login(username, password) {
+        try {
+            const response = await fetch(`${this.baseUrl}/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include",
+                body: JSON.stringify({ username, password })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+
+            const servers = result?.servers?.map((server) => (new Server(server?.id, server?.name, server?.isRunning, this.baseUrl)));
+            return servers;
+        } catch (error) {
+            console.error('Error logging in:', error);
+            throw error;
+        }
+    }
+
     async getServers() {
         try {
             const response = await fetch(`${this.baseUrl}/servers`, {
-                method: 'GET'
+                method: 'GET',
+                credentials: "include"
             });
 
             if (!response.ok) {
@@ -25,6 +51,28 @@ class Manager{
             return servers;
         } catch (error) {
             console.error('Error fetching servers:', error);
+            throw error;
+        }
+    }
+
+    async checkAuthSession() {
+        try {
+            const response = await fetch(`${this.baseUrl}/servers`, {
+                method: 'GET',
+                credentials: "include"
+            });
+
+            if (response.ok) {
+                return true;
+            }
+
+            if (response.status === 401 || response.status === 403) {
+                return false;
+            }
+
+            throw new Error(`HTTP error! status: ${response.status}`);
+        } catch (error) {
+            console.error('Error checking auth session:', error);
             throw error;
         }
     }
@@ -49,6 +97,7 @@ class Manager{
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                credentials: "include",
                 body: JSON.stringify({ serverName: Name, serverSoftware: Software, serverVersion: Version, acceptEula:  acceptEula})
             });
 
@@ -67,7 +116,8 @@ class Manager{
     async getAvailableVersions(Software = "Vanilla") {
         try {
             const response = await fetch(`${this.baseUrl}/manage/${Software}/getAvailableVersions`, {
-                method: 'GET'
+                method: 'GET',
+                credentials: "include"
             });
 
             if (!response.ok) {
@@ -84,7 +134,8 @@ class Manager{
     async getGlobalUsedResources(){
         try{
             const response = await fetch(`${this.baseUrl}/servers/globalStats`, {
-                method: 'GET'
+                method: 'GET',
+                credentials: "include"
             });
 
             if (!response.ok) {
