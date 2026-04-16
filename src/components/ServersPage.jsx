@@ -12,6 +12,7 @@ import {MG_EMERALD, MG_CRIMSON, MG_CYAN, MG_EMERALD_DIM} from "@/lib/colors";
 import PlayersAvatarPanel from "@/components/PlayersAvatarPanel.jsx";
 import ServerStats from "@/components/ServerStats.jsx";
 import server from "@/types/server.jsx";
+import { useUiPreferencesContext } from "@/hooks/use-ui-preferences-context.jsx";
 
 const MIN_SPIN_MS = 600;
 
@@ -20,13 +21,15 @@ function ServersPage() {
     const { backendUp, isCheckingBackend } = useBackend();
     const { data: servers = [], isLoading, refetch } = useServers();
     const { displayedGlobalResources, refetchGlobalResources } = useGlobalResources();
+    const { playUiSound } = useUiPreferencesContext();
     const [isSpinning, setIsSpinning] = useState(false);
 
     const handleLoadServer = useCallback(
         (serverName) => {
+            playUiSound("navigation");
             navigate(`/server/${encodeURIComponent(serverName)}`);
         },
-        [navigate]
+        [navigate, playUiSound]
     );
 
     const handleRefresh = useCallback(async () => {
@@ -80,6 +83,7 @@ function ServersPage() {
                             className={"server-action-button"}
                             onClick={async (e) => {
                                 e.stopPropagation();
+                                playUiSound("action");
                                 await action(server)();
                                 refetch()
                             }}

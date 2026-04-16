@@ -1,6 +1,7 @@
 import Server from "../types/server.jsx";
 import CustomButton from "./ui/CustomButton.jsx";
 import {Play, Square} from "lucide-react";
+import { useUiPreferencesContext } from "@/hooks/use-ui-preferences-context.jsx";
 
 /**
  * @param {Object} props
@@ -9,13 +10,17 @@ import {Play, Square} from "lucide-react";
  * @param {boolean} props.isConnected
  */
 function QuickCommands({server, isRunning, isConnected}) {
+    const { playUiSound } = useUiPreferencesContext();
 
     return (
         <div className="quick-commands">
             <h3>Quick Commands</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <CustomButton
-                    onClick={() => server.start()}
+                    onClick={() => {
+                        playUiSound("action");
+                        server.start();
+                    }}
                     disabled={isRunning || !isConnected}
                     icon={Play}
                     variant="primary"
@@ -23,7 +28,10 @@ function QuickCommands({server, isRunning, isConnected}) {
                     Start Server
                 </CustomButton>
                 <CustomButton
-                    onClick={() => server.stop()}
+                    onClick={() => {
+                        playUiSound("action");
+                        server.stop();
+                    }}
                     disabled={!isRunning || !isConnected}
                     icon={Square}
                     variant="danger"

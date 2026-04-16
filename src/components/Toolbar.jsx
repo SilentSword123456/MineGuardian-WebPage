@@ -45,8 +45,10 @@ function useBreadcrumbs() {
 function ServerSwitcherDropdown({ currentServerName, onClose }) {
     const navigate = useNavigate();
     const { data: servers = [], isLoading } = useServers();
+    const { playUiSound } = useUiPreferencesContext();
 
     function handleSelect(name) {
+        playUiSound("navigation");
         onClose();
         navigate(`/server/${encodeURIComponent(name)}`);
     }
@@ -70,6 +72,7 @@ function BreadcrumbSegment({ segment }) {
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
     const ref = useRef(null);
+    const { playUiSound } = useUiPreferencesContext();
 
     useEffect(() => {
         if (!open) return;
@@ -81,8 +84,13 @@ function BreadcrumbSegment({ segment }) {
     }, [open]);
 
     function handleClick() {
-        if (segment.path) navigate(segment.path);
-        else if (segment.switcher) setOpen((v) => !v);
+        if (segment.path) {
+            playUiSound("navigation");
+            navigate(segment.path);
+        } else if (segment.switcher) {
+            playUiSound("navigation");
+            setOpen((v) => !v);
+        }
     }
 
     const isClickable = !!(segment.path || segment.switcher);
