@@ -125,7 +125,7 @@ function ServerPage({loadedServer, onUninstall}) {
             setSocket(null);
             setIsConnected(false);
         }
-    }, [loadedServer.id, loadedServer.isInstalled, loadedServer.isRunning, backendUp]);
+    }, [loadedServer?.id, loadedServer?.isInstalled, loadedServer?.isRunning, backendUp]);
 
     const memPct = Math.min(
         ((data?.memory_usage_mb ?? 0) / Math.max(data?.max_memory_mb ?? 1, 1)) * 100,
