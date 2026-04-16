@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import {
     Dialog,
     DialogTrigger,
@@ -18,7 +18,7 @@ import { CloudDownload, MessageCircleWarning, WifiOff } from "lucide-react";
 import manager from "@/utils/manager.js";
 import { useBackend } from "@/context/BackendContext.jsx";
 import { MG_VOID, MG_MIST, MG_SLATE, MG_SNOW, MG_GHOST, MG_CRIMSON, MG_EMERALD } from '@/lib/colors';
-import { useUiPreferencesContext } from "@/hooks/use-ui-preferences-context.jsx";
+import { UiPreferencesContext } from "@/context/ui-preferences-context.js";
 
 const MC_SOFTWARE = ["Vanilla", "Spigot"];
 
@@ -89,7 +89,8 @@ function AutocompleteInput({ id, name, value, onChange, options, placeholder }) 
 
 export default function InstallServerDialog({ from, showCloseButton, triggerClassName = "" }) {
     const { backendUp } = useBackend();
-    const { playUiSound } = useUiPreferencesContext();
+    const uiPreferences = useContext(UiPreferencesContext);
+    const playUiSound = uiPreferences?.playUiSound ?? (() => {});
     const [open, setOpen] = useState(false);
     const [name, setName] = useState("My Server");
     const [software, setSoftware] = useState("");

@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import {RefreshCcw, LayoutGrid, WifiOff, Play, Square} from "lucide-react";
 import CustomButton from "./ui/CustomButton.jsx";
@@ -8,11 +8,10 @@ import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { useBackend } from "@/context/BackendContext.jsx";
 import { useGlobalResources } from "@/hooks/use-global-resources.jsx";
 import { useServers } from "@/hooks/use-servers.jsx";
-import {MG_EMERALD, MG_CRIMSON, MG_CYAN, MG_EMERALD_DIM} from "@/lib/colors";
+import {MG_EMERALD, MG_CRIMSON} from "@/lib/colors";
 import PlayersAvatarPanel from "@/components/PlayersAvatarPanel.jsx";
 import ServerStats from "@/components/ServerStats.jsx";
-import server from "@/types/server.jsx";
-import { useUiPreferencesContext } from "@/hooks/use-ui-preferences-context.jsx";
+import { UiPreferencesContext } from "@/context/ui-preferences-context.js";
 
 const MIN_SPIN_MS = 600;
 
@@ -21,7 +20,8 @@ function ServersPage() {
     const { backendUp, isCheckingBackend } = useBackend();
     const { data: servers = [], isLoading, refetch } = useServers();
     const { displayedGlobalResources, refetchGlobalResources } = useGlobalResources();
-    const { playUiSound } = useUiPreferencesContext();
+    const uiPreferences = useContext(UiPreferencesContext);
+    const playUiSound = uiPreferences?.playUiSound ?? (() => {});
     const [isSpinning, setIsSpinning] = useState(false);
 
     const handleLoadServer = useCallback(

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SidebarTrigger } from "@/components/animate-ui/components/radix/sidebar.jsx";
 import { useServers } from "@/hooks/use-servers.jsx";
@@ -7,6 +7,7 @@ import { Router } from "@/components/animate-ui/icons/router";
 import { ChevronRight, ChevronDown, Moon, Sun } from "lucide-react";
 import { useAuthSessionContext } from "@/hooks/use-auth-session-context.jsx";
 import { useUiPreferencesContext } from "@/hooks/use-ui-preferences-context.jsx";
+import { UiPreferencesContext } from "@/context/ui-preferences-context.js";
 
 
 function useBreadcrumbs() {
@@ -45,7 +46,8 @@ function useBreadcrumbs() {
 function ServerSwitcherDropdown({ currentServerName, onClose }) {
     const navigate = useNavigate();
     const { data: servers = [], isLoading } = useServers();
-    const { playUiSound } = useUiPreferencesContext();
+    const uiPreferences = useContext(UiPreferencesContext);
+    const playUiSound = uiPreferences?.playUiSound ?? (() => {});
 
     function handleSelect(name) {
         playUiSound("navigation");
@@ -72,7 +74,8 @@ function BreadcrumbSegment({ segment }) {
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
     const ref = useRef(null);
-    const { playUiSound } = useUiPreferencesContext();
+    const uiPreferences = useContext(UiPreferencesContext);
+    const playUiSound = uiPreferences?.playUiSound ?? (() => {});
 
     useEffect(() => {
         if (!open) return;

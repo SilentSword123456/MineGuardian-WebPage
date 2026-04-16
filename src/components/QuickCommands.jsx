@@ -1,7 +1,8 @@
 import Server from "../types/server.jsx";
 import CustomButton from "./ui/CustomButton.jsx";
 import {Play, Square} from "lucide-react";
-import { useUiPreferencesContext } from "@/hooks/use-ui-preferences-context.jsx";
+import { useContext } from "react";
+import { UiPreferencesContext } from "@/context/ui-preferences-context.js";
 
 /**
  * @param {Object} props
@@ -10,7 +11,8 @@ import { useUiPreferencesContext } from "@/hooks/use-ui-preferences-context.jsx"
  * @param {boolean} props.isConnected
  */
 function QuickCommands({server, isRunning, isConnected}) {
-    const { playUiSound } = useUiPreferencesContext();
+    const uiPreferences = useContext(UiPreferencesContext);
+    const playUiSound = uiPreferences?.playUiSound ?? (() => {});
 
     return (
         <div className="quick-commands">
