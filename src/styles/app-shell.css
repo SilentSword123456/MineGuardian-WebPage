@@ -12,9 +12,11 @@
     z-index: 50;
     display: flex;
     align-items: center;
+    gap: 8px;
     height: 48px;
     padding: 0 12px;
-    background: rgba(18, 21, 28, 0.85);
+    background: var(--mg-toolbar-bg);
+    border-bottom: 1px solid var(--mg-toolbar-border);
     backdrop-filter: blur(8px);
 }
 
@@ -228,4 +230,3 @@
 .animate-spin {
     animation: spin 1s linear infinite;
 }
-

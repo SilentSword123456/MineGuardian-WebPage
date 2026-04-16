@@ -10,4 +10,45 @@
 .toolbar-dropdown-item:hover { background: var(--accent); }
 .toolbar-dropdown-item--active { background: var(--accent); font-weight: 500; }
 .toolbar-dropdown-empty { padding: 8px; font-size: 0.8rem; color: var(--muted-foreground); }
-.toolbar-user-chip { margin-left: auto; font-size: 0.75rem; color: var(--muted-foreground); border: 1px solid var(--border); border-radius: 999px; padding: 3px 10px; max-width: 240px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.toolbar-actions {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.toolbar-icon-button {
+    border: 1px solid var(--border);
+    color: var(--foreground);
+    background: var(--card);
+    border-radius: 8px;
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.15s ease, border-color 0.2s ease;
+}
+
+.toolbar-icon-button:hover {
+    background: var(--accent);
+}
+
+.toolbar-icon-button:active {
+    transform: translateY(1px);
+}
+
+.toolbar-user-chip {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 3px 10px;
+    max-width: 240px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: var(--card);
+}

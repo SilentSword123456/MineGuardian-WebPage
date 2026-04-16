@@ -4,8 +4,9 @@ import { SidebarTrigger } from "@/components/animate-ui/components/radix/sidebar
 import { useServers } from "@/hooks/use-servers.jsx";
 import { MG_EMERALD, MG_CRIMSON } from "@/lib/colors.js";
 import { Router } from "@/components/animate-ui/icons/router";
-import { ChevronRight, ChevronDown } from "lucide-react";
+import { ChevronRight, ChevronDown, Moon, Sun } from "lucide-react";
 import { useAuthSessionContext } from "@/hooks/use-auth-session-context.jsx";
+import { useUiPreferencesContext } from "@/hooks/use-ui-preferences-context.jsx";
 
 
 function useBreadcrumbs() {
@@ -120,6 +121,7 @@ function BreadcrumbSegment({ segment }) {
 function Toolbar() {
     const breadcrumbs = useBreadcrumbs();
     const { currentUser } = useAuthSessionContext();
+    const { theme, toggleTheme } = useUiPreferencesContext();
     const currentUsername = currentUser?.username;
 
     return (
@@ -137,11 +139,23 @@ function Toolbar() {
                 </nav>
             )}
 
-            {currentUsername && (
-                <div className="toolbar-user-chip" title={`Signed in as ${currentUsername}`}>
-                    {currentUsername}
-                </div>
-            )}
+            <div className="toolbar-actions">
+                <button
+                    type="button"
+                    className="toolbar-icon-button"
+                    onClick={toggleTheme}
+                    title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+                    aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+                >
+                    {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
+                </button>
+
+                {currentUsername && (
+                    <div className="toolbar-user-chip" title={`Signed in as ${currentUsername}`}>
+                        {currentUsername}
+                    </div>
+                )}
+            </div>
         </div>
     );
 }

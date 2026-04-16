@@ -6,24 +6,27 @@
 
     /* -- MineGuardian Palette ----------------------------------- */
     /* Surfaces */
-    --mg-obsidian: #0D0F14;
-    --mg-void:     #12151C;
-    --mg-stone:    #1C2130;
-    --mg-slate:    #252D40;
-    --mg-mist:     #3A4560;
+    --mg-obsidian: #F3F7FF;
+    --mg-void:     #FFFFFF;
+    --mg-stone:    #E9F0FF;
+    --mg-slate:    #D6E2F8;
+    --mg-mist:     #B2C4E0;
     /* Text */
-    --mg-snow:  #E8EDF5;
-    --mg-ghost: #A8B4CC;
-    --mg-fog:   #6B7A99;
+    --mg-snow:  #0F172A;
+    --mg-ghost: #475569;
+    --mg-fog:   #64748B;
     /* Accents */
-    --mg-emerald:     #2ECC71;
-    --mg-emerald-dim: #1A7A45;
-    --mg-amber:       #F59E0B;
-    --mg-amber-dim:   #92600A;
-    --mg-crimson:     #EF4444;
-    --mg-crimson-dim: #7A1F1F;
-    --mg-cyan:        #22D3EE;
+    --mg-emerald:     #1EA85A;
+    --mg-emerald-dim: #178147;
+    --mg-amber:       #D18A08;
+    --mg-amber-dim:   #946205;
+    --mg-crimson:     #D63636;
+    --mg-crimson-dim: #9D1F1F;
+    --mg-cyan:        #0891B2;
     --mg-cyan-dim:    #0E6B7A;
+    --mg-toolbar-bg: rgba(255, 255, 255, 0.78);
+    --mg-toolbar-border: rgba(178, 196, 224, 0.9);
+    --mg-card-shadow: 0 12px 26px rgba(15, 23, 42, 0.08);
 
     /* -- shadcn / Radix token mapping --------------------------- */
     --background:          var(--mg-obsidian);
@@ -107,7 +110,26 @@ body {
 }
 
 .dark {
-    /* The app is always dark - inherit the MineGuardian tokens from :root unchanged */
+    --mg-obsidian: #0D0F14;
+    --mg-void:     #12151C;
+    --mg-stone:    #1C2130;
+    --mg-slate:    #252D40;
+    --mg-mist:     #3A4560;
+    --mg-snow:  #E8EDF5;
+    --mg-ghost: #A8B4CC;
+    --mg-fog:   #6B7A99;
+    --mg-emerald:     #2ECC71;
+    --mg-emerald-dim: #1A7A45;
+    --mg-amber:       #F59E0B;
+    --mg-amber-dim:   #92600A;
+    --mg-crimson:     #EF4444;
+    --mg-crimson-dim: #7A1F1F;
+    --mg-cyan:        #22D3EE;
+    --mg-cyan-dim:    #0E6B7A;
+    --mg-toolbar-bg: rgba(18, 21, 28, 0.86);
+    --mg-toolbar-border: rgba(58, 69, 96, 0.85);
+    --mg-card-shadow: 0 12px 26px rgba(0, 0, 0, 0.3);
+
     --background:          var(--mg-obsidian);
     --foreground:          var(--mg-snow);
     --card:                var(--mg-void);
@@ -148,6 +170,6 @@ body {
 
     body {
         @apply bg-background text-foreground;
+        transition: background-color 0.25s ease, color 0.25s ease;
     }
 }
-

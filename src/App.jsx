@@ -19,6 +19,7 @@ import { useBackend } from "@/context/BackendContext.jsx";
 import { AuthSessionProvider } from "@/context/AuthSessionContext.jsx";
 import { useAuthSessionContext } from "@/hooks/use-auth-session-context.jsx";
 import LoginPage from "@/components/LoginPage.jsx";
+import { UiPreferencesProvider } from "@/context/UiPreferencesContext.jsx";
 
 const queryClient = new QueryClient();
 
@@ -76,11 +77,10 @@ function ServerRouteView() {
 
 function App() {
     const { backendUp, isCheckingBackend, baseUrl, setBaseUrl } = useBackend();
-    const { authenticated, authLoading, login, loginPending, loginError, register, registerPending, registerError, refetchAuthSession } = useAuthSessionContext();
+    const { authenticated, authLoading, login, loginPending, loginError, register, registerPending, registerError } = useAuthSessionContext();
 
     async function handleLogin(username, password) {
         await login({ username, password });
-        await refetchAuthSession();
     }
 
     async function handleRegister(username, password) {
@@ -124,11 +124,13 @@ function App() {
 function AppWithProviders() {
     return (
         <QueryClientProvider client={queryClient}>
-            <BackendProvider>
-                <AuthSessionProvider>
-                    <App />
-                </AuthSessionProvider>
-            </BackendProvider>
+            <UiPreferencesProvider>
+                <BackendProvider>
+                    <AuthSessionProvider>
+                        <App />
+                    </AuthSessionProvider>
+                </BackendProvider>
+            </UiPreferencesProvider>
         </QueryClientProvider>
     );
 }
