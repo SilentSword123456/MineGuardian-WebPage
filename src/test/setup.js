@@ -1,4 +1,9 @@
 import '@testing-library/jest-dom';
+import { vi } from "vitest";
+
+vi.mock("use-sound", () => ({
+    default: () => [vi.fn()],
+}));
 
 // jsdom does not implement IntersectionObserver; mock it globally so
 // components using framer-motion's in-view hooks don't throw.

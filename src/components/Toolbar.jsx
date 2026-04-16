@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SidebarTrigger } from "@/components/animate-ui/components/radix/sidebar.jsx";
 import { useServers } from "@/hooks/use-servers.jsx";
@@ -7,6 +7,7 @@ import { Router } from "@/components/animate-ui/icons/router";
 import { ChevronRight, ChevronDown, Moon, Sun } from "lucide-react";
 import { useAuthSessionContext } from "@/hooks/use-auth-session-context.jsx";
 import { useUiPreferencesContext } from "@/hooks/use-ui-preferences-context.jsx";
+import { UiPreferencesContext } from "@/context/ui-preferences-context.js";
 
 
 function useBreadcrumbs() {
@@ -45,8 +46,11 @@ function useBreadcrumbs() {
 function ServerSwitcherDropdown({ currentServerName, onClose }) {
     const navigate = useNavigate();
     const { data: servers = [], isLoading } = useServers();
+    const uiPreferences = useContext(UiPreferencesContext);
+    const playUiSound = uiPreferences?.playUiSound ?? (() => {});
 
     function handleSelect(name) {
+        playUiSound("navigation");
         onClose();
         navigate(`/server/${encodeURIComponent(name)}`);
     }
@@ -70,6 +74,8 @@ function BreadcrumbSegment({ segment }) {
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
     const ref = useRef(null);
+    const uiPreferences = useContext(UiPreferencesContext);
+    const playUiSound = uiPreferences?.playUiSound ?? (() => {});
 
     useEffect(() => {
         if (!open) return;
@@ -81,8 +87,13 @@ function BreadcrumbSegment({ segment }) {
     }, [open]);
 
     function handleClick() {
-        if (segment.path) navigate(segment.path);
-        else if (segment.switcher) setOpen((v) => !v);
+        if (segment.path) {
+            playUiSound("navigation");
+            navigate(segment.path);
+        } else if (segment.switcher) {
+            playUiSound("navigation");
+            setOpen((v) => !v);
+        }
     }
 
     const isClickable = !!(segment.path || segment.switcher);
