@@ -85,7 +85,14 @@ class Manager{
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const servers = payload?.servers?.map((server) => (new Server(server?.id, server?.name, server?.isRunning, this.baseUrl)));
+            const servers = payload?.servers?.map((server) => (
+                new Server(
+                    server?.server_id ?? server?.id,
+                    server?.name ?? server?.serverName ?? "",
+                    Boolean(server?.isRunning),
+                    this.baseUrl
+                )
+            ));
             return servers;
         } catch (error) {
             console.error('Error fetching servers:', error);

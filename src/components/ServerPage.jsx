@@ -54,7 +54,7 @@ function ServerPage({loadedServer, onUninstall}) {
 
         let isActive = false;
 
-        if(!loadedServer || !loadedServer.name)
+        if(!loadedServer || loadedServer.id == null)
             return;
 
         if (backendUp) {
@@ -67,19 +67,19 @@ function ServerPage({loadedServer, onUninstall}) {
                     setData((prev) => new ServerLiveData({
                         ...prev,
                     }).set({
-                        max_memory_mb: Number(serverInfo?.max_memory_mb ?? prev?.max_memory_mb ?? 0),
-                        online_players: {
-                            max: Number(serverInfo?.online_players?.max ?? prev?.online_players?.max ?? 0),
-                        },
-                    }).toObject());
+                            max_memory_mb: Number(serverInfo?.max_memory_mb ?? prev?.max_memory_mb ?? 0),
+                            online_players: {
+                                max: Number(serverInfo?.max_players ?? serverInfo?.online_players?.max ?? prev?.online_players?.max ?? 0),
+                            },
+                        }).toObject());
                 })
                 .catch((error) => {
                     console.error(`Error fetching general server info for ${loadedServer.name}:`, error);
                 });
 
-            console.log(`Creating socket for server: ${loadedServer.name}`);
+            console.log(`Creating socket for server id: ${loadedServer.id}`);
 
-            const newSocket = createSocket(loadedServer.name)
+            const newSocket = createSocket(loadedServer.id)
             setSocket(newSocket);
 
             newSocket.on('connect', () => setIsConnected(true));
@@ -125,7 +125,7 @@ function ServerPage({loadedServer, onUninstall}) {
             setSocket(null);
             setIsConnected(false);
         }
-    }, [loadedServer.name, loadedServer.isInstalled, loadedServer.isRunning, backendUp]);
+    }, [loadedServer.id, loadedServer.name, loadedServer.isInstalled, loadedServer.isRunning, backendUp]);
 
     const memPct = Math.min(
         ((data?.memory_usage_mb ?? 0) / Math.max(data?.max_memory_mb ?? 1, 1)) * 100,

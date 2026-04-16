@@ -11,7 +11,7 @@ class Server {
 
     async start() {
         try {
-            const response = await fetch(`${this.baseUrl}/servers/${this.name}/start`, {
+            const response = await fetch(`${this.baseUrl}/servers/${this.id}/start`, {
                 method: 'POST',
                 credentials: 'include'
             });
@@ -31,7 +31,7 @@ class Server {
 
     async stop() {
         try {
-            const response = await fetch(`${this.baseUrl}/servers/${this.name}/stop`, {
+            const response = await fetch(`${this.baseUrl}/servers/${this.id}/stop`, {
                 method: 'POST',
                 credentials: 'include'
             });
@@ -71,7 +71,7 @@ class Server {
 
     async getGeneralInfo() {
         try {
-            const response = await fetch(`${this.baseUrl}/servers/${this.name}`, {
+            const response = await fetch(`${this.baseUrl}/servers/${this.id}`, {
                 method: 'GET',
                 credentials: 'include'
             });
@@ -91,4 +91,3 @@ class Server {
 }
 
 export default Server;
-

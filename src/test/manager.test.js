@@ -49,8 +49,8 @@ describe('Manager.getServers()', () => {
     it('returns an array of Server instances with the correct properties', async () => {
         global.fetch = mockFetchOk({
             servers: [
-                { id: 1, name: 'Alpha', isRunning: true },
-                { id: 2, name: 'Beta', isRunning: false },
+                { server_id: 1, name: 'Alpha', isRunning: true },
+                { server_id: 2, name: 'Beta', isRunning: false },
             ],
         });
         const servers = await manager.getServers();
