@@ -168,58 +168,57 @@
 
 .ss-meter-icon {
     --icon-size: 18px;
+    --hud-full: none;
+    --hud-half: none;
+    --hud-empty: none;
     width: var(--icon-size);
     height: var(--icon-size);
     display: block;
     position: relative;
 }
 
-.ss-meter-icon::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: 2px;
-    opacity: 0.25;
-}
-
 .ss-meter-icon::after {
     content: "";
     position: absolute;
     inset: 0;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
     image-rendering: pixelated;
     filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.6));
 }
 
-.ss-meter-icon--heart::after {
-    background: linear-gradient(to bottom, #f87171 0%, #ef4444 45%, #991b1b 100%);
-    clip-path: polygon(22% 2%, 40% 2%, 50% 14%, 60% 2%, 78% 2%, 98% 24%, 98% 50%, 78% 70%, 50% 98%, 22% 70%, 2% 50%, 2% 24%);
+.ss-meter-icon--heart {
+    --hud-full: url('/textures/hud/heart/full.png');
+    --hud-half: url('/textures/hud/heart/half.png');
+    --hud-empty: url('/textures/hud/heart/container.png');
 }
 
-.ss-meter-icon--heart::before {
-    background: #ef4444;
+.ss-meter-icon--hunger {
+    --hud-full: url('/textures/hud/food_full.png');
+    --hud-half: url('/textures/hud/food_half.png');
+    --hud-empty: url('/textures/hud/food_empty.png');
 }
 
-.ss-meter-icon--hunger::after {
-    background: linear-gradient(to bottom, #facc15 0%, #fb923c 42%, #9a3412 100%);
-    clip-path: polygon(2% 30%, 16% 18%, 31% 14%, 52% 16%, 65% 22%, 78% 38%, 98% 56%, 94% 76%, 78% 84%, 62% 78%, 54% 66%, 44% 64%, 34% 74%, 20% 86%, 8% 80%, 2% 62%);
-}
-
-.ss-meter-icon--hunger::before {
-    background: #92400e;
+.ss-meter-icon--full::after {
+    background-image: var(--hud-full);
 }
 
 .ss-meter-icon--half::after {
-    transform: scaleX(0.5);
-    transform-origin: left center;
-}
-
-.ss-meter-icon--empty::after {
-    opacity: 0;
+    background-image: var(--hud-half);
 }
 
 .ss-meter-icon--empty::before {
-    opacity: 0.65;
-    background: color-mix(in oklab, var(--mg-slate) 85%, #111827 15%);
+    display: none;
+}
+
+.ss-meter-icon--empty::after {
+    opacity: 1;
+    background-image: var(--hud-empty);
+}
+
+.ss-meter-icons--wither .ss-meter-icon--heart.ss-meter-icon--empty::after {
+    background-image: url('/textures/hud/heart/withered_full.png');
 }
 
 .ss-meter-icons--danger {
