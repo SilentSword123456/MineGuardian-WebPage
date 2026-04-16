@@ -2,7 +2,7 @@ import {useEffect, useRef, useState} from "react";
 import { Terminal, ChevronUp, ChevronDown, Trash2, Send } from "lucide-react";
 import CustomButton from "./ui/CustomButton.jsx";
 
-function Console({server, socket, isConnected, messages, setMessages}){
+function Console({server, socket, isConnected, messages, setMessages, launchClassName = ""}){
     const [inputValue, setInputValue] = useState('');
     const [isExpanded, setIsExpanded] = useState(false);
     const [autoScroll, setAutoScroll] = useState(true);
@@ -90,12 +90,12 @@ function Console({server, socket, isConnected, messages, setMessages}){
     }
 
     return (
-        <div className={`console-container ${isExpanded ? 'expanded' : 'collapsed'}`}>
+        <div className={`console-container ${isExpanded ? 'expanded' : 'collapsed'} ${launchClassName}`}>
             <div className="console-header" onClick={() => setIsExpanded(!isExpanded)}>
                 <div className="console-title">
                     <div className={`status-dot ${isConnected ? 'online' : 'offline'}`} />
                     <Terminal size={18} style={{ marginRight: '8px' }} />
-                    Server Console
+                    {server?.name ? `${server.name} Console` : "Server Console"}
                 </div>
                 <button className="console-toggle-btn">
                     {isExpanded ? <ChevronDown size={20} /> : <ChevronUp size={20} />}

@@ -15,6 +15,43 @@
     flex-direction: column;
 }
 
+.console-enter--drop {
+    animation: console-drop-in 520ms cubic-bezier(.24,.85,.3,1);
+}
+
+.console-enter--drop::before,
+.console-enter--drop::after {
+    content: "";
+    position: absolute;
+    top: -8px;
+    width: 52px;
+    height: 18px;
+    pointer-events: none;
+    background: radial-gradient(circle, rgba(255,255,255,0.24) 0%, rgba(255,255,255,0.08) 35%, transparent 72%);
+    opacity: 0;
+    animation: console-smoke 700ms ease-out 320ms;
+}
+
+.console-enter--drop::before {
+    left: 14px;
+}
+
+.console-enter--drop::after {
+    right: 14px;
+}
+
+@keyframes console-drop-in {
+    0% { transform: translateY(-120px); opacity: 0; }
+    70% { transform: translateY(8px); opacity: 1; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes console-smoke {
+    0% { transform: translateY(0); opacity: 0; }
+    30% { opacity: 0.45; }
+    100% { transform: translateY(-10px); opacity: 0; }
+}
+
 /* Fallback if the sidebar variable is not updated while collapsed */
 :root:has([data-sidebar="sidebar"][data-state="collapsed"]) .console-container {
     left: 0;
@@ -225,4 +262,3 @@
     background-color: var(--mg-void);
     transform: scale(0.98);
 }
-

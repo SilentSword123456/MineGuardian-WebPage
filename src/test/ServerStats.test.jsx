@@ -49,4 +49,20 @@ describe('ServerStats', () => {
             render(<ServerStats cpuUsagePercent={0} memoryUsageMb={0} MAX_MEMORY_MB={0} />)
         ).not.toThrow();
     });
+
+    it("applies shake danger class when RAM drops below 3 hearts", () => {
+        render(<ServerStats cpuUsagePercent={0} memoryUsageMb={750} MAX_MEMORY_MB={1000} />);
+        const dangerRows = document.querySelectorAll(".ss-meter-icons--danger");
+        expect(dangerRows.length).toBeGreaterThan(0);
+    });
+
+    it("applies wither effect class when RAM reaches zero hearts", () => {
+        render(<ServerStats cpuUsagePercent={0} memoryUsageMb={1000} MAX_MEMORY_MB={1000} />);
+        expect(document.querySelector(".ss-meter-icons--wither")).toBeInTheDocument();
+    });
+
+    it("falls back to legacy block bars when minecraft meters are disabled", () => {
+        render(<ServerStats cpuUsagePercent={20} memoryUsageMb={100} MAX_MEMORY_MB={1000} minecraftMetersEnabled={false} />);
+        expect(document.querySelectorAll(".ss-block").length).toBe(20);
+    });
 });

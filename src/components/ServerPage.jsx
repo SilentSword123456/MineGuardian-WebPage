@@ -15,6 +15,7 @@ import {
     TabsList,
     TabsTrigger
 } from "@/components/animate-ui/components/radix/tabs.jsx";
+import { useUiPreferencesContext } from "@/hooks/use-ui-preferences-context.jsx";
 
 /**
  * @typedef {import('../types/server.jsx').Server} Server
@@ -25,19 +26,24 @@ import {
  */
 function ServerPage({loadedServer, onUninstall}) {
     const { backendUp } = useBackend();
+    const { minecraftMetersEnabled, websocketPipeEnabled, startAnimationsEnabled } = useUiPreferencesContext();
     const [data, setData] = useState(() => new ServerLiveData().toObject());
     const [socket, setSocket] = useState(null);
     const [isConnected, setIsConnected] = useState(false);
     const [messages, setMessages] = useState([]);
     const [isRunning, setIsRunning] = useState(loadedServer.isRunning);
+    const [shouldAnimateStart, setShouldAnimateStart] = useState(false);
     const isRunningRef = useRef(loadedServer.isRunning);
     const [isInstalled, setIsInstalled] = useState(loadedServer.isInstalled);
 
     useEffect(() => {
         if (isRunning === false) {
             setData((prev) => new ServerLiveData(prev).reset(true).toObject());
+            setShouldAnimateStart(false);
+        } else if (startAnimationsEnabled) {
+            setShouldAnimateStart(true);
         }
-    }, [isRunning]);
+    }, [isRunning, startAnimationsEnabled]);
 
     useEffect(() => {
         setData(new ServerLiveData().toObject());
@@ -121,6 +127,19 @@ function ServerPage({loadedServer, onUninstall}) {
         }
     }, [loadedServer.name, loadedServer.isInstalled, loadedServer.isRunning, backendUp]);
 
+    const memPct = Math.min(
+        ((data?.memory_usage_mb ?? 0) / Math.max(data?.max_memory_mb ?? 1, 1)) * 100,
+        100
+    );
+    const bubbleSeverity = Math.max(data?.cpu_usage_percent ?? 0, memPct);
+    const bubbleColorClass = bubbleSeverity < 50 ? "ws-pipe-bubble--green" : (bubbleSeverity < 80 ? "ws-pipe-bubble--gold" : "ws-pipe-bubble--red");
+    const bubbleDuration = `${Math.max(1.2, 4.8 - (bubbleSeverity / 30)).toFixed(2)}s`;
+
+    const showLivePanels = isRunning;
+    const playersPanelClass = startAnimationsEnabled && shouldAnimateStart ? "server-enter--top" : "";
+    const statsPanelClass = startAnimationsEnabled && shouldAnimateStart ? "server-enter--right" : "";
+    const consoleClass = startAnimationsEnabled && shouldAnimateStart ? "console-enter--drop" : "";
+
     return (
         <div className="server-page">
             {!backendUp && (
@@ -148,13 +167,61 @@ function ServerPage({loadedServer, onUninstall}) {
                             </TabsList>
                             <TabsContents>
                                 <TabsContent value="overview">
-                                    <div className="stats-row">
-                                        <PlayersAvatarPanel online_players={data?.online_players} />
-                                        <ServerStats
-                                            cpuUsagePercent={data?.cpu_usage_percent}
-                                            memoryUsageMb={data?.memory_usage_mb}
-                                            MAX_MEMORY_MB={data?.max_memory_mb}
-                                        />
+                                    <div className="server-overview-stage">
+                                        {showLivePanels ? (
+                                            <div className="stats-row">
+                                                <div className={playersPanelClass}>
+                                                    <PlayersAvatarPanel online_players={data?.online_players} />
+                                                </div>
+                                                <div className={statsPanelClass}>
+                                                    <ServerStats
+                                                        cpuUsagePercent={data?.cpu_usage_percent}
+                                                        memoryUsageMb={data?.memory_usage_mb}
+                                                        MAX_MEMORY_MB={data?.max_memory_mb}
+                                                        minecraftMetersEnabled={minecraftMetersEnabled}
+                                                    />
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="server-standby-card">
+                                                <h3 className="player-avatar-section-title">Standby</h3>
+                                                <p className="server-standby-copy">
+                                                    Press <strong>Start Server</strong> to load live players, usage meters, and console output.
+                                                </p>
+                                                <div className="server-standby-connection">
+                                                    <span className={`status-dot ${isConnected ? "online" : "offline"}`} />
+                                                    {isConnected ? "WebSocket connected" : "Waiting for WebSocket"}
+                                                </div>
+                                            </div>
+                                        )}
+                                        {websocketPipeEnabled && (
+                                            <div className="ws-pipe-shell" aria-hidden="true">
+                                                <div className="ws-pipe-edge ws-pipe-edge--top">
+                                                    {Array.from({ length: 10 }).map((_, index) => (
+                                                        <span
+                                                            key={`bubble-top-${index}`}
+                                                            className={`ws-pipe-bubble ${bubbleColorClass}`}
+                                                            style={{
+                                                                animationDuration: bubbleDuration,
+                                                                animationDelay: `${index * 0.28}s`
+                                                            }}
+                                                        />
+                                                    ))}
+                                                </div>
+                                                <div className="ws-pipe-edge ws-pipe-edge--right">
+                                                    {Array.from({ length: 8 }).map((_, index) => (
+                                                        <span
+                                                            key={`bubble-right-${index}`}
+                                                            className={`ws-pipe-bubble ${bubbleColorClass}`}
+                                                            style={{
+                                                                animationDuration: bubbleDuration,
+                                                                animationDelay: `${index * 0.22}s`
+                                                            }}
+                                                        />
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 </TabsContent>
                                 <TabsContent value="advanced">
@@ -168,13 +235,16 @@ function ServerPage({loadedServer, onUninstall}) {
                                 </TabsContent>
                             </TabsContents>
                         </Tabs>
-                        <Console
-                            server={loadedServer}
-                            socket={socket}
-                            isConnected={isConnected}
-                            messages={messages}
-                            setMessages={setMessages}
-                        />
+                        {showLivePanels && (
+                            <Console
+                                server={loadedServer}
+                                socket={socket}
+                                isConnected={isConnected}
+                                messages={messages}
+                                setMessages={setMessages}
+                                launchClassName={consoleClass}
+                            />
+                        )}
                         <QuickCommands
                             server={loadedServer}
                             isRunning={isRunning}
