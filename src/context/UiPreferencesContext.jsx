@@ -71,7 +71,9 @@ export function UiPreferencesProvider({ children }) {
             const target = event.target;
             if (!(target instanceof Element)) return;
 
-            const interactive = target.closest("button, [role='button'], a");
+            const interactive = target.closest(
+                "button, [role='button'], a, input[type='submit'], input[type='button'], input[type='reset']"
+            );
             if (!interactive || interactive.hasAttribute("disabled")) return;
             playTick();
         }
@@ -79,6 +81,10 @@ export function UiPreferencesProvider({ children }) {
         document.addEventListener("pointerdown", handlePointerDown);
         return () => {
             document.removeEventListener("pointerdown", handlePointerDown);
+            if (audioContextRef.current) {
+                audioContextRef.current.close().catch(() => {});
+                audioContextRef.current = null;
+            }
         };
     }, [soundEnabled]);
 
