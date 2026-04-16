@@ -54,7 +54,7 @@ function ServerPage({loadedServer, onUninstall}) {
 
         let isActive = false;
 
-        if(!loadedServer || loadedServer.id == null)
+        if(!loadedServer || loadedServer.id === null || loadedServer.id === undefined)
             return;
 
         if (backendUp) {
@@ -74,7 +74,7 @@ function ServerPage({loadedServer, onUninstall}) {
                         }).toObject());
                 })
                 .catch((error) => {
-                    console.error(`Error fetching general server info for ${loadedServer.name}:`, error);
+                    console.error(`Error fetching general server info for id ${loadedServer.id}:`, error);
                 });
 
             console.log(`Creating socket for server id: ${loadedServer.id}`);
@@ -125,7 +125,7 @@ function ServerPage({loadedServer, onUninstall}) {
             setSocket(null);
             setIsConnected(false);
         }
-    }, [loadedServer.id, loadedServer.name, loadedServer.isInstalled, loadedServer.isRunning, backendUp]);
+    }, [loadedServer.id, loadedServer.isInstalled, loadedServer.isRunning, backendUp]);
 
     const memPct = Math.min(
         ((data?.memory_usage_mb ?? 0) / Math.max(data?.max_memory_mb ?? 1, 1)) * 100,
