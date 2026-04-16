@@ -36,13 +36,15 @@ export function UiPreferencesProvider({ children }) {
     }, [soundEnabled]);
 
     useEffect(() => {
-        if (!soundEnabled) return;
         const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
         if (!AudioContextCtor) return;
+        if (!soundEnabled) return;
+
+        audioContextRef.current = audioContextRef.current ?? new AudioContextCtor();
 
         function playTick() {
-            const context = audioContextRef.current ?? new AudioContextCtor();
-            audioContextRef.current = context;
+            const context = audioContextRef.current;
+            if (!context) return;
 
             if (context.state === "suspended") {
                 context.resume().catch(() => {});
@@ -69,7 +71,7 @@ export function UiPreferencesProvider({ children }) {
             const target = event.target;
             if (!(target instanceof Element)) return;
 
-            const interactive = target.closest("button, [role='button'], a, .server-item");
+            const interactive = target.closest("button, [role='button'], a");
             if (!interactive || interactive.hasAttribute("disabled")) return;
             playTick();
         }

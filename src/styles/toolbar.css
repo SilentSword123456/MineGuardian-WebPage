@@ -10,8 +10,15 @@
 .toolbar-dropdown-item:hover { background: var(--accent); }
 .toolbar-dropdown-item--active { background: var(--accent); font-weight: 500; }
 .toolbar-dropdown-empty { padding: 8px; font-size: 0.8rem; color: var(--muted-foreground); }
-.toolbar-icon-button {
+
+.toolbar-actions {
     margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.toolbar-icon-button {
     border: 1px solid var(--border);
     color: var(--foreground);
     background: var(--card);

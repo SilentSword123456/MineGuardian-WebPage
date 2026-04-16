@@ -139,21 +139,23 @@ function Toolbar() {
                 </nav>
             )}
 
-            <button
-                type="button"
-                className="toolbar-icon-button"
-                onClick={toggleTheme}
-                title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-                aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-            >
-                {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
-            </button>
+            <div className="toolbar-actions">
+                <button
+                    type="button"
+                    className="toolbar-icon-button"
+                    onClick={toggleTheme}
+                    title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+                    aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+                >
+                    {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
+                </button>
 
-            {currentUsername && (
-                <div className="toolbar-user-chip" title={`Signed in as ${currentUsername}`}>
-                    {currentUsername}
-                </div>
-            )}
+                {currentUsername && (
+                    <div className="toolbar-user-chip" title={`Signed in as ${currentUsername}`}>
+                        {currentUsername}
+                    </div>
+                )}
+            </div>
         </div>
     );
 }
