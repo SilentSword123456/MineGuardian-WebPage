@@ -93,7 +93,7 @@ export default function InstallServerDialog({ from, showCloseButton, triggerClas
     const playUiSound = uiPreferences?.playUiSound ?? (() => {});
     const [open, setOpen] = useState(false);
     const [name, setName] = useState("My Server");
-    const [software, setSoftware] = useState("");
+    const [software, setSoftware] = useState("Vanilla");
     const [version, setVersion] = useState("");
     const [eulaAccepted, setEulaAccepted] = useState(false);
     const [availableVersions, setAvailableVersions] = useState([]);
@@ -103,7 +103,7 @@ export default function InstallServerDialog({ from, showCloseButton, triggerClas
 
     function resetForm() {
         setName("My Server");
-        setSoftware("");
+        setSoftware("Vanilla");
         setVersion("");
         setEulaAccepted(false);
         setAvailableVersions([]);

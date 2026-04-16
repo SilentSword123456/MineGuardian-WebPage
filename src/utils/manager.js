@@ -179,7 +179,8 @@ class Manager{
 
     async getAvailableVersions(Software = "Vanilla") {
         try {
-            const { response, payload } = await this.requestJson(`/manage/${Software}/getAvailableVersions`, {
+            const normalizedSoftware = String(Software ?? "").trim() || "Vanilla";
+            const { response, payload } = await this.requestJson(`/manage/${normalizedSoftware}/getAvailableVersions`, {
                 method: 'GET',
                 credentials: "include"
             });

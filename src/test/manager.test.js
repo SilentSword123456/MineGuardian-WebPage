@@ -187,6 +187,15 @@ describe('Manager.getAvailableVersions()', () => {
         );
     });
 
+    it('defaults to "Vanilla" when software is an empty string', async () => {
+        global.fetch = mockFetchOk({ versions: [] });
+        await manager.getAvailableVersions('');
+        expect(fetch).toHaveBeenCalledWith(
+            'http://localhost:5000/manage/Vanilla/getAvailableVersions',
+            expect.anything()
+        );
+    });
+
     it('throws when the response is not ok', async () => {
         global.fetch = mockFetchFail(404);
         await expect(manager.getAvailableVersions()).rejects.toThrow();
