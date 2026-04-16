@@ -72,6 +72,23 @@ describe('Manager.getServers()', () => {
         global.fetch = mockFetchNetworkError();
         await expect(manager.getServers()).rejects.toThrow();
     });
+
+    it('reads snake_case server fields from backend services response', async () => {
+        global.fetch = mockFetchOk({
+            servers: [
+                { server_id: 5, server_name: 'Gamma', is_running: true },
+                { server_id: 6, server_name: 'Delta', is_running: false },
+            ],
+        });
+        const servers = await manager.getServers();
+        expect(servers).toHaveLength(2);
+        expect(servers[0].id).toBe(5);
+        expect(servers[0].name).toBe('Gamma');
+        expect(servers[0].isRunning).toBe(true);
+        expect(servers[1].id).toBe(6);
+        expect(servers[1].name).toBe('Delta');
+        expect(servers[1].isRunning).toBe(false);
+    });
 });
 
 describe('Manager.checkAuthSession()', () => {

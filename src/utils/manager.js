@@ -2,6 +2,17 @@ import {BASE_URL} from "@/lib/config.js";
 import ServerLiveData from "@/types/serverLiveData.jsx";
 import Server from "@/types/server.jsx";
 
+function parseServerRunning(value) {
+    if (typeof value === "boolean") return value;
+    if (typeof value === "number") return value !== 0;
+    if (typeof value === "string") {
+        const normalized = value.trim().toLowerCase();
+        if (["true", "1", "yes", "on", "running"].includes(normalized)) return true;
+        if (["false", "0", "no", "off", "stopped"].includes(normalized)) return false;
+    }
+    return Boolean(value);
+}
+
 class Manager{
     baseUrl = BASE_URL;
 
@@ -85,11 +96,19 @@ class Manager{
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const servers = payload?.servers?.map((server) => (
+            const serverRows = Array.isArray(payload?.servers)
+                ? payload.servers
+                : Array.isArray(payload)
+                    ? payload
+                    : Array.isArray(payload?.data?.servers)
+                        ? payload.data.servers
+                        : [];
+
+            const servers = serverRows.map((server) => (
                 new Server(
-                    server?.server_id ?? server?.id,
-                    server?.name ?? server?.serverName ?? "",
-                    Boolean(server?.isRunning),
+                    server?.server_id ?? server?.serverId ?? server?.id,
+                    server?.name ?? server?.server_name ?? server?.serverName ?? "",
+                    parseServerRunning(server?.isRunning ?? server?.is_running ?? server?.running),
                     this.baseUrl
                 )
             ));
