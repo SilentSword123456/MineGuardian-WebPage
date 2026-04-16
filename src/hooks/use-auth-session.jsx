@@ -18,9 +18,16 @@ export function useAuthSession() {
     });
 
     const loginMutation = useMutation({
-        mutationFn: ({ username, password }) => manager.login(username, password),
-        onSuccess: async (_, variables) => {
-            const storedUser = storeAuthUser(baseUrl, variables?.username);
+        mutationFn: async ({ username, password }) => {
+            await manager.login(username, password);
+            const sessionEstablished = await manager.checkAuthSession();
+            if (!sessionEstablished) {
+                throw new Error("Login did not establish a session. In preview builds this is usually caused by blocked cross-site cookies. Use Backend Settings with a same-site frontend/backend domain pair.");
+            }
+            return { username };
+        },
+        onSuccess: async ({ username }) => {
+            const storedUser = storeAuthUser(baseUrl, username);
             setCurrentUser(storedUser);
             queryClient.setQueryData(["auth-session", baseUrl], true);
             await queryClient.invalidateQueries({ queryKey: ["auth-session", baseUrl] });
