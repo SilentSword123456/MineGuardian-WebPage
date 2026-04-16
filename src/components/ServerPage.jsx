@@ -32,16 +32,16 @@ function ServerPage({loadedServer, onUninstall}) {
     const [isConnected, setIsConnected] = useState(false);
     const [messages, setMessages] = useState([]);
     const [isRunning, setIsRunning] = useState(loadedServer.isRunning);
-    const [shouldAnimateStart, setShouldAnimateStart] = useState(false);
+    const [startAnimationTriggered, setStartAnimationTriggered] = useState(false);
     const isRunningRef = useRef(loadedServer.isRunning);
     const [isInstalled, setIsInstalled] = useState(loadedServer.isInstalled);
 
     useEffect(() => {
         if (isRunning === false) {
             setData((prev) => new ServerLiveData(prev).reset(true).toObject());
-            setShouldAnimateStart(false);
+            setStartAnimationTriggered(false);
         } else if (startAnimationsEnabled) {
-            setShouldAnimateStart(true);
+            setStartAnimationTriggered(true);
         }
     }, [isRunning, startAnimationsEnabled]);
 
@@ -136,9 +136,9 @@ function ServerPage({loadedServer, onUninstall}) {
     const bubbleDuration = `${Math.max(1.2, 4.8 - (bubbleSeverity / 30)).toFixed(2)}s`;
 
     const showLivePanels = isRunning;
-    const playersPanelClass = startAnimationsEnabled && shouldAnimateStart ? "server-enter--top" : "";
-    const statsPanelClass = startAnimationsEnabled && shouldAnimateStart ? "server-enter--right" : "";
-    const consoleClass = startAnimationsEnabled && shouldAnimateStart ? "console-enter--drop" : "";
+    const playersPanelClass = startAnimationsEnabled && startAnimationTriggered ? "server-enter--top" : "";
+    const statsPanelClass = startAnimationsEnabled && startAnimationTriggered ? "server-enter--right" : "";
+    const consoleClass = startAnimationsEnabled && startAnimationTriggered ? "console-enter--drop" : "";
 
     return (
         <div className="server-page">
