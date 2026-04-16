@@ -50,11 +50,11 @@ describe('Server', () => {
     });
 
     describe('start()', () => {
-        it('POSTs to /servers/{name}/start and returns the JSON result', async () => {
+        it('POSTs to /servers/{id}/start and returns the JSON result', async () => {
             global.fetch = mockFetchOk({ started: true });
             const result = await server.start();
             expect(fetch).toHaveBeenCalledWith(
-                'http://localhost:5000/servers/TestServer/start',
+                'http://localhost:5000/servers/1/start',
                 expect.objectContaining({ method: 'POST' })
             );
             expect(result).toEqual({ started: true });
@@ -72,11 +72,11 @@ describe('Server', () => {
     });
 
     describe('stop()', () => {
-        it('POSTs to /servers/{name}/stop and returns the JSON result', async () => {
+        it('POSTs to /servers/{id}/stop and returns the JSON result', async () => {
             global.fetch = mockFetchOk({ stopped: true });
             const result = await server.stop();
             expect(fetch).toHaveBeenCalledWith(
-                'http://localhost:5000/servers/TestServer/stop',
+                'http://localhost:5000/servers/1/stop',
                 expect.objectContaining({ method: 'POST' })
             );
             expect(result).toEqual({ stopped: true });
@@ -127,12 +127,12 @@ describe('Server', () => {
     });
 
     describe('getGeneralInfo()', () => {
-        it('GETs /servers/{name} and returns parsed JSON', async () => {
+        it('GETs /servers/{id} and returns parsed JSON', async () => {
             const info = { max_memory_mb: 4096, online_players: { max: 20 } };
             global.fetch = mockFetchOk(info);
             const result = await server.getGeneralInfo();
             expect(fetch).toHaveBeenCalledWith(
-                'http://localhost:5000/servers/TestServer',
+                'http://localhost:5000/servers/1',
                 expect.objectContaining({ method: 'GET' })
             );
             expect(result).toEqual(info);

@@ -4,7 +4,18 @@ import { useUiPreferencesContext } from "@/hooks/use-ui-preferences-context.jsx"
 
 function Settings() {
     const { baseUrl, setBaseUrl } = useBackend();
-    const { theme, setTheme, soundEnabled, setSoundEnabled } = useUiPreferencesContext();
+    const {
+        theme,
+        setTheme,
+        soundEnabled,
+        setSoundEnabled,
+        minecraftMetersEnabled,
+        setMinecraftMetersEnabled,
+        websocketPipeEnabled,
+        setWebsocketPipeEnabled,
+        startAnimationsEnabled,
+        setStartAnimationsEnabled,
+    } = useUiPreferencesContext();
 
     return (
         <div className="settings-page">
@@ -46,6 +57,43 @@ function Settings() {
                         aria-pressed={soundEnabled}
                     >
                         {soundEnabled ? "On" : "Off"}
+                    </button>
+                </div>
+            </div>
+
+            <div className="settings-card">
+                <h3 className="settings-card-title">Minecraft HUD</h3>
+                <div className="settings-row">
+                    <span className="settings-label">Minecraft heart/hunger meters</span>
+                    <button
+                        type="button"
+                        className={`settings-toggle${minecraftMetersEnabled ? " settings-toggle--active" : ""}`}
+                        onClick={() => setMinecraftMetersEnabled(!minecraftMetersEnabled)}
+                        aria-pressed={minecraftMetersEnabled}
+                    >
+                        {minecraftMetersEnabled ? "On" : "Off"}
+                    </button>
+                </div>
+                <div className="settings-row">
+                    <span className="settings-label">WebSocket pipe + bubbles</span>
+                    <button
+                        type="button"
+                        className={`settings-toggle${websocketPipeEnabled ? " settings-toggle--active" : ""}`}
+                        onClick={() => setWebsocketPipeEnabled(!websocketPipeEnabled)}
+                        aria-pressed={websocketPipeEnabled}
+                    >
+                        {websocketPipeEnabled ? "On" : "Off"}
+                    </button>
+                </div>
+                <div className="settings-row">
+                    <span className="settings-label">Start entrance animations</span>
+                    <button
+                        type="button"
+                        className={`settings-toggle${startAnimationsEnabled ? " settings-toggle--active" : ""}`}
+                        onClick={() => setStartAnimationsEnabled(!startAnimationsEnabled)}
+                        aria-pressed={startAnimationsEnabled}
+                    >
+                        {startAnimationsEnabled ? "On" : "Off"}
                     </button>
                 </div>
             </div>

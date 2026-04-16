@@ -49,8 +49,8 @@ describe('Manager.getServers()', () => {
     it('returns an array of Server instances with the correct properties', async () => {
         global.fetch = mockFetchOk({
             servers: [
-                { id: 1, name: 'Alpha', isRunning: true },
-                { id: 2, name: 'Beta', isRunning: false },
+                { server_id: 1, name: 'Alpha', isRunning: true },
+                { server_id: 2, name: 'Beta', isRunning: false },
             ],
         });
         const servers = await manager.getServers();
@@ -71,6 +71,23 @@ describe('Manager.getServers()', () => {
     it('throws on network error', async () => {
         global.fetch = mockFetchNetworkError();
         await expect(manager.getServers()).rejects.toThrow();
+    });
+
+    it('reads snake_case server fields from backend services response', async () => {
+        global.fetch = mockFetchOk({
+            servers: [
+                { server_id: 5, server_name: 'Gamma', is_running: true },
+                { server_id: 6, server_name: 'Delta', is_running: false },
+            ],
+        });
+        const servers = await manager.getServers();
+        expect(servers).toHaveLength(2);
+        expect(servers[0].id).toBe(5);
+        expect(servers[0].name).toBe('Gamma');
+        expect(servers[0].isRunning).toBe(true);
+        expect(servers[1].id).toBe(6);
+        expect(servers[1].name).toBe('Delta');
+        expect(servers[1].isRunning).toBe(false);
     });
 });
 
@@ -164,6 +181,15 @@ describe('Manager.getAvailableVersions()', () => {
     it('defaults to "Vanilla" when no software is provided', async () => {
         global.fetch = mockFetchOk({ versions: [] });
         await manager.getAvailableVersions();
+        expect(fetch).toHaveBeenCalledWith(
+            'http://localhost:5000/manage/Vanilla/getAvailableVersions',
+            expect.anything()
+        );
+    });
+
+    it('defaults to "Vanilla" when software is an empty string', async () => {
+        global.fetch = mockFetchOk({ versions: [] });
+        await manager.getAvailableVersions('');
         expect(fetch).toHaveBeenCalledWith(
             'http://localhost:5000/manage/Vanilla/getAvailableVersions',
             expect.anything()

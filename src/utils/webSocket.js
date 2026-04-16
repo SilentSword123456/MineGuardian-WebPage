@@ -1,9 +1,9 @@
 import { io } from 'socket.io-client';
 import { BASE_URL } from "@/lib/config.js";
 
-const createSocket = (serverName) => {
+const createSocket = (serverId) => {
     const socket = io(BASE_URL, {
-        query: { serverName: serverName },
+        query: { serverId: String(serverId) },
         transports: ['websocket']
     });
 
