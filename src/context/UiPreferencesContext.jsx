@@ -7,6 +7,7 @@ const SOUND_STORAGE_KEY = "mg_sound_enabled";
 function getInitialTheme() {
     const saved = localStorage.getItem(THEME_STORAGE_KEY);
     if (saved === "light" || saved === "dark") return saved;
+    if (saved) localStorage.removeItem(THEME_STORAGE_KEY);
     if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
         return "dark";
     }
@@ -40,7 +41,7 @@ export function UiPreferencesProvider({ children }) {
         if (!AudioContextCtor) return;
         if (!soundEnabled) return;
 
-        audioContextRef.current = audioContextRef.current ?? new AudioContextCtor();
+        audioContextRef.current = new AudioContextCtor();
 
         function playTick() {
             const context = audioContextRef.current;
