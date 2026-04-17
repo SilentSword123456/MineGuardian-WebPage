@@ -85,7 +85,7 @@ class Manager{
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const servers = payload?.servers?.map((server) => (new Server(server?.id, server?.name, server?.isRunning, this.baseUrl)));
+            const servers = payload?.servers?.map((server) => (new Server(server?.server_id, server?.name, server?.isRunning, this.baseUrl)));
             return servers;
         } catch (error) {
             console.error('Error fetching servers:', error);
@@ -95,7 +95,7 @@ class Manager{
 
     async checkAuthSession() {
         try {
-            const response = await this.request("/favoriteServers", {
+            const response = await this.request("/isSessionValid", {
                 method: 'GET',
                 credentials: "include"
             });
@@ -104,7 +104,7 @@ class Manager{
                 return true;
             }
 
-            if (response.status === 401 || response.status === 403) {
+            if (response.status === 401) {
                 return false;
             }
 
