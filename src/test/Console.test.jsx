@@ -1,36 +1,60 @@
-import { describe, it, expect, vi } from 'vitest';
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { useSocket } from '@/hooks/useSocket.jsx';
+import { useAuthSessionContext } from '@/hooks/use-auth-session-context.jsx';
 import Console from '../components/Console.jsx';
 
-function makeSocket(overrides = {}) {
-    return {
-        emit: vi.fn(),
-        ...overrides,
-    };
+vi.mock('@/hooks/useSocket.jsx', () => ({
+    useSocket: vi.fn(),
+}));
+
+vi.mock('@/hooks/use-auth-session-context.jsx', () => ({
+    useAuthSessionContext: vi.fn(),
+}));
+
+function setupConsoleMocks({
+    isConnected = false,
+    messages = [],
+    setMessages = vi.fn(),
+    sendCommand = vi.fn(),
+    currentUser = { username: 'TestUser' },
+} = {}) {
+    vi.mocked(useSocket).mockReturnValue({
+        isConnected,
+        messages,
+        setMessages,
+        sendCommand,
+    });
+    vi.mocked(useAuthSessionContext).mockReturnValue({ currentUser });
+
+    return { setMessages, sendCommand };
 }
 
-const baseProps = {
-    server: { name: 'TestServer' },
-    socket: null,
-    isConnected: false,
-    messages: [],
-    setMessages: vi.fn(),
-};
+function renderConsole(overrides = {}) {
+    const spies = setupConsoleMocks(overrides);
+    render(<Console server={{ name: 'TestServer' }} />);
+    return spies;
+}
 
 describe('Console', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+        setupConsoleMocks();
+    });
+
     describe('collapsed state (default)', () => {
         it('renders the "Server Console" header', () => {
-            render(<Console {...baseProps} />);
+            renderConsole();
             expect(screen.getByText(/server console/i)).toBeInTheDocument();
         });
 
         it('does not render the textarea when collapsed', () => {
-            render(<Console {...baseProps} />);
+            renderConsole();
             expect(screen.queryByRole('textbox')).toBeNull();
         });
 
         it('shows a ChevronUp toggle button to expand', () => {
-            render(<Console {...baseProps} />);
+            renderConsole();
             // header click should expand
             const header = screen.getByText(/server console/i).closest('.console-header');
             expect(header).toBeInTheDocument();
@@ -38,9 +62,8 @@ describe('Console', () => {
     });
 
     describe('expanded state', () => {
-        function renderExpanded(props = {}) {
-            const merged = { ...baseProps, ...props };
-            render(<Console {...merged} />);
+        function renderExpanded(overrides = {}) {
+            renderConsole(overrides);
             // Click header to expand
             fireEvent.click(screen.getByText(/server console/i).closest('.console-header'));
         }
@@ -76,42 +99,49 @@ describe('Console', () => {
         });
 
         it('emits a console event on the socket when Enter is pressed in the input', () => {
-            const socket = makeSocket();
-            const setMessages = vi.fn();
-            renderExpanded({ isConnected: true, socket, setMessages });
+            const sendCommand = vi.fn();
+            renderExpanded({ isConnected: true, sendCommand });
             const input = screen.getByPlaceholderText(/type a command/i);
             fireEvent.change(input, { target: { value: 'say hello' } });
             fireEvent.keyDown(input, { key: 'Enter' });
-            expect(socket.emit).toHaveBeenCalledWith('console', { message: 'say hello' });
+            expect(sendCommand).toHaveBeenCalledWith('say hello');
         });
 
         it('does not emit when the input is empty and Enter is pressed', () => {
-            const socket = makeSocket();
-            renderExpanded({ isConnected: true, socket });
+            const sendCommand = vi.fn();
+            renderExpanded({ isConnected: true, sendCommand });
             const input = screen.getByPlaceholderText(/type a command/i);
             fireEvent.keyDown(input, { key: 'Enter' });
-            expect(socket.emit).not.toHaveBeenCalled();
+            expect(sendCommand).not.toHaveBeenCalled();
         });
 
         it('calls setMessages to add the sent command to the history', () => {
-            const socket = makeSocket();
             const setMessages = vi.fn();
-            renderExpanded({ isConnected: true, socket, setMessages });
+            renderExpanded({ isConnected: true, setMessages, currentUser: { username: 'Alex' } });
             const input = screen.getByPlaceholderText(/type a command/i);
             fireEvent.change(input, { target: { value: 'tp Alice Bob' } });
             fireEvent.keyDown(input, { key: 'Enter' });
-            // setMessages is called with a function (functional update)
             expect(setMessages).toHaveBeenCalled();
+
+            const updateFn = setMessages.mock.calls[0][0];
+            expect(updateFn([])).toEqual([{ type: 'Alex', text: 'tp Alice Bob' }]);
+        });
+
+        it('falls back to "You" sender label when no username is available', () => {
+            const setMessages = vi.fn();
+            renderExpanded({ isConnected: true, setMessages, currentUser: null });
+            const input = screen.getByPlaceholderText(/type a command/i);
+            fireEvent.change(input, { target: { value: 'list' } });
+            fireEvent.keyDown(input, { key: 'Enter' });
+
+            const updateFn = setMessages.mock.calls[0][0];
+            expect(updateFn([])).toEqual([{ type: 'You', text: 'list' }]);
         });
 
         it('clears messages when the clear button is clicked', () => {
             const setMessages = vi.fn();
             renderExpanded({ isConnected: true, setMessages });
-            // Find the clear button (Trash2 icon button)
-            const buttons = screen.getAllByRole('button');
-            // The clear button is the secondary button (Trash2)
-            const clearBtn = buttons.find(b => b.title === 'Clear Console');
-            expect(clearBtn).toBeTruthy();
+            const clearBtn = screen.getByTitle(/clear console/i);
             fireEvent.click(clearBtn);
             expect(setMessages).toHaveBeenCalledWith([]);
         });
@@ -119,7 +149,7 @@ describe('Console', () => {
 
     describe('toggling', () => {
         it('toggles expanded/collapsed state on header click', () => {
-            render(<Console {...baseProps} />);
+            renderConsole();
             const header = screen.getByText(/server console/i).closest('.console-header');
             // Initially collapsed — no textarea
             expect(screen.queryByPlaceholderText(/type a command/i)).toBeNull();
