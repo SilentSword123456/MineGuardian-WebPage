@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { UiPreferencesContext } from "@/context/ui-preferences-context.js";
+import useSound from "use-sound";
 
 const THEME_STORAGE_KEY = "mg_theme";
 const SOUND_STORAGE_KEY = "mg_sound_enabled";
@@ -23,7 +24,9 @@ function getInitialSoundEnabled() {
 export function UiPreferencesProvider({ children }) {
     const [theme, setTheme] = useState(getInitialTheme);
     const [soundEnabled, setSoundEnabled] = useState(getInitialSoundEnabled);
-    const audioContextRef = useRef(null);
+    const [playNavigation] = useSound("/sounds/navigation.wav", { volume: 0.18, interrupt: true });
+    const [playAction] = useSound("/sounds/action.wav", { volume: 0.22, interrupt: true });
+    const [playSuccess] = useSound("/sounds/success.wav", { volume: 0.24, interrupt: true });
 
     useEffect(() => {
         const root = document.documentElement;
@@ -36,58 +39,21 @@ export function UiPreferencesProvider({ children }) {
         localStorage.setItem(SOUND_STORAGE_KEY, soundEnabled ? "true" : "false");
     }, [soundEnabled]);
 
-    useEffect(() => {
-        const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
-        if (!AudioContextCtor) return;
+    const playUiSound = useCallback((soundType = "navigation") => {
         if (!soundEnabled) return;
 
-        audioContextRef.current = new AudioContextCtor();
-
-        function playTick() {
-            const context = audioContextRef.current;
-            if (!context) return;
-
-            if (context.state === "suspended") {
-                context.resume().catch(() => {});
-            }
-
-            const now = context.currentTime;
-            const oscillator = context.createOscillator();
-            const gain = context.createGain();
-
-            oscillator.type = "triangle";
-            oscillator.frequency.setValueAtTime(620, now);
-            oscillator.frequency.exponentialRampToValueAtTime(510, now + 0.05);
-            gain.gain.setValueAtTime(0.0001, now);
-            gain.gain.exponentialRampToValueAtTime(0.012, now + 0.01);
-            gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.07);
-
-            oscillator.connect(gain);
-            gain.connect(context.destination);
-            oscillator.start(now);
-            oscillator.stop(now + 0.08);
+        if (soundType === "action") {
+            playAction();
+            return;
         }
 
-        function handlePointerDown(event) {
-            const target = event.target;
-            if (!(target instanceof Element)) return;
-
-            const interactive = target.closest(
-                "button, [role='button'], a, input[type='submit'], input[type='button'], input[type='reset']"
-            );
-            if (!interactive || interactive.hasAttribute("disabled")) return;
-            playTick();
+        if (soundType === "success") {
+            playSuccess();
+            return;
         }
 
-        document.addEventListener("pointerdown", handlePointerDown);
-        return () => {
-            document.removeEventListener("pointerdown", handlePointerDown);
-            if (audioContextRef.current) {
-                audioContextRef.current.close().catch(() => {});
-                audioContextRef.current = null;
-            }
-        };
-    }, [soundEnabled]);
+        playNavigation();
+    }, [soundEnabled, playAction, playNavigation, playSuccess]);
 
     const value = useMemo(() => ({
         theme,
@@ -96,7 +62,8 @@ export function UiPreferencesProvider({ children }) {
         soundEnabled,
         setSoundEnabled,
         toggleSound: () => setSoundEnabled((enabled) => !enabled),
-    }), [theme, soundEnabled]);
+        playUiSound,
+    }), [theme, soundEnabled, playUiSound]);
 
     return (
         <UiPreferencesContext.Provider value={value}>
