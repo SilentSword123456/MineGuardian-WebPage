@@ -113,6 +113,10 @@ export default function InstallServerDialog({ from, showCloseButton, triggerClas
     useEffect(() => {
         setVersion("");
         setAvailableVersions([]);
+        if (!software) {
+            setLoadingVersions(false);
+            return;
+        }
         setLoadingVersions(true);
         manager.getAvailableVersions(software)
             .then(versions => setAvailableVersions(versions.versions))
