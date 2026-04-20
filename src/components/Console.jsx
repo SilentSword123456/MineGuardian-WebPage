@@ -33,7 +33,6 @@ function Console({ server }) {
 
     const handleSend = () => {
         if (!inputValue.trim()) return;
-        setMessages((prev) => [...prev, { type: senderLabel, data: inputValue }]);
         sendCommand(inputValue);
         setInputValue("");
         setAutoScroll(true);

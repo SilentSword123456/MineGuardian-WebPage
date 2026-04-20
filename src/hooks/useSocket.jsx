@@ -24,7 +24,10 @@ export function SocketProvider({ serverId, children }) {
 
         socketRef.current = socket;
 
-        socket.on("connect",() => setIsConnected(true));
+        socket.on("connect",() => {
+            setIsConnected(true);
+            setMessages([]);
+        });
         socket.on("disconnect",() => setIsConnected(false));
         socket.on("connect_error", (err) => console.error("[socket] connection error", err.message));
 
@@ -40,7 +43,7 @@ export function SocketProvider({ serverId, children }) {
             socket.disconnect();
             socketRef.current = null;
             setIsConnected(false);
-            setMessages([]);
+            setMessages([]); //TODO: Should this be deleted?
         };
     }, [serverId]);
 

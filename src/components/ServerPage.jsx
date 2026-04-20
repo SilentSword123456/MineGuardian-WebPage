@@ -103,14 +103,10 @@ function ServerPageContent({ loadedServer, onUninstall, backendUp }) {
             isRunningRef.current = eventData.running;
         };
 
-        socket.on("system", handleSystem);
-        socket.on("console", handleConsole);
         socket.on("resources", handleResources);
         socket.on("status", handleStatus);
 
         return () => {
-            socket.off("system", handleSystem);
-            socket.off("console", handleConsole);
             socket.off("resources", handleResources);
             socket.off("status", handleStatus);
         };
