@@ -37,6 +37,7 @@ function Console({ server }) {
         sendCommand(inputValue);
         setInputValue("");
         setAutoScroll(true);
+        console.log(messages);
     };
 
     const handleKeyDown = (e) => {
