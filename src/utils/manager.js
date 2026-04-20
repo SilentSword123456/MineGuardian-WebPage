@@ -104,7 +104,7 @@ class Manager{
                 return true;
             }
 
-            if (response.status === 401) {
+            if (response.status === 401 || response.status === 403) {
                 return false;
             }
 
