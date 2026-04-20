@@ -33,7 +33,7 @@ function Console({ server }) {
 
     const handleSend = () => {
         if (!inputValue.trim()) return;
-        setMessages((prev) => [...prev, { type: senderLabel, text: inputValue }]);
+        setMessages((prev) => [...prev, { type: senderLabel, data: inputValue }]);
         sendCommand(inputValue);
         setInputValue("");
         setAutoScroll(true);
@@ -54,7 +54,7 @@ function Console({ server }) {
                     ref={textareaRef}
                     className="terminalConnection"
                     value={messages
-                        .map((m) => (m.type ? `${m.type}: ${m.text}` : m.text))
+                        .map((m) => (m.type ? `${m.type}: ${m.data}` : m.data))
                         .join("\n")}
                     readOnly
                     onScroll={handleScroll}

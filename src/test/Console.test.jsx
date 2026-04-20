@@ -89,8 +89,8 @@ describe('Console', () => {
             renderExpanded({
                 isConnected: true,
                 messages: [
-                    { type: 'server', text: 'Server started' },
-                    { type: 'system', text: 'Player joined' },
+                    { type: 'server', data: 'Server started' },
+                    { type: 'system', data: 'Player joined' },
                 ],
             });
             const textarea = document.querySelector('textarea.terminalConnection');
@@ -124,7 +124,7 @@ describe('Console', () => {
             expect(setMessages).toHaveBeenCalled();
 
             const updateFn = setMessages.mock.calls[0][0];
-            expect(updateFn([])).toEqual([{ type: 'Alex', text: 'tp Alice Bob' }]);
+            expect(updateFn([])).toEqual([{ type: 'Alex', data: 'tp Alice Bob' }]);
         });
 
         it('falls back to "You" sender label when no username is available', () => {
@@ -135,7 +135,7 @@ describe('Console', () => {
             fireEvent.keyDown(input, { key: 'Enter' });
 
             const updateFn = setMessages.mock.calls[0][0];
-            expect(updateFn([])).toEqual([{ type: 'You', text: 'list' }]);
+            expect(updateFn([])).toEqual([{ type: 'You', data: 'list' }]);
         });
 
         it('clears messages when the clear button is clicked', () => {

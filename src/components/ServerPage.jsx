@@ -82,13 +82,13 @@ function ServerPageContent({ loadedServer, onUninstall, backendUp }) {
 
         const handleSystem = (eventData) => {
             if (isRunningRef.current) {
-                setMessages((prev) => [...prev, { type: "system", text: eventData.data }]);
+                setMessages((prev) => [...prev, { type: "system", data: eventData.data }]);
             }
         };
 
         const handleConsole = (eventData) => {
             if (isRunningRef.current) {
-                setMessages((prev) => [...prev, { type: "server", text: eventData.data }]);
+                setMessages((prev) => [...prev, { type: "server", data: eventData.data }]);
             }
         };
 
