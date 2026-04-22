@@ -9,6 +9,7 @@ import DeleteConfirmation from "@/utils/deleteConfirmation.jsx";
 import { useBackend } from "@/context/BackendContext.jsx";
 import ServerLiveData from "@/types/serverLiveData.jsx";
 import { WifiOff } from "lucide-react";
+import { useNotification } from "@/hooks/use-notification.js";
 import {
     Tabs,
     TabsContent,
@@ -25,6 +26,7 @@ import {
  * @param {Server} props.loadedServer
  */
 function ServerPageContent({ loadedServer, onUninstall, backendUp }) {
+    const { showNotification } = useNotification();
     const { socket, isConnected, setMessages } = useSocket();
     const [data, setData] = useState(() => new ServerLiveData().toObject());
     const [isRunning, setIsRunning] = useState(loadedServer.isRunning);
@@ -66,10 +68,10 @@ function ServerPageContent({ loadedServer, onUninstall, backendUp }) {
     const handleGivePerm = async () => {
         try {
             await manager.giveUserPermissionToServer(parseInt(userId), loadedServer.id, parseInt(permId));
-            alert("Permission given successfully");
+            showNotification("Permission given successfully", "success");
             fetchUserPermissions();
         } catch (error) {
-            alert("Error giving permission: " + error.message);
+            showNotification("Error giving permission: " + error.message, "error");
         }
     };
 
@@ -78,10 +80,10 @@ function ServerPageContent({ loadedServer, onUninstall, backendUp }) {
         const pId = targetPermId !== undefined ? targetPermId : parseInt(permId);
         try {
             await manager.removeUserPermissionFromServer(uId, loadedServer.id, pId);
-            alert("Permission removed successfully");
+            showNotification("Permission removed successfully", "success");
             fetchUserPermissions();
         } catch (error) {
-            alert("Error removing permission: " + error.message);
+            showNotification("Error removing permission: " + error.message, "error");
         }
     };
 

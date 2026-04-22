@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { CloudDownload, MessageCircleWarning, WifiOff } from "lucide-react";
+import { useNotification } from "@/hooks/use-notification.js";
 import manager from "@/utils/manager.js";
 import { useBackend } from "@/context/BackendContext.jsx";
 import { MG_VOID, MG_MIST, MG_SLATE, MG_SNOW, MG_GHOST, MG_CRIMSON, MG_EMERALD } from '@/lib/colors';
@@ -88,6 +89,7 @@ function AutocompleteInput({ id, name, value, onChange, options, placeholder }) 
 }
 
 export default function InstallServerDialog({ from, showCloseButton, triggerClassName = "" }) {
+    const { showNotification } = useNotification();
     const { backendUp } = useBackend();
     const uiPreferences = useContext(UiPreferencesContext);
     const playUiSound = uiPreferences?.playUiSound ?? (() => {});
@@ -127,7 +129,7 @@ export default function InstallServerDialog({ from, showCloseButton, triggerClas
     async function handleInstall(e) {
         e.preventDefault();
         if (!eulaAccepted) {
-            alert("You must accept the EULA to install a server.");
+            showNotification("You must accept the EULA to install a server.", "error");
             return;
         }
         playUiSound("action");

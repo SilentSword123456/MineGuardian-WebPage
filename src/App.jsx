@@ -20,6 +20,7 @@ import { AuthSessionProvider } from "@/context/AuthSessionContext.jsx";
 import { useAuthSessionContext } from "@/hooks/use-auth-session-context.jsx";
 import LoginPage from "@/components/LoginPage.jsx";
 import { UiPreferencesProvider } from "@/context/UiPreferencesContext.jsx";
+import { NotificationProvider } from "@/context/NotificationContext.jsx";
 
 const queryClient = new QueryClient();
 
@@ -125,11 +126,13 @@ function AppWithProviders() {
     return (
         <QueryClientProvider client={queryClient}>
             <UiPreferencesProvider>
-                <BackendProvider>
-                    <AuthSessionProvider>
-                        <App />
-                    </AuthSessionProvider>
-                </BackendProvider>
+                <NotificationProvider>
+                    <BackendProvider>
+                        <AuthSessionProvider>
+                            <App />
+                        </AuthSessionProvider>
+                    </BackendProvider>
+                </NotificationProvider>
             </UiPreferencesProvider>
         </QueryClientProvider>
     );
