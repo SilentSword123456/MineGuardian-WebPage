@@ -53,3 +53,211 @@
     color: var(--mg-fog);
 }
 
+/* -- Permissions Tab ----------------------------------------- */
+.permissions-container {
+    padding: 24px;
+    background-color: var(--mg-void);
+    border: 1px solid var(--mg-slate);
+    border-radius: 12px;
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.permissions-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--mg-snow);
+    margin: 0;
+}
+
+.permissions-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-end;
+}
+
+.permissions-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.permissions-field label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--mg-ghost);
+    text-transform: uppercase;
+}
+
+.permissions-input {
+    padding: 10px 14px;
+    background-color: var(--mg-obsidian);
+    border: 1px solid var(--mg-slate);
+    border-radius: 6px;
+    color: var(--mg-snow);
+    font-size: 14px;
+    width: 140px;
+    transition: border-color 0.2s;
+}
+
+.permissions-select {
+    width: 240px;
+    cursor: pointer;
+}
+
+.permissions-input:focus {
+    outline: none;
+    border-color: var(--mg-cyan);
+}
+
+.permissions-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-permission {
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+
+.btn-give {
+    background-color: var(--mg-emerald-dim);
+    color: white;
+}
+
+.btn-give:hover {
+    background-color: var(--mg-emerald);
+}
+
+.btn-remove {
+    background-color: var(--mg-crimson-dim);
+    color: white;
+}
+
+.btn-remove:hover {
+    background-color: var(--mg-crimson);
+}
+
+/* -- Permissions List ----------------------------------------- */
+.permissions-list-section {
+    margin-top: 20px;
+    border-top: 1px solid var(--mg-slate);
+    padding-top: 20px;
+}
+
+.permissions-subtitle {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--mg-ghost);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+.no-permissions-msg {
+    color: var(--mg-fog);
+    font-size: 14px;
+    font-style: italic;
+}
+
+.permissions-table {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background-color: var(--mg-slate);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--mg-slate);
+}
+
+.table-header {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    background-color: var(--mg-obsidian);
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--mg-ghost);
+    text-transform: uppercase;
+}
+
+.table-row {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    background-color: var(--mg-void);
+    padding: 12px 16px;
+    align-items: center;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.user-id {
+    font-family: monospace;
+    font-weight: 600;
+    color: var(--mg-cyan);
+}
+
+.btn-add-for-user {
+    background: none;
+    border: 1px solid var(--mg-mist);
+    color: var(--mg-fog);
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-add-for-user:hover {
+    border-color: var(--mg-cyan);
+    color: var(--mg-cyan);
+    background-color: rgba(34, 211, 238, 0.1);
+}
+
+.perms-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.perm-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background-color: var(--mg-stone);
+    color: var(--mg-snow);
+    padding: 4px 10px;
+    border-radius: 100px;
+    font-size: 12px;
+    border: 1px solid var(--mg-mist);
+}
+
+.btn-mini-remove {
+    background: none;
+    border: none;
+    color: var(--mg-fog);
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.btn-mini-remove:hover {
+    color: var(--mg-crimson);
+}
+

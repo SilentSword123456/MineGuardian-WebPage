@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import manager from "@/utils/manager.js";
 import Console from "./Console.jsx";
 import QuickCommands from "./QuickCommands.jsx";
 import PlayersAvatarPanel from "./PlayersAvatarPanel.jsx";
@@ -29,6 +30,60 @@ function ServerPageContent({ loadedServer, onUninstall, backendUp }) {
     const [isRunning, setIsRunning] = useState(loadedServer.isRunning);
     const isRunningRef = useRef(loadedServer.isRunning);
     const [isInstalled, setIsInstalled] = useState(loadedServer.isInstalled);
+    const [userId, setUserId] = useState("");
+    const [permId, setPermId] = useState("");
+    const [availablePermissions, setAvailablePermissions] = useState({});
+    const [userPermissions, setUserPermissions] = useState({});
+
+    const fetchUserPermissions = async () => {
+        if (!backendUp || !loadedServer?.id) return;
+        try {
+            console.log("Fetching user permissions");
+            const perms = await manager.getServerPermissions(loadedServer.id);
+            console.log("Fetched permissions:", perms);
+            setUserPermissions(perms);
+        } catch (err) {
+            console.error("Failed to fetch server permissions", err);
+        }
+    };
+
+    useEffect(() => {
+        if (backendUp && loadedServer?.id) {
+            manager.getDefaultServersPermissions()
+                .then(perms => {
+                    setAvailablePermissions(perms);
+                    // Set default permId if not set and perms exist
+                    const firstPermId = Object.values(perms)[0];
+                    if (firstPermId !== undefined) {
+                        setPermId(firstPermId.toString());
+                    }
+                })
+                .catch(err => console.error("Failed to fetch default permissions", err));
+            fetchUserPermissions();
+        }
+    }, [backendUp, loadedServer?.id]);
+
+    const handleGivePerm = async () => {
+        try {
+            await manager.giveUserPermissionToServer(parseInt(userId), loadedServer.id, parseInt(permId));
+            alert("Permission given successfully");
+            fetchUserPermissions();
+        } catch (error) {
+            alert("Error giving permission: " + error.message);
+        }
+    };
+
+    const handleRemovePerm = async (targetUserId, targetPermId) => {
+        const uId = targetUserId !== undefined ? targetUserId : parseInt(userId);
+        const pId = targetPermId !== undefined ? targetPermId : parseInt(permId);
+        try {
+            await manager.removeUserPermissionFromServer(uId, loadedServer.id, pId);
+            alert("Permission removed successfully");
+            fetchUserPermissions();
+        } catch (error) {
+            alert("Error removing permission: " + error.message);
+        }
+    };
 
     useEffect(() => {
         if (isRunning === false) {
@@ -80,18 +135,6 @@ function ServerPageContent({ loadedServer, onUninstall, backendUp }) {
             return;
         }
 
-        const handleSystem = (eventData) => {
-            if (isRunningRef.current) {
-                setMessages((prev) => [...prev, { type: eventData.source, data: eventData.line }]);
-            }
-        };
-
-        const handleConsole = (eventData) => {
-            if (isRunningRef.current) {
-                setMessages((prev) => [...prev, { type: eventData.source, data: eventData.line }]);
-            }
-        };
-
         const handleResources = (statsData) => {
             if (isRunningRef.current) {
                 setData((prev) => new ServerLiveData(prev).set(statsData).toObject());
@@ -111,6 +154,10 @@ function ServerPageContent({ loadedServer, onUninstall, backendUp }) {
             socket.off("status", handleStatus);
         };
     }, [socket, backendUp, setMessages]);
+
+    const getPermName = (id) => {
+        return Object.keys(availablePermissions).find(key => availablePermissions[key] === id) || id;
+    };
 
     return (
         <div className="server-page">
@@ -135,6 +182,7 @@ function ServerPageContent({ loadedServer, onUninstall, backendUp }) {
                         <Tabs defaultValue="overview">
                             <TabsList>
                                 <TabsTrigger value="overview">Overview</TabsTrigger>
+                                <TabsTrigger value="permissions">Permissions</TabsTrigger>
                                 <TabsTrigger value="advanced">Advanced</TabsTrigger>
                             </TabsList>
                             <TabsContents>
@@ -146,6 +194,93 @@ function ServerPageContent({ loadedServer, onUninstall, backendUp }) {
                                             memoryUsageMb={data?.memory_usage_mb}
                                             MAX_MEMORY_MB={data?.max_memory_mb}
                                         />
+                                    </div>
+                                </TabsContent>
+                                <TabsContent value="permissions">
+                                    <div className="permissions-container">
+                                        <h3 className="permissions-title">Manage User Permissions</h3>
+                                        <div className="permissions-form">
+                                            <div className="permissions-field">
+                                                <label>User ID</label>
+                                                <input
+                                                    type="number"
+                                                    placeholder="Enter User ID"
+                                                    value={userId}
+                                                    onChange={(e) => setUserId(e.target.value)}
+                                                    className="permissions-input"
+                                                />
+                                            </div>
+                                            <div className="permissions-field">
+                                                <label>Permission</label>
+                                                <select
+                                                    value={permId}
+                                                    onChange={(e) => setPermId(e.target.value)}
+                                                    className="permissions-input permissions-select"
+                                                >
+                                                    {Object.entries(availablePermissions).map(([name, id]) => (
+                                                        <option key={id} value={id}>
+                                                            {name}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                            <div className="permissions-actions">
+                                                <button
+                                                    onClick={handleGivePerm}
+                                                    className="btn-permission btn-give"
+                                                >
+                                                    Give Perm
+                                                </button>
+                                                <button
+                                                    onClick={() => handleRemovePerm()}
+                                                    className="btn-permission btn-remove"
+                                                >
+                                                    Remove Perm
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div className="permissions-list-section">
+                                            <h4 className="permissions-subtitle">Authorized Users</h4>
+                                            {Object.keys(userPermissions).length === 0 ? (
+                                                <p className="no-permissions-msg">No permissions assigned yet.</p>
+                                            ) : (
+                                                <div className="permissions-table">
+                                                    <div className="table-header">
+                                                        <span>User ID</span>
+                                                        <span>Permissions</span>
+                                                    </div>
+                                                    {Object.entries(userPermissions).map(([uId, perms]) => (
+                                                        <div key={uId} className="table-row">
+                                                            <div className="user-info">
+                                                                <span className="user-id">#{uId}</span>
+                                                                <button
+                                                                    className="btn-add-for-user"
+                                                                    onClick={() => setUserId(uId)}
+                                                                    title="Set this user in the form above"
+                                                                >
+                                                                    Edit
+                                                                </button>
+                                                            </div>
+                                                            <div className="perms-badges">
+                                                                {perms.map(pId => (
+                                                                    <div key={pId} className="perm-badge">
+                                                                        <span>{getPermName(pId)}</span>
+                                                                        <button
+                                                                            onClick={() => handleRemovePerm(parseInt(uId), pId)}
+                                                                            className="btn-mini-remove"
+                                                                            title="Remove this permission"
+                                                                        >
+                                                                            ×
+                                                                        </button>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 </TabsContent>
                                 <TabsContent value="advanced">

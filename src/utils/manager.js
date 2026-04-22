@@ -169,6 +169,85 @@ class Manager{
         }
     }
 
+    async giveUserPermissionToServer(userId, serverId, permId) {
+        try {
+            const { response, payload } = await this.requestJson(`/userPermission`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include",
+                body: JSON.stringify({ perm_id: permId, server_id: serverId, user_id: userId })
+            });
+
+            if (!response.ok) {
+                throw new Error(payload.message || payload.error || `HTTP error! status: ${response.status}`);
+            }
+
+            return payload;
+        } catch (error) {
+            console.error(`Error giving permission to user ${userId} for server ${serverId}:`, error);
+            throw error;
+        }
+    }
+
+    async removeUserPermissionFromServer(userId, serverId, permId) {
+        try {
+            const { response, payload } = await this.requestJson(`/userPermission`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include",
+                body: JSON.stringify({ perm_id: permId, server_id: serverId, user_id: userId })
+            });
+
+            if (!response.ok) {
+                throw new Error(payload.message || payload.error || `HTTP error! status: ${response.status}`);
+            }
+
+            return payload;
+        } catch (error) {
+            console.error(`Error removing permission from user ${userId} for server ${serverId}:`, error);
+            throw error;
+        }
+    }
+
+    async getServerPermissions(serverId) {
+        try {
+            const { response, payload } = await this.requestJson(`/servers/${serverId}/permissions`, {
+                method: "GET",
+                credentials: "include",
+            });
+
+            if (!response.ok) {
+                throw new Error(payload.message || payload.error || `HTTP error! status: ${response.status}`);
+            }
+
+            return payload.permissions || {};
+        } catch (error) {
+            console.error(`Error fetching permissions for server ${serverId}:`, error);
+            throw error;
+        }
+    }
+
+    async getDefaultServersPermissions() {
+        try {
+            const { response, payload } = await this.requestJson(`/getDefaultServersPermissions`, {
+                method: "GET",
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            return payload;
+        } catch (error) {
+            console.error(`Error getting default list of servers permissions ids and names: `, error);
+            throw error;
+        }
+    }
+
     async getGlobalUsedResources(){
         try{
             const { response, payload } = await this.requestJson("/servers/globalStats", {

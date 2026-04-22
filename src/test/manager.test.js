@@ -269,3 +269,107 @@ describe('Manager.getGlobalUsedResources()', () => {
         await expect(manager.getGlobalUsedResources()).rejects.toThrow();
     });
 });
+
+describe('Manager.giveUserPermissionToServer()', () => {
+    it('POSTs to /userPermission with perm_id, server_id, and user_id', async () => {
+        global.fetch = mockFetchOk({ success: true });
+        const result = await manager.giveUserPermissionToServer(1, 2, 3);
+        expect(fetch).toHaveBeenCalledWith(
+            'http://localhost:5000/userPermission',
+            expect.objectContaining({
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ perm_id: 3, server_id: 2, user_id: 1 }),
+            })
+        );
+        expect(result).toEqual({ success: true });
+    });
+
+    it('throws when the response is not ok and includes error message from payload', async () => {
+        global.fetch = vi.fn().mockResolvedValue({
+            ok: false,
+            status: 400,
+            json: () => Promise.resolve({ message: 'Invalid permission ID' }),
+        });
+        await expect(manager.giveUserPermissionToServer(1, 2, 3)).rejects.toThrow('Invalid permission ID');
+    });
+
+    it('throws on network error', async () => {
+        global.fetch = mockFetchNetworkError();
+        await expect(manager.giveUserPermissionToServer(1, 2, 3)).rejects.toThrow();
+    });
+});
+
+describe('Manager.removeUserPermissionFromServer()', () => {
+    it('DELETEs to /userPermission with perm_id, server_id, and user_id', async () => {
+        global.fetch = mockFetchOk({ success: true });
+        const result = await manager.removeUserPermissionFromServer(1, 2, 3);
+        expect(fetch).toHaveBeenCalledWith(
+            'http://localhost:5000/userPermission',
+            expect.objectContaining({
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ perm_id: 3, server_id: 2, user_id: 1 }),
+            })
+        );
+        expect(result).toEqual({ success: true });
+    });
+
+    it('throws when the response is not ok', async () => {
+        global.fetch = mockFetchFail(400);
+        await expect(manager.removeUserPermissionFromServer(1, 2, 3)).rejects.toThrow();
+    });
+
+    it('throws on network error', async () => {
+        global.fetch = mockFetchNetworkError();
+        await expect(manager.removeUserPermissionFromServer(1, 2, 3)).rejects.toThrow();
+    });
+});
+
+describe('Manager.getDefaultServersPermissions()', () => {
+    it('GETs /getDefaultServersPermissions and returns the payload', async () => {
+        const perms = { "A": 1, "B": 2 };
+        global.fetch = mockFetchOk(perms);
+        const result = await manager.getDefaultServersPermissions();
+        expect(fetch).toHaveBeenCalledWith(
+            'http://localhost:5000/getDefaultServersPermissions',
+            expect.objectContaining({ method: 'GET' })
+        );
+        expect(result).toEqual(perms);
+    });
+
+    it('throws when the response is not ok', async () => {
+        global.fetch = mockFetchFail(500);
+        await expect(manager.getDefaultServersPermissions()).rejects.toThrow();
+    });
+});
+
+describe('Manager.getServerPermissions()', () => {
+    it('GETs /serverPermissions with server_id in body and returns the permissions map', async () => {
+        const permissionsMap = { "2": [3, 5, 6], "5": [1, 2, 3] };
+        const responseData = {
+            "permissions": permissionsMap
+        };
+        global.fetch = mockFetchOk(responseData);
+        const result = await manager.getServerPermissions(10);
+        expect(fetch).toHaveBeenCalledWith(
+            'http://localhost:5000/serverPermissions',
+            expect.objectContaining({
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ server_id: 10 })
+            })
+        );
+        expect(result).toEqual(permissionsMap);
+    });
+
+    it('throws when the response is not ok', async () => {
+        global.fetch = mockFetchFail(404);
+        await expect(manager.getServerPermissions(10)).rejects.toThrow();
+    });
+
+    it('throws on network error', async () => {
+        global.fetch = mockFetchNetworkError();
+        await expect(manager.getServerPermissions(10)).rejects.toThrow();
+    });
+});
