@@ -1,10 +1,15 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { useSocket } from '@/hooks/useSocket.jsx';
+import { useAuthSessionContext } from '@/hooks/use-auth-session-context.jsx';
 import Console from '../components/Console.jsx';
 
 vi.mock('@/hooks/useSocket.jsx', () => ({
     useSocket: vi.fn(),
+}));
+
+vi.mock('@/hooks/use-auth-session-context.jsx', () => ({
+    useAuthSessionContext: vi.fn(),
 }));
 
 function setupConsoleMocks({
@@ -12,12 +17,17 @@ function setupConsoleMocks({
     messages = [],
     setMessages = vi.fn(),
     sendCommand = vi.fn(),
+    currentUser = { username: 'testuser' },
 } = {}) {
     vi.mocked(useSocket).mockReturnValue({
         isConnected,
         messages,
         setMessages,
         sendCommand,
+    });
+
+    vi.mocked(useAuthSessionContext).mockReturnValue({
+        currentUser,
     });
 
     return { setMessages, sendCommand };
