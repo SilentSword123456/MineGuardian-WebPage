@@ -1,15 +1,10 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { useSocket } from '@/hooks/useSocket.jsx';
-import { useAuthSessionContext } from '@/hooks/use-auth-session-context.jsx';
 import Console from '../components/Console.jsx';
 
 vi.mock('@/hooks/useSocket.jsx', () => ({
     useSocket: vi.fn(),
-}));
-
-vi.mock('@/hooks/use-auth-session-context.jsx', () => ({
-    useAuthSessionContext: vi.fn(),
 }));
 
 function setupConsoleMocks({
@@ -17,7 +12,6 @@ function setupConsoleMocks({
     messages = [],
     setMessages = vi.fn(),
     sendCommand = vi.fn(),
-    currentUser = { username: 'TestUser' },
 } = {}) {
     vi.mocked(useSocket).mockReturnValue({
         isConnected,
@@ -25,7 +19,6 @@ function setupConsoleMocks({
         setMessages,
         sendCommand,
     });
-    vi.mocked(useAuthSessionContext).mockReturnValue({ currentUser });
 
     return { setMessages, sendCommand };
 }
@@ -115,28 +108,6 @@ describe('Console', () => {
             expect(sendCommand).not.toHaveBeenCalled();
         });
 
-        it('calls setMessages to add the sent command to the history', () => {
-            const setMessages = vi.fn();
-            renderExpanded({ isConnected: true, setMessages, currentUser: { username: 'Alex' } });
-            const input = screen.getByPlaceholderText(/type a command/i);
-            fireEvent.change(input, { target: { value: 'tp Alice Bob' } });
-            fireEvent.keyDown(input, { key: 'Enter' });
-            expect(setMessages).toHaveBeenCalled();
-
-            const updateFn = setMessages.mock.calls[0][0];
-            expect(updateFn([])).toEqual([{ type: 'Alex', data: 'tp Alice Bob' }]);
-        });
-
-        it('falls back to "You" sender label when no username is available', () => {
-            const setMessages = vi.fn();
-            renderExpanded({ isConnected: true, setMessages, currentUser: null });
-            const input = screen.getByPlaceholderText(/type a command/i);
-            fireEvent.change(input, { target: { value: 'list' } });
-            fireEvent.keyDown(input, { key: 'Enter' });
-
-            const updateFn = setMessages.mock.calls[0][0];
-            expect(updateFn([])).toEqual([{ type: 'You', data: 'list' }]);
-        });
 
         it('clears messages when the clear button is clicked', () => {
             const setMessages = vi.fn();

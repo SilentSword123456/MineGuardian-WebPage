@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import InstallServerDialog from '../utils/installServerDialog.jsx';
+import { NotificationProvider } from '@/context/NotificationContext.jsx';
 
 vi.mock('@/lib/config.js', () => ({ BASE_URL: 'http://localhost:5000' }));
 
@@ -21,7 +22,11 @@ import manager from '@/utils/manager.js';
 
 function setup(backendUp = true, props = {}) {
     useBackend.mockReturnValue({ backendUp, isCheckingBackend: false });
-    return render(<InstallServerDialog {...props} />);
+    return render(
+        <NotificationProvider>
+            <InstallServerDialog {...props} />
+        </NotificationProvider>
+    );
 }
 
 describe('InstallServerDialog', () => {

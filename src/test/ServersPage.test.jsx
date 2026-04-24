@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { NotificationProvider } from '@/context/NotificationContext.jsx';
 import ServersPage from '../components/ServersPage.jsx';
 
 vi.mock('@/lib/config.js', () => ({ BASE_URL: 'http://localhost:5000' }));
@@ -43,7 +44,9 @@ function setupMocks({ backendUp = true, isCheckingBackend = false, servers = [],
 function renderServersPage() {
     return render(
         <MemoryRouter>
-            <ServersPage />
+            <NotificationProvider>
+                <ServersPage />
+            </NotificationProvider>
         </MemoryRouter>
     );
 }

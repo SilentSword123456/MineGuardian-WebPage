@@ -345,7 +345,7 @@ describe('Manager.getDefaultServersPermissions()', () => {
 });
 
 describe('Manager.getServerPermissions()', () => {
-    it('GETs /serverPermissions with server_id in body and returns the permissions map', async () => {
+    it('GETs /servers/:serverId/permissions and returns the permissions map', async () => {
         const permissionsMap = { "2": [3, 5, 6], "5": [1, 2, 3] };
         const responseData = {
             "permissions": permissionsMap
@@ -353,11 +353,10 @@ describe('Manager.getServerPermissions()', () => {
         global.fetch = mockFetchOk(responseData);
         const result = await manager.getServerPermissions(10);
         expect(fetch).toHaveBeenCalledWith(
-            'http://localhost:5000/serverPermissions',
+            'http://localhost:5000/servers/10/permissions',
             expect.objectContaining({
                 method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ server_id: 10 })
+                credentials: 'include',
             })
         );
         expect(result).toEqual(permissionsMap);
