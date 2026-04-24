@@ -11,7 +11,7 @@ import {
     SidebarProvider,
 } from "@/components/animate-ui/components/radix/sidebar.jsx";
 import AppSidebar from "./components/AppSidebar.jsx";
-import { Navigate, Route, Routes, useNavigate, useParams } from "react-router-dom";
+import {Navigate, Route, Routes, useNavigate, useParams, useSearchParams} from "react-router-dom";
 import { useServers } from "@/hooks/use-servers.jsx";
 import PlayerManager from "@/components/PlayerManager.jsx";
 import Settings from "@/components/Settings.jsx";
@@ -21,6 +21,9 @@ import { useAuthSessionContext } from "@/hooks/use-auth-session-context.jsx";
 import LoginPage from "@/components/LoginPage.jsx";
 import { UiPreferencesProvider } from "@/context/UiPreferencesContext.jsx";
 import { NotificationProvider } from "@/context/NotificationContext.jsx";
+import {useEffect, useState} from "react";
+import manager from "@/utils/manager.js";
+import RegisterPage from "@/components/RegisterPage.jsx";
 
 const queryClient = new QueryClient();
 
@@ -76,6 +79,22 @@ function ServerRouteView() {
     );
 }
 
+function VerifyEmail() {
+    const [searchParams] = useSearchParams();
+    const token = searchParams.get("token");
+    console.log("token:", token);
+    const navigate = useNavigate();
+    const [msg, setMsg] = useState("Verifying...");
+
+    useEffect(() => {
+        manager.verifyEmail(token)
+            .then(() => { setMsg("Email verified!"); setTimeout(() => navigate("/login"), 2000); })
+            .catch(() => setMsg("Invalid or expired token."));
+    }, [navigate, token]);
+
+    return <div className="p-4">{msg}</div>;
+}
+
 function App() {
     const { backendUp, isCheckingBackend, baseUrl, setBaseUrl } = useBackend();
     const { authenticated, authLoading, login, loginPending, loginError, register, registerPending, registerError } = useAuthSessionContext();
@@ -84,8 +103,8 @@ function App() {
         await login({ username, password });
     }
 
-    async function handleRegister(username, password) {
-        await register({ username, password });
+    async function handleRegister(email, username, password, firstName) {
+        await register({ email, username, password, firstName });
     }
 
     const isLoading = loginPending || registerPending;
@@ -98,7 +117,6 @@ function App() {
     const loginPage = (
         <LoginPage
             onLogin={handleLogin}
-            onRegister={handleRegister}
             loading={isLoading}
             error={currentError}
             backendUp={backendUp}
@@ -111,9 +129,19 @@ function App() {
     return (
         <Routes>
             <Route
+                path="/verifyEmail"
+                element={authenticated ? <Navigate to="/" replace /> : <VerifyEmail />}
+            />
+            <Route
                 path="/login"
                 element={authenticated ? <Navigate to="/" replace /> : loginPage}
             />
+
+            <Route
+                path="/register"
+                element={authenticated ? <Navigate to="/" replace /> : <RegisterPage onRegister={handleRegister} loading={registerPending} error={registerError} />}
+            />
+
             <Route
                 path="/*"
                 element={authenticated ? <AppContent /> : <Navigate to="/login" replace />}

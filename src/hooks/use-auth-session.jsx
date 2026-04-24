@@ -37,7 +37,7 @@ export function useAuthSession() {
     });
 
     const registerMutation = useMutation({
-        mutationFn: ({ username, password }) => manager.register(username, password),
+        mutationFn: ({ email, username, password, firstName }) => manager.register(email, username, password, firstName),
     });
 
     useEffect(() => {

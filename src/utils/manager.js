@@ -19,14 +19,14 @@ class Manager{
         return { response, payload };
     }
 
-    async register(username, password) {
+    async register(email, username, password, first_name) {
         try {
             const { response, payload } = await this.requestJson("/user", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ username, password })
+                body: JSON.stringify({email, username, password, first_name })
             });
 
             if (!response.ok) {
@@ -34,7 +34,7 @@ class Manager{
             }
 
             if (payload.status === false) {
-                throw new Error("Username already exists.");
+                throw new Error("Email or username already exists.");
             }
 
             return true;
@@ -270,6 +270,23 @@ class Manager{
             return resources.toObject();
         } catch (error) {
             console.error(`Error fetching used resources:`, error);
+            throw error;
+        }
+    }
+
+    async verifyEmail(token) {
+        try {
+            const { response, payload } = await this.requestJson(`/verifyEmail?token=${encodeURIComponent(token)}`, {
+                method: 'POST'
+            });
+
+            if (!response.ok) {
+                throw new Error(payload.error || `HTTP error! status: ${response.status}`);
+            }
+
+            return payload;
+        } catch (error) {
+            console.error('Error verifying email:', error);
             throw error;
         }
     }
