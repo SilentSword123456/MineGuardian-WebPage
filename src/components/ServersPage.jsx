@@ -84,6 +84,8 @@ function ServersPage() {
                             onClick={async (e) => {
                                 e.stopPropagation();
                                 playUiSound("action");
+                                console.log("Starting " + server.name);
+                                console.log("Server is currently running: " + server.isRunning);
                                 await action(server)();
                                 refetch()
                             }}

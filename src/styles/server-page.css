@@ -261,3 +261,57 @@
     color: var(--mg-crimson);
 }
 
+/* -- Server Address Card ------------------------------------- */
+.server-address-card {
+    background-color: var(--mg-void);
+    border: 1px solid var(--mg-slate);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 220px;
+    margin-left: auto;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+.server-address-card:hover {
+    border-color: var(--mg-slate);
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+.server-address-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--mg-ghost);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.server-address-value {
+    font-family: monospace;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--mg-snow);
+    min-height: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.server-address-pending {
+    color: var(--mg-fog);
+    font-style: italic;
+    font-size: 13px;
+}
+
+.server-address-copy-icon {
+    color: var(--mg-fog);
+    flex-shrink: 0;
+    transition: color 0.2s;
+}
+
+.server-address-card:hover .server-address-copy-icon {
+    color: var(--mg-cyan);
+}

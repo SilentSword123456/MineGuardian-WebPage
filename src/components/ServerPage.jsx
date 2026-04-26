@@ -17,6 +17,7 @@ import {
     TabsList,
     TabsTrigger
 } from "@/components/animate-ui/components/radix/tabs.jsx";
+import ServerLink from "@/components/ServerLink.jsx";
 
 /**
  * @typedef {import('../types/server.jsx').Server} Server
@@ -36,6 +37,7 @@ function ServerPageContent({ loadedServer, onUninstall, backendUp }) {
     const [permId, setPermId] = useState("");
     const [availablePermissions, setAvailablePermissions] = useState({});
     const [userPermissions, setUserPermissions] = useState({});
+    const [serverPort, setServerPort] = useState(Number);
 
     const fetchUserPermissions = async () => {
         if (!backendUp || !loadedServer?.id) return;
@@ -122,6 +124,7 @@ function ServerPageContent({ loadedServer, onUninstall, backendUp }) {
                         max: Number(serverInfo?.online_players?.max ?? prev?.online_players?.max ?? 0),
                     },
                 }).toObject());
+                setServerPort(serverInfo?.server_port);
             })
             .catch((error) => {
                 console.error(`Error fetching general server info for ${loadedServer.name}:`, error);
@@ -179,14 +182,13 @@ function ServerPageContent({ loadedServer, onUninstall, backendUp }) {
                     </div>
 
                 ) : (
-
                     <>
                         <Tabs defaultValue="overview">
-                            <TabsList>
-                                <TabsTrigger value="overview">Overview</TabsTrigger>
-                                <TabsTrigger value="permissions">Permissions</TabsTrigger>
-                                <TabsTrigger value="advanced">Advanced</TabsTrigger>
-                            </TabsList>
+                                <TabsList>
+                                    <TabsTrigger value="overview">Overview</TabsTrigger>
+                                    <TabsTrigger value="permissions">Permissions</TabsTrigger>
+                                    <TabsTrigger value="advanced">Advanced</TabsTrigger>
+                                </TabsList>
                             <TabsContents>
                                 <TabsContent value="overview">
                                     <div className="stats-row">
@@ -196,6 +198,7 @@ function ServerPageContent({ loadedServer, onUninstall, backendUp }) {
                                             memoryUsageMb={data?.memory_usage_mb}
                                             MAX_MEMORY_MB={data?.max_memory_mb}
                                         />
+                                        <ServerLink serverPort={serverPort} isRunning={isRunning} />
                                     </div>
                                 </TabsContent>
                                 <TabsContent value="permissions">
