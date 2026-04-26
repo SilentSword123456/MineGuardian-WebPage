@@ -3,10 +3,11 @@ import DecryptedText from "@/components/ui/DecryptedText.jsx";
 import { Copy } from "@/components/animate-ui/icons/copy";
 
 function ServerLink({ serverPort, isRunning }) {
+    const cleanBase = BASE_URL.replace(/^https?:\/\//, '');
     return (
         <div className="server-address-card" onClick={() => {
             if (serverPort) {
-                navigator.clipboard.writeText(`${BASE_URL}:${serverPort}`);
+                navigator.clipboard.writeText(`${cleanBase}:${serverPort}`);
             }
         }}>
             <span className="server-address-label">Server Address</span>
@@ -14,7 +15,7 @@ function ServerLink({ serverPort, isRunning }) {
                 {serverPort ? (
                     <DecryptedText
                         key={isRunning ? `on-${serverPort}` : `off-${serverPort}`}
-                        text={isRunning ? `${BASE_URL}:${serverPort}` : "??.??.??.??:?????"}
+                        text={isRunning ? `${cleanBase}:${serverPort}` : "??.??.??.??:?????"}
                         speed={50}
                         maxIterations={8}
                         sequential={true}
