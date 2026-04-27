@@ -274,9 +274,14 @@ class Manager{
         }
     }
 
-    async verifyEmail(token) {
+    async verifyEmail({ token, shortCode, userEmail }) {
         try {
-            const { response, payload } = await this.requestJson(`/verifyEmail?token=${encodeURIComponent(token)}`, {
+            const params = new URLSearchParams();
+            if (token) params.set('token', token);
+            if (shortCode) params.set('shortCode', shortCode);
+            if (userEmail) params.set('userEmail', userEmail);
+
+            const { response, payload } = await this.requestJson(`/verifyEmail?${params.toString()}`, {
                 method: 'POST'
             });
 

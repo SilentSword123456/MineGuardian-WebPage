@@ -24,6 +24,8 @@ import { NotificationProvider } from "@/context/NotificationContext.jsx";
 import {useEffect, useState} from "react";
 import manager from "@/utils/manager.js";
 import RegisterPage from "@/components/RegisterPage.jsx";
+import {Button} from "@/components/ui/button.jsx";
+import {Input} from "@/components/ui/input.jsx";
 
 const queryClient = new QueryClient();
 
@@ -82,17 +84,56 @@ function ServerRouteView() {
 function VerifyEmail() {
     const [searchParams] = useSearchParams();
     const token = searchParams.get("token");
-    console.log("token:", token);
+    const shortCode = searchParams.get("shortCode");
+    const userEmail = searchParams.get("userEmail");
     const navigate = useNavigate();
-    const [msg, setMsg] = useState("Verifying...");
+
+    const [status, setStatus] = useState("verifying"); // "verifying" | "success" | "error" | "manual"
+    const [manualCode, setManualCode] = useState("");
+    const [manualUserEmail, setManualUserEmail] = useState(userEmail || "");
+    const [manualError, setManualError] = useState("");
 
     useEffect(() => {
-        manager.verifyEmail(token)
-            .then(() => { setMsg("Email verified!"); setTimeout(() => navigate("/login"), 2000); })
-            .catch(() => setMsg("Invalid or expired token."));
-    }, [navigate, token]);
+        if (token) {
+            manager.verifyEmail({ token })
+                .then(() => { setStatus("success"); setTimeout(() => navigate("/login"), 2000); })
+                .catch(() => setStatus("error"));
+        } else if (shortCode && userEmail) {
+            manager.verifyEmail({ shortCode, userEmail })
+                .then(() => { setStatus("success"); setTimeout(() => navigate("/login"), 2000); })
+                .catch(() => setStatus("error"));
+        } else {
+            setStatus("manual");
+        }
+    }, []);
 
-    return <div className="p-4">{msg}</div>;
+    async function handleManualSubmit() {
+        setManualError("");
+        try {
+            await manager.verifyEmail({ shortCode: manualCode, userEmail: manualUserEmail});
+            setStatus("success");
+            setTimeout(() => navigate("/login"), 2000);
+        } catch {
+            setManualError("Invalid or expired code.");
+        }
+    }
+
+    if (status === "verifying") return <div className="p-4">Verifying...</div>;
+    if (status === "success") return <div className="p-4">Email verified! Redirecting...</div>;
+
+    return (
+        <div className="flex min-h-screen items-center justify-center p-4">
+            <div className="w-full max-w-sm flex flex-col gap-4">
+                {status === "error" && (
+                    <p className="text-red-500 text-sm">The link didn't work. Enter the code from your email instead.</p>
+                )}
+                <Input placeholder="Your email" value={manualUserEmail} onChange={e => setManualUserEmail(e.target.value)} />
+                <Input placeholder="Verification code (e.g. A3F9K2TQ)" value={manualCode} onChange={e => setManualCode(e.target.value)} />
+                {manualError && <p className="text-red-500 text-sm">{manualError}</p>}
+                <Button onClick={handleManualSubmit}>Verify</Button>
+            </div>
+        </div>
+    );
 }
 
 function App() {

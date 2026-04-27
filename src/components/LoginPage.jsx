@@ -76,6 +76,11 @@ function LoginPage({ onLogin, loading, error, backendUp, isCheckingBackend, back
                             Create one
                         </button>
                     </p>
+                    <p className="text-sm text-center text-muted-foreground">
+                        <button type="button" onClick={() => navigate("/verifyEmail")} className="text-primary hover:underline cursor-pointer font-medium">
+                            Verify your email
+                        </button>
+                    </p>
                 </form>
 
                 <div className="w-full rounded-xl border border-border bg-card shadow-lg overflow-hidden">
