@@ -110,7 +110,7 @@ function VerifyEmail() {
     async function handleManualSubmit() {
         setManualError("");
         try {
-            await manager.verifyEmail({ shortCode: manualCode, userEmail: manualUserEmail});
+            await manager.verifyEmail({ shortCode: manualCode.trim().toLocaleUpperCase(), userEmail: manualUserEmail.trim()});
             setStatus("success");
             setTimeout(() => navigate("/login"), 2000);
         } catch {
