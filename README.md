@@ -103,5 +103,5 @@ The top navigation has three tabs:
 | UI | Radix UI + Lucide icons |
 | Styling | Custom CSS with CSS variables |
 
-Backend repo and API documentation: **[backend repo link]**
+Backend repo and API documentation: **https://github.com/SilentSword123456/MineGuardian-Backend**
  
