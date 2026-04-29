@@ -6,21 +6,43 @@ Whether you just want to run a server without touching a terminal, or you're a d
 
 ---
 
+## What it does
+
+Running a Minecraft server usually means SSHing into a machine, editing config files, and tailing logs in a terminal. MineGuardian replaces all of that with a clean web UI you can open from any browser.
+
+### Install and run servers in seconds
+Pick a Minecraft version from a live-fetched list, give your server a name, and click Install. EULA acceptance is built into the dialog — no manual file editing. Once installed, start or stop the server with a single button click.
+
+### Watch everything in real time
+The server dashboard streams live data over WebSockets the moment you open it:
+- **CPU & RAM gauges** update continuously with color-coded indicators — green when healthy, amber under load, red when critical
+- **Server console** streams log output live; click to expand it and type commands directly into the terminal, sent to the server on Enter
+- **Player viewer** shows an avatar grid of every player currently online, updated in real time
+- **Status indicators** on the server list refresh every 10 seconds so you always know which servers are up
+
+### Multi-server support
+MineGuardian isn't built for a single server. Every server you install gets its own card in the sidebar. Switch between them instantly — each gets its own console, resource gauges, and player list.
+
+### Resilient UI
+If the backend goes offline, MineGuardian detects it automatically, disables all controls, and shows a clear offline banner instead of silently failing or showing stale data.
+
+---
+
 ## Two ways to get started
 
 ### Option A — Use the hosted version *(recommended for most users)*
 
-Just open the web app at **[your-deployment-url]** — no installation needed. Skip straight to the [How to Use](#how-to-use) section below.
+Just open the web app at **[frontend.silentlab.work](https://frontend.silentlab.work/)** — no installation needed. Skip straight to the [How to Use](#how-to-use) section below.
 
 ### Option B — Run it locally *(for developers)*
 
-> **Prerequisite:** The backend must be running first. Follow the backend setup guide here: **[backend repo link]**
+> **Prerequisite:** The backend must be running first. Follow the backend setup guide here: **[MineGuardian-Backend](https://github.com/SilentSword123456/MineGuardian-Backend)**
 
 Once the backend is up:
 
 ```bash
-git clone [repository-url]
-cd [folder-name]
+git clone https://github.com/SilentSword123456/MineGuardian-WebPage
+cd MineGuardian-WebPage
 npm install
 npm run dev
 ```
@@ -35,7 +57,9 @@ Then open `http://localhost:5173` in your browser (or whatever port Vite prints)
 
 ### 1. Connect to the backend
 
-On your first visit, set the backend URL to wherever your backend is running (e.g. `http://localhost:5000` for local, or a remote address if it's deployed). The app will remember this.
+**Hosted version:** The backend is already connected — skip this step.
+
+**Self-hosted:** On your first visit, open the settings and set the backend URL to wherever your backend is running (e.g. `http://localhost:5000`). The app will remember this.
 
 ### 2. Create an account
 
@@ -103,5 +127,4 @@ The top navigation has three tabs:
 | UI | Radix UI + Lucide icons |
 | Styling | Custom CSS with CSS variables |
 
-Backend repo and API documentation: **https://github.com/SilentSword123456/MineGuardian-Backend**
- 
+Backend repo and API documentation: **[MineGuardian-Backend](https://github.com/SilentSword123456/MineGuardian-Backend)**
