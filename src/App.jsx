@@ -189,6 +189,7 @@ function App() {
                 element={authenticated ? <AppContent /> : <Navigate to="/login" replace />}
             />
         </Routes>
+
     );
 }
 
@@ -204,6 +205,7 @@ function AppWithProviders() {
                     </BackendProvider>
                 </NotificationProvider>
             </UiPreferencesProvider>
+            <SpeedInsights />
         </QueryClientProvider>
     );
 }
