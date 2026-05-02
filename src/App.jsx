@@ -26,6 +26,7 @@ import manager from "@/utils/manager.js";
 import RegisterPage from "@/components/RegisterPage.jsx";
 import {Button} from "@/components/ui/button.jsx";
 import {Input} from "@/components/ui/input.jsx";
+import { SpeedInsights } from "@vercel/speed-insights/react"
 
 const queryClient = new QueryClient();
 
